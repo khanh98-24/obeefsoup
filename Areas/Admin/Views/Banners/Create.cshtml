@@ -1,0 +1,100 @@
+@model OBeefSoup.Models.ViewModels.BannerViewModel
+@{
+    ViewData["Title"] = "Thêm Banner Mới";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Thêm Banner Mới</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="row">
+                            <!-- Tiêu Đề -->
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Title" class="form-label"></label>
+                                <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề banner" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+                            <!-- Mô Tả -->
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Description" class="form-label"></label>
+                                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Nhập mô tả banner"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <!-- Link URL -->
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Link" class="form-label"></label>
+                                <input asp-for="Link" class="form-control" placeholder="/Menu hoặc https://..." />
+                                <span asp-validation-for="Link" class="text-danger"></span>
+                                <small class="form-text text-muted">URL khi click vào banner (có thể để trống)</small>
+                            </div>
+
+                            <!-- Thứ Tự -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DisplayOrder" class="form-label"></label>
+                                <input asp-for="DisplayOrder" class="form-control" type="number" min="0" max="100" />
+                                <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                                <small class="form-text text-muted">Banner với số nhỏ hơn sẽ hiển thị trước</small>
+                            </div>
+
+                            <!-- Trạng Thái -->
+                            <div class="col-md-6 mb-3 d-flex align-items-end">
+                                <div class="form-check">
+                                    <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                                    <label asp-for="IsActive" class="form-check-label"></label>
+                                </div>
+                            </div>
+
+                            <!-- Upload Ảnh -->
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="ImageFile" class="form-label"></label>
+                                <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" id="imageUpload" onchange="previewImage(event)" />
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                <small class="form-text text-muted">Chấp nhận JPG, PNG, GIF (tối đa 5MB). Kích thước khuyến nghị: 1200x400px</small>
+                                
+                                <!-- Image Preview -->
+                                <div id="imagePreview" class="mt-3" style="display: none;">
+                                    <img id="preview" src="" alt="Preview" class="img-thumbnail" style="max-width: 100%; max-height: 300px;" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-2"></i>Hủy
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle me-2"></i>Thêm Banner
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var preview = document.getElementById('preview');
+                preview.src = reader.result;
+                document.getElementById('imagePreview').style.display = 'block';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+}

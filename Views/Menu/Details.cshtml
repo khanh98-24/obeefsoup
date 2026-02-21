@@ -1,0 +1,122 @@
+@model OBeefSoup.Models.Product
+@{
+    ViewData["Title"] = Model.Name + " - Chi tiết sản phẩm";
+    var relatedProducts = ViewBag.RelatedProducts as List<OBeefSoup.Models.Product>;
+}
+
+<!-- Hero Breadcrumb -->
+<section class="details-hero py-4" style="background: #f8f9fa; border-bottom: 1px solid #eee;">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Menu" asp-action="Index">Thực đơn</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Product Details Section -->
+<section class="product-details-section py-5 animate-on-scroll">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Product Image -->
+            <div class="col-lg-6">
+                <div class="product-image-wrapper p-2 bg-white shadow-sm rounded-4">
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded-4 w-100" style="object-fit: cover; min-height: 400px;">
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="col-lg-6">
+                <div class="product-info-content ps-lg-4">
+                    <span class="badge bg-primary mb-3 px-3 py-2 rounded-pill">@Model.Category?.Name</span>
+                    <h1 class="display-5 fw-bold text-dark mb-3">@Model.Name</h1>
+                    <div class="product-price-large mb-4">
+                        <span class="text-primary h1 fw-800">@Model.Price.ToString("N0")đ</span>
+                    </div>
+                    
+                    <div class="product-description-full mb-5">
+                        <h5 class="fw-bold text-dark mb-3">Mô tả sản phẩm</h5>
+                        <p class="text-muted fs-5" style="line-height: 1.8;">
+                            @Model.Description
+                            <br/><br/>
+                            Tại O' BeefSoup, mỗi tô phở không chỉ là một món ăn, mà là tinh hoa của nghệ thuật ninh xương suốt 12 giờ kết hợp cùng thịt bò tươi được chọn lọc khắt khe mỗi ngày. Chúng tôi cam kết mang đến hương vị đậm đà, sạch và nguyên bản nhất.
+                        </p>
+                    </div>
+
+                    <div class="purchase-actions border-top pt-5">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <button class="btn btn-primary btn-lg w-100 py-3 rounded-pill fw-bold add-to-cart-btn"
+                                        data-product-id="@Model.Id"
+                                        data-product-name="@Model.Name"
+                                        data-product-price="@Model.Price"
+                                        data-product-image="@Model.ImageUrl">
+                                    <i class="bi bi-cart-plus me-2"></i>Thêm vào giỏ
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-dark btn-lg w-100 py-3 rounded-pill fw-bold">
+                                    Xem giỏ hàng
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Products -->
+@if (relatedProducts != null && relatedProducts.Any())
+{
+    <section class="related-products-section py-5 bg-light">
+        <div class="container">
+            <div class="section-header mb-5">
+                <h3 class="fw-bold">Món ngon liên quan</h3>
+                <hr style="width: 50px; height: 3px; background: var(--color-primary); opacity: 1;">
+            </div>
+            <div class="row g-4">
+                @foreach (var p in relatedProducts)
+                {
+                    <div class="col-6 col-md-3">
+                        <a asp-action="Details" asp-route-id="@p.Id" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden menu-card">
+                                <img src="@p.ImageUrl" class="card-img-top" alt="@p.Name" style="height: 180px; object-fit: cover;">
+                                <div class="card-body p-3">
+                                    <h6 class="text-dark fw-bold mb-1">@p.Name</h6>
+                                    <p class="text-primary fw-bold mb-0Small">@p.Price.ToString("N0")đ</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@section Scripts {
+    <script>
+        // Copy to here if needed, or it's already in Layout
+    </script>
+}
+
+<style>
+    .details-hero {
+        background-color: var(--color-light) !important;
+    }
+    .product-image-wrapper img {
+        transition: var(--transition-smooth);
+    }
+    .product-price-large {
+        background: rgba(139, 26, 26, 0.05);
+        display: inline-block;
+        padding: 1rem 2rem;
+        border-radius: 15px;
+        border-left: 5px solid var(--color-primary);
+    }
+</style>

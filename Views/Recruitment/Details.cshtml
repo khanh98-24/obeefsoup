@@ -1,0 +1,120 @@
+@model OBeefSoup.Models.JobPosting
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="recruitment-details py-5 bg-light">
+    <div class="container py-4">
+        <div class="mb-4">
+            <a asp-action="Index" class="text-accent text-decoration-none small d-flex align-items-center gap-2 px-1">
+                <i class="bi bi-arrow-left"></i> Quay lại danh sách tuyển dụng
+            </a>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-5 p-4 rounded-4">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-check-circle-fill fs-2 me-3"></i>
+                    <div>
+                        <h5 class="alert-heading fw-bold mb-1">Gửi hồ sơ thành công!</h5>
+                        <p class="mb-0">@TempData["SuccessMessage"]</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="row g-5">
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-4">
+                    <h1 class="fw-bold text-dark mb-4 font-serif">@Model.Title</h1>
+                    
+                    <div class="d-flex flex-wrap gap-4 mb-5 pb-4 border-bottom">
+                        <div>
+                            <small class="text-muted d-block text-uppercase small ls-1">Mức lương</small>
+                            <span class="fw-bold text-accent fs-5">@(string.IsNullOrEmpty(Model.SalaryRange) ? "Thỏa thuận" : Model.SalaryRange)</span>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block text-uppercase small ls-1">Địa điểm</small>
+                            <span class="fw-bold fs-5">@(Model.StoreLocation?.Name ?? "Hà Nội / HCM")</span>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block text-uppercase small ls-1">Hạn nộp</small>
+                            <span class="fw-bold fs-5">@(Model.Deadline.HasValue ? Model.Deadline.Value.ToString("dd/MM/yyyy") : "Luôn tuyển")</span>
+                        </div>
+                    </div>
+
+                    <div class="job-content">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-card-text me-2 text-accent"></i> Mô tả công việc</h5>
+                        <div class="mb-5 text-muted" style="white-space: pre-line;">@Model.Description</div>
+
+                        @if (!string.IsNullOrEmpty(Model.Requirements))
+                        {
+                            <h5 class="fw-bold mb-3"><i class="bi bi-file-earmark-check me-2 text-accent"></i> Yêu cầu ứng viên</h5>
+                            <div class="mb-5 text-muted" style="white-space: pre-line;">@Model.Requirements</div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.Benefits))
+                        {
+                            <h5 class="fw-bold mb-3"><i class="bi bi-gift me-2 text-accent"></i> Quyền lợi được hưởng</h5>
+                            <div class="mb-5 text-muted" style="white-space: pre-line;">@Model.Benefits</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 sticky-top" style="top: 100px;">
+                    <h3 class="fw-bold mb-4">Ứng tuyển ngay</h3>
+                    <p class="text-muted mb-4 small">Vui lòng điền đầy đủ thông tin bên dưới để chúng tôi có thể liên hệ với bạn.</p>
+
+                    <form asp-action="Apply" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="JobPostingId" value="@Model.Id" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Họ và tên <span class="text-danger">*</span></label>
+                            <input type="text" name="FullName" class="form-control form-control-lg bg-light border-0 px-3 fs-6" placeholder="Nhập họ tên của bạn" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Email liên hệ <span class="text-danger">*</span></label>
+                            <input type="email" name="Email" class="form-control form-control-lg bg-light border-0 px-3 fs-6" placeholder="email@example.com" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Số điện thoại <span class="text-danger">*</span></label>
+                            <input type="tel" name="PhoneNumber" class="form-control form-control-lg bg-light border-0 px-3 fs-6" placeholder="Nhập số điện thoại" required />
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold">Giới thiệu bản thân / CV Online</label>
+                            <textarea name="Introduction" class="form-control bg-light border-0 px-3 fs-6" rows="4" placeholder="Kinh nghiệm làm việc hoặc link CV của bạn..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-accent w-100 py-3 rounded-pill fw-bold text-uppercase ls-1">
+                            Gửi hồ sơ ứng tuyển
+                        </button>
+                    </form>
+                    
+                    <div class="mt-4 text-center">
+                        <small class="text-muted">Chúng tôi sẽ bảo mật thông tin của bạn tuyệt đối.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ls-1 { letter-spacing: 1px; }
+    .text-accent { color: #8B0000; }
+    .btn-accent { background: #8B0000; color: white; border: none; transition: all 0.3s; }
+    .btn-accent:hover { background: #600000; color: white; transform: scale(1.02); }
+    .recruitment-details .form-control:focus {
+        background-color: #fff !important;
+        box-shadow: 0 0 0 0.25rem rgba(139,0,0,0.1);
+        border: 1px solid rgba(139,0,0,0.2) !important;
+    }
+</style>

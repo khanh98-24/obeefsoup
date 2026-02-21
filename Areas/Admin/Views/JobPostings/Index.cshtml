@@ -1,0 +1,113 @@
+@model IEnumerable<OBeefSoup.Models.JobPosting>
+@{
+    ViewData["Title"] = "Quản lý tuyển dụng";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-0">Quản lý tuyển dụng</h3>
+            <p class="text-muted small mb-0">Tạo và quản lý các vị trí việc làm đang trống tại nhà hàng.</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+                <i class="bi bi-plus-lg"></i> Thêm vị trí mới
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light bg-opacity-50">
+                        <tr class="text-muted small">
+                            <th class="ps-4 border-0">Vị trí</th>
+                            <th class="border-0">Cơ sở</th>
+                            <th class="border-0">Mức lương</th>
+                            <th class="border-0">Hạn nộp</th>
+                            <th class="border-0">Trạng thái</th>
+                            <th class="border-0">Số đơn</th>
+                            <th class="text-end pe-4 border-0">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold text-dark">@item.Title</div>
+                                    <small class="text-muted">Ngày tạo: @item.CreatedDate.ToString("dd/MM/yyyy")</small>
+                                </td>
+                                <td>
+                                    <span class="text-dark">@(item.StoreLocation?.Name ?? "Tất cả cơ sở")</span>
+                                </td>
+                                <td>
+                                    <span class="text-dark">@(string.IsNullOrEmpty(item.SalaryRange) ? "Thỏa thuận" : item.SalaryRange)</span>
+                                </td>
+                                <td>
+                                    @if (item.Deadline.HasValue)
+                                    {
+                                        <span class="@(item.Deadline < DateTime.Now ? "text-danger" : "")">
+                                            @item.Deadline.Value.ToString("dd/MM/yyyy")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">N/A</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge bg-success-subtle text-success py-1 px-2 rounded-pill small">Đang hiển thị</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light text-muted py-1 px-2 rounded-pill small">Đang ẩn</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-controller="CandidateApplications" asp-action="Index" asp-route-jobPostingId="@item.Id" class="badge bg-primary-subtle text-primary text-decoration-none py-1 px-2 rounded-pill small">
+                                        @(item.Applications?.Count ?? 0) đơn
+                                    </a>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-light border dropdown-toggle no-caret px-2" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm small">
+                                            <li><a class="dropdown-item py-2" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil me-2"></i> Chỉnh sửa</a></li>
+                                            <li><a class="dropdown-item py-2" asp-controller="CandidateApplications" asp-action="Index" asp-route-jobPostingId="@item.Id"><i class="bi bi-people me-2"></i> Xem đơn ứng tuyển</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa vị trí tuyển dụng này?')">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="dropdown-item py-2 text-danger"><i class="bi bi-trash me-2"></i> Xóa vị trí</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .no-caret::after { display: none; }
+    .table > :not(caption) > * > * { padding: 1rem 0.75rem; }
+</style>

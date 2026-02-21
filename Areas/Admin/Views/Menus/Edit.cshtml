@@ -1,0 +1,72 @@
+@model OBeefSoup.Models.ViewModels.MenuItemViewModel
+@{
+    ViewData["Title"] = "Sửa Menu";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0 text-dark"><i class="bi bi-pencil-square me-2"></i>Chỉnh Sửa Mục Menu</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Title" class="form-label fw-bold">Tiêu Đề Menu</label>
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Url" class="form-label fw-bold">Đường Dẫn (URL)</label>
+                                <input asp-for="Url" class="form-control" />
+                                <span asp-validation-for="Url" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="ParentId" class="form-label fw-bold">Menu Cha</label>
+                                <select asp-for="ParentId" class="form-select" asp-items="ViewBag.ParentMenus">
+                                    <option value="">-- Chọn Menu Cha (Gốc) --</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="DisplayOrder" class="form-label fw-bold">Thứ Tự Hiển Thị</label>
+                                <input asp-for="DisplayOrder" class="form-control" type="number" />
+                                <span asp-validation-for="DisplayOrder" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Icon" class="form-label fw-bold">Icon (Bootstrap Icon Class)</label>
+                                <input asp-for="Icon" class="form-control" />
+                            </div>
+
+                            <div class="col-md-6 d-flex align-items-center mt-4">
+                                <div class="form-check form-switch">
+                                    <input asp-for="IsActive" class="form-check-input" type="checkbox">
+                                    <label asp-for="IsActive" class="form-check-label fw-bold">Trạng Thái Hoạt Động</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Hủy
+                            </a>
+                            <button type="submit" class="btn btn-warning px-4 fw-bold">
+                                <i class="bi bi-save me-1"></i>Cập Nhật Menu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

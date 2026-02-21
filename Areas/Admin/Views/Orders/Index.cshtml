@@ -1,0 +1,129 @@
+@model List<OBeefSoup.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-0">Quản lý đơn hàng</h3>
+            <p class="text-muted small mb-0">Theo dõi và xử lý các đơn đặt hàng từ khách hàng.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-white shadow-sm border btn-sm">
+                <i class="bi bi-funnel me-1"></i> Bộ lọc
+            </button>
+            <button class="btn btn-white shadow-sm border btn-sm">
+                <i class="bi bi-download me-1"></i> Xuất file
+            </button>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4">
+            <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light bg-opacity-50">
+                        <tr class="text-muted small">
+                            <th class="ps-4 border-0">Mã đơn hàng</th>
+                            <th class="border-0">Khách hàng</th>
+                            <th class="border-0">Thời gian đặt</th>
+                            <th class="border-0">Tổng tiền</th>
+                            <th class="border-0">Trạng thái</th>
+                            <th class="text-end pe-4 border-0">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-5">
+                                    <i class="bi bi-inbox display-4 opacity-25"></i>
+                                    <p class="mt-2">Chưa có đơn hàng nào được ghi nhận</p>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var order in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <span class="fw-bold text-dark">#@order.OrderNumber</span>
+                                    </td>
+                                    <td>
+                                        <div class="fw-medium text-dark">@order.Customer?.FullName</div>
+                                        <small class="text-muted">@order.PhoneNumber</small>
+                                    </td>
+                                    <td>
+                                        <div class="text-dark">@order.OrderDate.ToString("HH:mm, dd/MM/yyyy")</div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-accent">@order.TotalAmount.ToString("N0")đ</span>
+                                    </td>
+                                    <td>
+                                        @{ RenderStatusBadge(order.Status); }
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a asp-area="Admin" asp-action="Details" asp-route-id="@order.OrderId" 
+                                           class="btn btn-sm btn-light border rounded-pill px-3 shadow-sm">
+                                            Chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusClass(OBeefSoup.Models.OrderStatus status) {
+        return status switch {
+            OBeefSoup.Models.OrderStatus.Pending => "bg-warning-subtle text-warning border-warning-subtle",
+            OBeefSoup.Models.OrderStatus.Confirmed => "bg-info-subtle text-info border-info-subtle",
+            OBeefSoup.Models.OrderStatus.Preparing => "bg-primary-subtle text-primary border-primary-subtle",
+            OBeefSoup.Models.OrderStatus.Delivering => "bg-secondary-subtle text-secondary border-secondary-subtle",
+            OBeefSoup.Models.OrderStatus.Completed => "bg-success-subtle text-success border-success-subtle",
+            OBeefSoup.Models.OrderStatus.Cancelled => "bg-danger-subtle text-danger border-danger-subtle",
+            _ => "bg-light text-muted"
+        };
+    }
+    
+    string GetStatusText(OBeefSoup.Models.OrderStatus status) {
+        return status switch {
+            OBeefSoup.Models.OrderStatus.Pending => "Chờ xác nhận",
+            OBeefSoup.Models.OrderStatus.Confirmed => "Đã xác nhận",
+            OBeefSoup.Models.OrderStatus.Preparing => "Đang chuẩn bị",
+            OBeefSoup.Models.OrderStatus.Delivering => "Đang giao",
+            OBeefSoup.Models.OrderStatus.Completed => "Hoàn thành",
+            OBeefSoup.Models.OrderStatus.Cancelled => "Đã hủy",
+            _ => status.ToString()
+        };
+    }
+}
+
+@{
+    void RenderStatusBadge(OBeefSoup.Models.OrderStatus status)
+    {
+        <span class="badge @GetStatusClass(status) border py-1 px-2 rounded-pill small">
+            @GetStatusText(status)
+        </span>
+    }
+}
+
+<style>
+    .table > :not(caption) > * > * { padding: 1rem 0.75rem; }
+    .text-accent { color: var(--accent-color); }
+</style>

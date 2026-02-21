@@ -1,0 +1,103 @@
+@model OBeefSoup.Models.Banner
+@{
+    ViewData["Title"] = "Xóa Banner";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0"><i class="bi bi-trash me-2"></i>Xác Nhận Xóa Banner</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa banner này? Hành động này không thể hoàn tác.
+                    </div>
+
+                    <!-- Banner Preview -->
+                    <div class="row mb-4">
+                        <div class="col-md-12 text-center mb-3">
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <img src="@Model.ImageUrl" alt="@Model.Title" class="img-thumbnail" style="max-width: 100%; max-height: 300px;" />
+                            }
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th style="width: 30%;">ID</th>
+                                <td>@Model.Id</td>
+                            </tr>
+                            <tr>
+                                <th>Tiêu Đề</th>
+                                <td><strong>@Model.Title</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Mô Tả</th>
+                                <td>@Model.Description</td>
+                            </tr>
+                            <tr>
+                                <th>Link</th>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(Model.Link))
+                                    {
+                                        <a href="@Model.Link" target="_blank">@Model.Link</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Không có</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Thứ Tự Hiển Thị</th>
+                                <td>@Model.DisplayOrder</td>
+                            </tr>
+                            <tr>
+                                <th>Trạng Thái</th>
+                                <td>
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Tạm ngừng</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Ngày Tạo</th>
+                                <td>@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            </tr>
+                            @if (Model.UpdatedDate.HasValue)
+                            {
+                                <tr>
+                                    <th>Ngày Cập Nhật</th>
+                                    <td>@Model.UpdatedDate.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <form asp-action="Delete" method="post" class="mt-4">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Quay Lại
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash me-2"></i>Xác Nhận Xóa
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

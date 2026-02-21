@@ -1,0 +1,114 @@
+@{
+    ViewData["Title"] = "Tạo Tài Khoản Mới";
+}
+@section Scripts {
+    <script>
+        document.getElementById('password').addEventListener('input', checkStrength);
+        document.getElementById('confirmPassword').addEventListener('input', checkMatch);
+
+        function checkStrength() {
+            const pwd = document.getElementById('password').value;
+            const bar = document.getElementById('strengthBar');
+            let strength = 0;
+            if (pwd.length >= 6) strength++;
+            if (/[A-Z]/.test(pwd)) strength++;
+            if (/[0-9]/.test(pwd)) strength++;
+            if (/[^A-Za-z0-9]/.test(pwd)) strength++;
+            const colors = ['#dc3545', '#fd7e14', '#ffc107', '#28a745'];
+            const labels = ['Rất yếu', 'Yếu', 'Trung bình', 'Mạnh'];
+            bar.style.width = (strength * 25) + '%';
+            bar.style.background = colors[strength - 1] || '#dc3545';
+            document.getElementById('strengthLabel').textContent = labels[strength - 1] || '';
+        }
+
+        function checkMatch() {
+            const pwd = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            const msg = document.getElementById('matchMsg');
+            if (confirm === '') { msg.textContent = ''; return; }
+            if (pwd === confirm) {
+                msg.textContent = '✓ Mật khẩu khớp';
+                msg.style.color = '#28a745';
+            } else {
+                msg.textContent = '✗ Mật khẩu không khớp';
+                msg.style.color = '#dc3545';
+            }
+        }
+    </script>
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-person-plus me-2"></i>Tạo Tài Khoản Mới</h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (!string.IsNullOrEmpty(ViewBag.Error as string))
+                    {
+                        <div class="alert alert-danger py-2">
+                            <i class="bi bi-exclamation-circle me-2"></i>@ViewBag.Error
+                        </div>
+                    }
+                    <form asp-area="Admin" asp-controller="Account" asp-action="Register" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Tên đăng nhập <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="username" placeholder="Ví dụ: user123"
+                                   autocomplete="off" required maxlength="50" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" name="email" placeholder="user@example.com"
+                                   autocomplete="off" required maxlength="100" />
+                            <div class="form-text">Dùng để đăng nhập hệ thống.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Họ &amp; Tên <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="fullName" placeholder="Nguyễn Văn A"
+                                   required maxlength="100" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Vai trò <span class="text-danger">*</span></label>
+                            <select class="form-select" name="role">
+                                <option value="Manager">Manager - Quản lý nội dung</option>
+                                <option value="Admin">Admin - Toàn quyền</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">Mật khẩu <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password" name="password"
+                                   placeholder="Tối thiểu 6 ký tự" required minlength="6" />
+                            <div class="progress mt-1" style="height:4px;">
+                                <div class="progress-bar" id="strengthBar" style="width:0%;transition:all 0.3s;"></div>
+                            </div>
+                            <small id="strengthLabel" class="form-text"></small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-medium">Xác nhận mật khẩu <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                                   placeholder="Nhập lại mật khẩu" required />
+                            <small id="matchMsg" class="form-text"></small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-dark">
+                                <i class="bi bi-person-check me-2"></i>Tạo Tài Khoản
+                            </button>
+                            <a asp-area="Admin" asp-controller="Account" asp-action="Users" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Quay Lại
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

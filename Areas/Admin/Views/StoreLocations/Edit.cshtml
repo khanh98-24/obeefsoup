@@ -1,0 +1,11 @@
+@model OBeefSoup.Models.StoreLocation
+@{
+    ViewData["Title"] = "Chỉnh sửa - " + Model.Name;
+    Layout = "_AdminLayout";
+}
+
+@{
+    // Reuse Create view logic by setting Id
+}
+
+<partial name="Create" model="Model" />

@@ -1,0 +1,170 @@
+@model IEnumerable<OBeefSoup.Models.WhyUsItem>
+@{
+    ViewData["Title"] = "Quản lý - Vì Sao Chọn Chúng Tôi";
+    Layout = "_AdminLayout";
+}
+
+<div class="p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-stars me-2 text-warning"></i>Vì Sao Chọn Chúng Tôi</h2>
+            <p class="text-muted small mb-0">Quản lý các mục hiển thị trong section "Why Us" trên trang chủ</p>
+        </div>
+        <a asp-action="Create" class="btn btn-danger">
+            <i class="bi bi-plus-circle me-1"></i>Thêm mục mới
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Preview trang chủ -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-light border-0 py-3">
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-eye me-2"></i>Xem trước Bento Grid</h6>
+        </div>
+        <div class="card-body">
+            <div class="bento-preview">
+                @foreach (var item in Model.Where(i => i.IsActive).OrderBy(i => i.DisplayOrder))
+                {
+                    <div class="bento-card-preview item-@item.Size" title="@item.Title">
+                        <i class="bi @item.IconClass text-warning fs-4 mb-1"></i>
+                        <small class="fw-bold text-truncate" style="font-size:0.7rem;">@item.Title</small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4" style="width:60px">Thứ tự</th>
+                            <th style="width:80px">Icon</th>
+                            <th>Tiêu đề</th>
+                            <th>Mô tả</th>
+                            <th style="width:120px">Kích thước ô</th>
+                            <th style="width:100px">Trạng thái</th>
+                            <th class="text-end pe-4" style="width:150px">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="@(item.IsActive ? "" : "opacity-50")">
+                                <td class="ps-4 text-center">
+                                    <span class="badge bg-secondary rounded-pill">@item.DisplayOrder</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center justify-content-center"
+                                         style="width:42px;height:42px;background:rgba(212,175,55,0.15);border-radius:12px;">
+                                        <i class="bi @item.IconClass fs-5" style="color:#D4AF37;"></i>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">@item.Title</div>
+                                    <small class="text-muted">ID: @item.Id</small>
+                                </td>
+                                <td>
+                                    <span class="text-muted small">
+                                        @(string.IsNullOrEmpty(item.Description) ? "(Không có mô tả)" :
+                                          item.Description.Length > 60 ? item.Description.Substring(0, 60) + "..." : item.Description)
+                                    </span>
+                                </td>
+                                <td>
+                                    @{
+                                        var sizeLabel = item.Size switch {
+                                            "large" => ("success", "Lớn (2×2)"),
+                                            "medium" => ("primary", "Vừa (2×1)"),
+                                            "small" => ("secondary", "Nhỏ (1×1)"),
+                                            "accent" => ("warning", "Nhấn (1×1)"),
+                                            _ => ("secondary", item.Size)
+                                        };
+                                    }
+                                    <span class="badge bg-@sizeLabel.Item1">@sizeLabel.Item2</span>
+                                </td>
+                                <td>
+                                    <form asp-action="ToggleActive" asp-route-id="@item.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm @(item.IsActive ? "btn-success" : "btn-outline-secondary")">
+                                            <i class="bi @(item.IsActive ? "bi-eye-fill" : "bi-eye-slash")"></i>
+                                            @(item.IsActive ? "Hiện" : "Ẩn")
+                                        </button>
+                                    </form>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" id="del-@item.Id">
+                                        @Html.AntiForgeryToken()
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                                onclick="if(confirm('Xóa mục này?')) document.getElementById('del-@item.Id').submit()">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    <i class="bi bi-inbox fs-3 d-block mb-2"></i>Chưa có mục nào. <a asp-action="Create">Thêm mới</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <small class="text-muted">
+            <i class="bi bi-info-circle me-1"></i>
+            <strong>Kích thước ô:</strong> Lớn (2 cột × 2 hàng) · Vừa (2 cột × 1 hàng) · Nhỏ (1 cột × 1 hàng) · Nhấn (1 cột × 1 hàng, màu đặc biệt)
+        </small>
+    </div>
+</div>
+
+<style>
+    .bento-preview {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: 80px;
+        gap: 8px;
+        max-width: 600px;
+    }
+    .bento-card-preview {
+        background: rgba(212,175,55,0.08);
+        border: 1px solid rgba(212,175,55,0.2);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        text-align: center;
+        overflow: hidden;
+    }
+    .bento-card-preview.item-large { grid-column: span 2; grid-row: span 2; }
+    .bento-card-preview.item-medium { grid-column: span 2; }
+    .bento-card-preview.item-small { grid-column: span 1; }
+    .bento-card-preview.item-accent { grid-column: span 1; background: rgba(139,0,0,0.08); border-color: rgba(139,0,0,0.2); }
+</style>

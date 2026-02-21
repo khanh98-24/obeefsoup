@@ -1,0 +1,90 @@
+@model OBeefSoup.Models.BlogPost
+@{
+    ViewData["Title"] = Model.Title;
+    var relatedPosts = ViewBag.RelatedPosts as List<OBeefSoup.Models.BlogPost> ?? new List<OBeefSoup.Models.BlogPost>();
+}
+
+<div class="container my-5 pt-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Blog" asp-action="Index">Tin tức</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Chi tiết</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <article class="blog-details animate-on-scroll">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" class="img-fluid rounded shadow mb-4 w-100" alt="@Model.Title" style="max-height: 500px; object-fit: cover;" />
+                }
+
+                <div class="blog-meta mb-3 d-flex gap-3 text-muted small">
+                    <span><i class="bi bi-calendar3 me-1"></i> @Model.CreatedDate.ToString("dd/MM/yyyy")</span>
+                    <span><i class="bi bi-person me-1"></i> Quản trị viên</span>
+                </div>
+
+                <h1 class="display-5 fw-bold mb-4">@Model.Title</h1>
+
+                <p class="lead fw-normal text-muted mb-4 border-start border-4 border-primary ps-3 py-2 italic">
+                    @Model.Summary
+                </p>
+
+                <div class="blog-content mb-5" style="font-size: 1.15rem; line-height: 1.8;">
+                    @Html.Raw(Model.Content.Replace("\n", "<br/>"))
+                </div>
+            </article>
+
+            <hr class="my-5">
+
+            <div class="share-post d-flex align-items-center gap-3 mb-5">
+                <span class="fw-bold">Chia sẻ bài viết:</span>
+                <a href="#" class="btn btn-outline-primary btn-sm rounded-circle"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="btn btn-outline-info btn-sm rounded-circle"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="btn btn-outline-danger btn-sm rounded-circle"><i class="bi bi-link-45deg"></i></a>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="sidebar position-sticky" style="top: 100px;">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h4 class="fw-bold mb-3 border-bottom pb-2">Về O' BeefSoup</h4>
+                        <p class="text-muted small">Chúng tôi mang đến hương vị phở bò truyền thống chuẩn vị Hà Thành. Mỗi bát phở là một câu chuyện về tâm huyết và chất lượng.</p>
+                        <a asp-controller="Home" asp-action="Index" asp-fragment="about" class="btn btn-dark btn-sm w-100">Khám phá ngay</a>
+                    </div>
+                </div>
+
+                @if (relatedPosts.Any())
+                {
+                    <div class="related-posts mb-4">
+                        <h4 class="fw-bold mb-3 border-bottom pb-2">Bài viết khác</h4>
+                        @foreach (var post in relatedPosts)
+                        {
+                            <div class="d-flex gap-3 mb-3 border-bottom pb-3">
+                                <a asp-action="Details" asp-route-slug="@post.Slug" class="flex-shrink-0">
+                                    <img src="@(post.ImageUrl ?? "/images/menu-background.jpg")" class="rounded" style="width: 80px; height: 60px; object-fit: cover;" />
+                                </a>
+                                <div>
+                                    <h6 class="mb-1 fw-bold">
+                                        <a asp-action="Details" asp-route-slug="@post.Slug" class="text-decoration-none text-dark small-title">@post.Title</a>
+                                    </h6>
+                                    <span class="text-muted extra-small">@post.CreatedDate.ToString("dd/MM/yyyy")</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .blog-content { color: #333; }
+    .small-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.9rem; }
+    .extra-small { font-size: 0.75rem; }
+    .italic { font-style: italic; }
+</style>

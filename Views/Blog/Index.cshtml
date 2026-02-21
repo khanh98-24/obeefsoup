@@ -1,0 +1,61 @@
+@model IEnumerable<OBeefSoup.Models.BlogPost>
+@{
+    ViewData["Title"] = "Tin tức & Sự kiện - O' BeefSoup";
+}
+
+<!-- Hero Section -->
+<section class="blog-hero py-5 text-white text-center" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/images/pho-background.jpg'); background-size: cover; background-position: center; min-height: 250px; display: flex; align-items: center;">
+    <div class="container animate-on-scroll">
+        <h1 class="display-4 fw-bold">Tin tức & Sự kiện</h1>
+        <p class="lead">Khám phá văn hóa ẩm thực và những ưu đãi mới nhất từ O' BeefSoup</p>
+    </div>
+</section>
+
+<!-- Blog Grid -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            @foreach (var post in Model)
+            {
+                <div class="col-md-6 col-lg-4 animate-on-scroll">
+                    <div class="card h-100 border-0 shadow-sm blog-card">
+                        <div class="position-relative overflow-hidden">
+                            @if (!string.IsNullOrEmpty(post.ImageUrl))
+                            {
+                                <img src="@post.ImageUrl" class="card-img-top" alt="@post.Title" style="height: 220px; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <div class="bg-secondary d-flex align-items-center justify-content-center text-white" style="height: 220px;">
+                                    <i class="bi bi-image fs-1"></i>
+                                </div>
+                            }
+                            <div class="blog-date position-absolute bottom-0 start-0 bg-primary text-white p-2 small">
+                                <i class="bi bi-calendar3 me-1"></i> @post.CreatedDate.ToString("dd/MM/yyyy")
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <h3 class="h5 card-title mb-3 fw-bold">
+                                <a asp-action="Details" asp-route-slug="@post.Slug" class="text-decoration-none text-dark stretched-link">
+                                    @post.Title
+                                </a>
+                            </h3>
+                            <p class="card-text text-muted mb-0">@post.Summary</p>
+                        </div>
+                        <div class="card-footer bg-white border-0 px-4 pb-4 pt-0 text-end">
+                            <span class="text-primary small fw-bold">Đọc tiếp <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .blog-card { transition: transform 0.3s ease, shadow 0.3s ease; }
+    .blog-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important; }
+    .blog-card img { transition: transform 0.5s ease; }
+    .blog-card:hover img { transform: scale(1.05); }
+    .blog-date { border-top-right-radius: 8px; }
+</style>

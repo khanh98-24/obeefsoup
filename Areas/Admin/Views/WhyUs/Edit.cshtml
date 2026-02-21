@@ -1,0 +1,140 @@
+@model OBeefSoup.Models.WhyUsItem
+@{
+    ViewData["Title"] = "Chỉnh sửa - " + Model.Title;
+    Layout = "_AdminLayout";
+}
+
+<div class="p-4">
+    <div class="d-flex align-items-center mb-4">
+        <a asp-action="Index" class="btn btn-outline-secondary me-3">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+            <h2 class="fw-bold mb-0"><i class="bi bi-pencil-square me-2 text-primary"></i>Chỉnh sửa mục</h2>
+            <small class="text-muted">@Model.Title</small>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input asp-for="Id" type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label fw-semibold"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label fw-semibold"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="IconClass" class="form-label fw-semibold">
+                                Icon <a href="https://icons.getbootstrap.com/" target="_blank" class="small">(Bootstrap Icons)</a>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi @Model.IconClass" id="icon-preview-i"></i>
+                                </span>
+                                <input asp-for="IconClass" class="form-control"
+                                       oninput="document.getElementById('icon-preview-i').className='bi ' + this.value" />
+                            </div>
+                            <div class="mt-2 d-flex flex-wrap gap-2">
+                                @foreach (var icon in new[] { "bi-award-fill","bi-flame","bi-shield-check","bi-stars","bi-clock-history","bi-gem","bi-heart-fill","bi-trophy-fill","bi-people-fill","bi-patch-check-fill" })
+                                {
+                                    <button type="button" class="btn btn-outline-secondary btn-sm icon-pick"
+                                            data-icon="@icon" title="@icon">
+                                        <i class="bi @icon"></i>
+                                    </button>
+                                }
+                            </div>
+                            <span asp-validation-for="IconClass" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Size" class="form-label fw-semibold"></label>
+                                <select asp-for="Size" class="form-select">
+                                    <option value="large">Lớn (2 cột × 2 hàng)</option>
+                                    <option value="medium">Vừa (2 cột × 1 hàng)</option>
+                                    <option value="small">Nhỏ (1 cột × 1 hàng)</option>
+                                    <option value="accent">Nhấn (1 cột × 1 hàng)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="DisplayOrder" class="form-label fw-semibold"></label>
+                                <input asp-for="DisplayOrder" class="form-control" type="number" min="0" />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsActive" class="form-check-label fw-semibold">Hiển thị trên trang chủ</label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-check-circle me-1"></i>Lưu thay đổi
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Hủy</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0 py-3">
+                    <h6 class="mb-0 fw-semibold"><i class="bi bi-eye me-2"></i>Xem trước</h6>
+                </div>
+                <div class="card-body text-center py-4">
+                    <div class="d-inline-flex align-items-center justify-content-center mb-3"
+                         style="width:60px;height:60px;background:rgba(212,175,55,0.15);border-radius:16px;">
+                        <i class="bi @Model.IconClass fs-3" style="color:#D4AF37;" id="preview-icon-big"></i>
+                    </div>
+                    <div class="fw-bold text-dark" id="preview-title">@Model.Title</div>
+                    <small class="text-muted">@Model.Description</small>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-body">
+                    <small class="text-muted">
+                        <strong>Tạo lúc:</strong> @Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")<br />
+                        @if (Model.UpdatedDate.HasValue)
+                        {
+                            <span><strong>Sửa lúc:</strong> @Model.UpdatedDate.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                        }
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.icon-pick').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const icon = this.dataset.icon;
+                document.getElementById('IconClass').value = icon;
+                document.getElementById('icon-preview-i').className = 'bi ' + icon;
+                document.getElementById('preview-icon-big').className = 'bi ' + icon + ' fs-3';
+            });
+        });
+        document.getElementById('Title')?.addEventListener('input', function() {
+            document.getElementById('preview-title').textContent = this.value;
+        });
+    </script>
+}

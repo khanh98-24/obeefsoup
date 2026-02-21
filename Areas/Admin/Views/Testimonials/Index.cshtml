@@ -1,0 +1,109 @@
+@model IEnumerable<OBeefSoup.Models.Testimonial>
+@{
+    ViewData["Title"] = "Quản lý Đánh giá";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-star-fill me-2 text-warning"></i>Quản lý Đánh giá khách hàng</h2>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Khách hàng</th>
+                        <th>Nội dung</th>
+                        <th>Đánh giá</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày gửi</th>
+                        <th class="text-end pe-4">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row-@item.Id">
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <img src="https://ui-avatars.com/api/?name=@item.CustomerName&background=random" class="rounded-circle me-2" style="width: 35px; height: 35px;" />
+                                    <div class="fw-bold">@item.CustomerName</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 300px;" title="@item.Comment">
+                                    @item.Comment
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-warning">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <i class="bi bi-star@(i <= item.Rating ? "-fill" : "") small"></i>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input approval-toggle" type="checkbox" 
+                                           data-id="@item.Id" @(item.IsApproved ? "checked" : "")>
+                                    <span class="badge @(item.IsApproved ? "bg-success" : "bg-warning") ms-1 status-badge">
+                                        @(item.IsApproved ? "Đã duyệt" : "Chờ duyệt")
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="small text-muted">@item.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="text-end pe-4">
+                                <button class="btn btn-sm btn-outline-danger delete-btn" data-id="@item.Id">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Toggle Approval
+            $('.approval-toggle').change(function() {
+                const id = $(this).data('id');
+                const checkbox = $(this);
+                const badge = checkbox.siblings('.status-badge');
+
+                $.post('/Admin/Testimonials/ToggleApproval', { id: id }, function(data) {
+                    if (data.success) {
+                        if (data.isApproved) {
+                            badge.removeClass('bg-warning').addClass('bg-success').text('Đã duyệt');
+                        } else {
+                            badge.removeClass('bg-success').addClass('bg-warning').text('Chờ duyệt');
+                        }
+                    } else {
+                        alert('Có lỗi xảy ra!');
+                        checkbox.prop('checked', !checkbox.prop('checked'));
+                    }
+                });
+            });
+
+            // Delete
+            $('.delete-btn').click(function() {
+                if (confirm('Bạn có chắc chắn muốn xóa đánh giá này?')) {
+                    const id = $(this).data('id');
+                    $.post('/Admin/Testimonials/Delete', { id: id }, function(data) {
+                        if (data.success) {
+                            $(`#row-${id}`).fadeOut();
+                        } else {
+                            alert('Không thể xóa đánh giá này.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

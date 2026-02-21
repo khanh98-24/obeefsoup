@@ -1,0 +1,158 @@
+@model OBeefSoup.Models.Order
+@{
+    ViewData["Title"] = "Chi Tiết Đơn Hàng";
+}
+
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2><i class="bi bi-file-text me-2"></i>Chi Tiết Đơn Hàng</h2>
+            <p class="text-muted mb-0">Mã: <strong>@Model.OrderNumber</strong></p>
+        </div>
+        <div class="col-md-6 text-end">
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Quay Lại
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-cart3 me-2"></i>Món Đã Đặt</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Món Ăn</th>
+                                <th class="text-center">Số Lượng</th>
+                                <th class="text-end">Đơn Giá</th>
+                                <th class="text-end">Thành Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderItems)
+                            {
+                                <tr>
+                                    <td>@item.ProductName</td>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-end">@item.UnitPrice.ToString("N0")đ</td>
+                                    <td class="text-end"><strong>@item.Subtotal.ToString("N0")đ</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-active">
+                                <th colspan="3" class="text-end">TỔNG CỘNG:</th>
+                                <th class="text-end text-primary">@Model.TotalAmount.ToString("N0")đ</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-person me-2"></i>Thông Tin Khách Hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Họ Tên:</label>
+                            <p class="mb-0"><strong>@Model.Customer.FullName</strong></p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Số Điện Thoại:</label>
+                            <p class="mb-0"><strong>@Model.PhoneNumber</strong></p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Email:</label>
+                            <p class="mb-0">@Model.Customer.Email</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="text-muted small">Ngày Đặt:</label>
+                            <p class="mb-0">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="text-muted small">Địa Chỉ Giao Hàng:</label>
+                            <p class="mb-0">@Model.DeliveryAddress</p>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.Notes))
+                        {
+                            <div class="col-12">
+                                <label class="text-muted small">Ghi Chú:</label>
+                                <p class="mb-0 fst-italic">@Model.Notes</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="bi bi-arrow-repeat me-2"></i>Cập Nhật Trạng Thái</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-area="Admin" asp-action="UpdateStatus" method="post">
+                        <input type="hidden" name="orderId" value="@Model.OrderId" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Trạng thái hiện tại:</label>
+                            <div>
+                                @switch (Model.Status)
+                                {
+                                    case OBeefSoup.Models.OrderStatus.Pending:
+                                        <span class="badge bg-warning fs-6">Chờ xác nhận</span>
+                                        break;
+                                    case OBeefSoup.Models.OrderStatus.Confirmed:
+                                        <span class="badge bg-info fs-6">Đã xác nhận</span>
+                                        break;
+                                    case OBeefSoup.Models.OrderStatus.Preparing:
+                                        <span class="badge bg-primary fs-6">Đang chuẩn bị</span>
+                                        break;
+                                    case OBeefSoup.Models.OrderStatus.Delivering:
+                                        <span class="badge bg-secondary fs-6">Đang giao</span>
+                                        break;
+                                    case OBeefSoup.Models.OrderStatus.Completed:
+                                        <span class="badge bg-success fs-6">Hoàn thành</span>
+                                        break;
+                                    case OBeefSoup.Models.OrderStatus.Cancelled:
+                                        <span class="badge bg-danger fs-6">Đã hủy</span>
+                                        break;
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Đổi thành:</label>
+                            <select name="status" class="form-select">
+                                <option value="0">Chờ xác nhận</option>
+                                <option value="1">Đã xác nhận</option>
+                                <option value="2">Đang chuẩn bị</option>
+                                <option value="3">Đang giao hàng</option>
+                                <option value="4">Hoàn thành</option>
+                                <option value="5">Đã hủy</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-check-circle me-2"></i>Cập Nhật
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

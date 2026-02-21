@@ -1,0 +1,116 @@
+@model List<OBeefSoup.Models.MenuItem>
+@{
+    ViewData["Title"] = "Quản Lý Menu";
+}
+
+<div class="container my-5">
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2><i class="bi bi-list-ul me-2"></i>Quản Lý Hệ Thống Menu</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <a asp-action="Create" class="btn btn-success me-2">
+                <i class="bi bi-plus-circle me-2"></i>Thêm Mục Menu Mới
+            </a>
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Về Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th style="width: 5%">ID</th>
+                            <th>Tiêu Đề Menu</th>
+                            <th>Đường Dẫn (URL)</th>
+                            <th>Menu Cha</th>
+                            <th class="text-center">Thứ Tự</th>
+                            <th class="text-center">Trạng Thái</th>
+                            <th class="text-center" style="width: 15%">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Where(m => m.ParentId == null).OrderBy(m => m.DisplayOrder))
+                        {
+                            <tr class="table-info bg-opacity-10">
+                                <td>@item.Id</td>
+                                <td>
+                                    <strong><i class="bi @(item.Icon ?? "bi-link-45deg") me-2"></i>@item.Title</strong>
+                                </td>
+                                <td><code>@item.Url</code></td>
+                                <td><span class="text-muted">Gốc (Parent)</span></td>
+                                <td class="text-center">@item.DisplayOrder</td>
+                                <td class="text-center">
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge bg-success">Hiển thị</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Ẩn</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning" title="Sửa">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger" title="Xóa">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            @foreach (var sub in Model.Where(m => m.ParentId == item.Id).OrderBy(m => m.DisplayOrder))
+                            {
+                                <tr>
+                                    <td>@sub.Id</td>
+                                    <td class="ps-5">
+                                        <i class="bi bi-arrow-return-right text-muted me-2"></i>@sub.Title
+                                    </td>
+                                    <td><code>@sub.Url</code></td>
+                                    <td><span class="badge bg-info text-dark">@item.Title</span></td>
+                                    <td class="text-center">@sub.DisplayOrder</td>
+                                    <td class="text-center">
+                                        @if (sub.IsActive)
+                                        {
+                                            <span class="badge bg-success">Hiển thị</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Ẩn</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm">
+                                            <a asp-action="Edit" asp-route-id="@sub.Id" class="btn btn-outline-warning" title="Sửa">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@sub.Id" class="btn btn-outline-danger" title="Xóa">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

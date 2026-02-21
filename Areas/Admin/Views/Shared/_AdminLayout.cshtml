@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin O'beefsoup</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --header-height: 70px;
+            --primary-bg: #f8f9fa;
+            --accent-color: #8B0000;
+            --sidebar-bg: #1e1e2d;
+            --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            overflow-x: hidden;
+            letter-spacing: -0.01em;
+        }
+
+        /* Sidebar Styles */
+        #sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: var(--sidebar-bg);
+            color: #a2a3b7;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar-brand:hover { color: #fff; }
+
+        .sidebar-nav {
+            padding: 15px 0;
+            list-style: none;
+        }
+
+        .nav-header {
+            padding: 10px 25px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #4b4b5f;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-item {
+            margin: 2px 15px;
+        }
+
+        .sidebar-link {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            color: #a2a3b7;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .sidebar-link i {
+            font-size: 1.25rem;
+            margin-right: 12px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-link.active i {
+            color: var(--accent-color);
+        }
+
+        /* Top Header */
+        #header {
+            height: var(--header-height);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            z-index: 999;
+            transition: all 0.3s;
+        }
+
+        /* Content Wrapper */
+        #content-wrapper {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--header-height);
+            transition: all 0.3s;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        /* Card Optimization */
+        .card {
+            border: none;
+            box-shadow: var(--card-shadow);
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Utility */
+        .rounded-12 { border-radius: 12px; }
+        .bg-glass { background: var(--glass-bg); backdrop-filter: blur(10px); }
+
+        @@media (max-width: 992px) {
+            #sidebar { left: calc(-1 * var(--sidebar-width)); }
+            #header { left: 0; }
+            #content-wrapper { margin-left: 0; }
+            #sidebar.active { left: 0; }
+        }
+    </style>
+</head>
+<body>
+    @{
+        var currentRole = Context.Session.GetString("AdminUserRole") ?? "";
+        var currentName = Context.Session.GetString("AdminFullName") ?? "";
+        var currentUser = Context.Session.GetString("AdminUserName") ?? "";
+        bool isAdmin = currentRole == "Admin";
+        var currentCtrl = ViewContext.RouteData.Values["controller"]?.ToString();
+    }
+
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <a href="@Url.Action("Index", "Dashboard")" class="sidebar-brand">
+            <i class="bi bi-soup-hot me-2 text-danger"></i> O'BeefSoup Admin
+        </a>
+        
+        <ul class="sidebar-nav">
+            <li class="nav-header">Tổng quan</li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "Dashboard" ? "active" : "")" asp-controller="Dashboard" asp-action="Index">
+                    <i class="bi bi-grid-fill"></i> Bảng điều khiển
+                </a>
+            </li>
+
+            <li class="nav-header">Bán hàng</li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "Orders" ? "active" : "")" asp-controller="Orders" asp-action="Index">
+                    <i class="bi bi-cart-fill"></i> Đơn hàng
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "Products" ? "active" : "")" asp-controller="Products" asp-action="Index">
+                    <i class="bi bi-box-seam-fill"></i> Sản phẩm
+                </a>
+            </li>
+
+            <li class="nav-header">Nội dung</li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "About" ? "active" : "")" asp-controller="About" asp-action="Index">
+                    <i class="bi bi-info-circle-fill"></i> Quản lý Giới thiệu
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "BlogPosts" ? "active" : "")" asp-controller="BlogPosts" asp-action="Index">
+                    <i class="bi bi-journal-richtext"></i> Bài viết
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "Banners" ? "active" : "")" asp-controller="Banners" asp-action="Index">
+                    <i class="bi bi-images"></i> Banners
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "Menus" ? "active" : "")" asp-controller="Menus" asp-action="Index">
+                    <i class="bi bi-list-nested"></i> Quản lý Menu
+                </a>
+            </li>
+
+            <li class="nav-header">Tuyển dụng</li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "JobPostings" ? "active" : "")" asp-controller="JobPostings" asp-action="Index">
+                    <i class="bi bi-briefcase-fill"></i> Vị trí tuyển dụng
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "CandidateApplications" ? "active" : "")" asp-controller="CandidateApplications" asp-action="Index">
+                    <i class="bi bi-person-badge-fill"></i> Hồ sơ ứng tuyển
+                </a>
+            </li>
+
+            <li class="nav-header">Hệ thống</li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "StoreLocations" ? "active" : "")" asp-controller="StoreLocations" asp-action="Index">
+                    <i class="bi bi-geo-alt-fill"></i> Cơ sở nhà hàng
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "Testimonials" ? "active" : "")" asp-controller="Testimonials" asp-action="Index">
+                    <i class="bi bi-chat-heart-fill"></i> Đánh giá
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "WhyUs" ? "active" : "")" asp-controller="WhyUs" asp-action="Index">
+                    <i class="bi bi-stars"></i> Đặc Biệt
+                </a>
+            </li>
+            @if (isAdmin)
+            {
+                <li class="sidebar-item">
+                    <a class="sidebar-link @(currentCtrl == "Account" ? "active" : "")" asp-controller="Account" asp-action="Users">
+                        <i class="bi bi-people-fill"></i> Quản lý tài khoản
+                    </a>
+                </li>
+            }
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "Settings" ? "active" : "")" asp-controller="Settings" asp-action="Index">
+                    <i class="bi bi-gear-fill"></i> Cấu hình chung
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Header -->
+    <header id="header">
+        <button class="btn btn-link text-dark d-lg-none me-3" onclick="document.getElementById('sidebar').classList.toggle('active')">
+            <i class="bi bi-list fs-3"></i>
+        </button>
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <a href="/" class="btn btn-sm btn-outline-secondary d-none d-md-block">
+                <i class="bi bi-eye me-1"></i> Xem Website
+            </a>
+            
+            @if (!string.IsNullOrEmpty(currentUser))
+            {
+                <div class="dropdown">
+                    <a class="d-flex align-items-center gap-2 text-decoration-none text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                             style="width:36px;height:36px;background:var(--accent-color);font-size:0.9rem;">
+                            @currentUser.Substring(0, 1).ToUpper()
+                        </div>
+                        <div class="d-none d-lg-block">
+                            <div class="fw-bold" style="font-size: 0.85rem; line-height: 1;">@currentName</div>
+                            <small class="text-muted" style="font-size: 0.75rem;">@(isAdmin ? "Admin" : "Manager")</small>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow mt-2">
+                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person me-2"></i> Hồ sơ</a></li>
+                        <li><a class="dropdown-item py-2" asp-controller="Settings" asp-action="Index"><i class="bi bi-gear me-2"></i> Cài đặt</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2 text-danger" asp-controller="Account" asp-action="Logout"><i class="bi bi-box-arrow-right me-2"></i> Đăng xuất</a></li>
+                    </ul>
+                </div>
+            }
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div id="content-wrapper">
+        <main class="main-content">
+            @RenderBody()
+        </main>
+        
+        <footer class="py-4 mt-auto">
+            <div class="container-fluid text-center text-muted">
+                <small>&copy; 2026 O' BeefSoup Admin Dashboard &bull; Design by NgocKhanh</small>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

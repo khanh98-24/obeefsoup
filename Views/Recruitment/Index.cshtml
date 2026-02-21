@@ -1,0 +1,154 @@
+@model IEnumerable<OBeefSoup.Models.JobPosting>
+@{
+    ViewData["Title"] = "Cơ hội nghề nghiệp";
+}
+
+<section class="recruitment-hero py-5 bg-dark text-white text-center position-relative overflow-hidden">
+    <div class="container position-relative z-index-1 py-5">
+        <h1 class="display-3 fw-bold mb-4 font-serif">Gia nhập đội ngũ O' BeefSoup</h1>
+        <p class="lead mb-0 mx-auto opacity-75" style="max-width: 700px;">
+            Hãy cùng chúng tôi mang tinh hoa phở Việt đến với mọi thực khách bằng niềm đam mê và sự tận tâm.
+        </p>
+    </div>
+    <div class="hero-bg-overlay"></div>
+</section>
+
+<section class="job-list py-5 bg-light">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="d-flex justify-content-between align-items-end mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-0">Vị trí đang tuyển</h2>
+                        <div class="text-accent fw-bold fs-4">@Model.Count() cơ hội việc làm</div>
+                    </div>
+                </div>
+
+                @if (!Model.Any())
+                {
+                    <div class="card border-0 shadow-sm p-5 text-center">
+                        <i class="bi bi-search display-1 text-muted opacity-25 mb-3"></i>
+                        <h4>Hiện tại chúng tôi đang đủ nhân sự</h4>
+                        <p class="text-muted">Vui lòng quay lại sau hoặc theo dõi fanpage để cập nhật thông tin tuyển dụng mới nhất.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="row g-4">
+                        @foreach (var job in Model)
+                        {
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm job-card h-100 p-4 transition-transform">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <h4 class="fw-bold text-dark mb-2">@job.Title</h4>
+                                            <div class="d-flex flex-wrap gap-3 text-muted small mb-3">
+                                                <span><i class="bi bi-cash-stack me-1"></i> @(string.IsNullOrEmpty(job.SalaryRange) ? "Thỏa thuận" : job.SalaryRange)</span>
+                                                <span><i class="bi bi-geo-alt me-1"></i> @(job.StoreLocation?.Name ?? "Toàn quốc")</span>
+                                                @if (job.Deadline.HasValue)
+                                                {
+                                                    <span><i class="bi bi-calendar-event me-1"></i> Hạn nộp: @job.Deadline.Value.ToString("dd/MM/yyyy")</span>
+                                                }
+                                            </div>
+                                            <p class="mb-0 text-muted line-clamp-2">@job.Description</p>
+                                        </div>
+                                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                            <a asp-action="Details" asp-route-id="@job.Id" class="btn btn-accent rounded-pill px-4 py-2">
+                                                Xem chi tiết <i class="bi bi-arrow-right ms-2"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="culture py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-md-6">
+                <h2 class="display-5 fw-bold mb-4 font-serif">Môi trường làm việc tại <span class="text-accent">O' BeefSoup</span></h2>
+                <p class="text-muted mb-4 fs-5">
+                    Tại O' BeefSoup, chúng tôi coi con người là giá trị cốt lõi. Chúng tôi xây dựng một môi trường làm việc chuyên nghiệp, thân thiện và đầy cơ hội phát triển.
+                </p>
+                <div class="row g-4">
+                    <div class="col-6">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-heart-fill text-accent fs-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Chế độ tốt</h6>
+                                <p class="small text-muted mb-0">Lương thưởng hấp dẫn.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-mortarboard-fill text-accent fs-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Đào tạo</h6>
+                                <p class="small text-muted mb-0">Học hỏi kỹ năng chuyên môn.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-people-fill text-accent fs-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Đồng nghiệp</h6>
+                                <p class="small text-muted mb-0">Gắn kết như một gia đình.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-graph-up-arrow text-accent fs-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Thăng tiến</h6>
+                                <p class="small text-muted mb-0">Lộ trình rõ ràng.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="position-relative">
+                    <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                         class="img-fluid rounded-4 shadow-lg" alt="Work Environment">
+                    <div class="position-absolute bottom-0 start-0 m-4 p-4 bg-white rounded-3 shadow-sm d-none d-lg-block" style="max-width: 250px;">
+                        <span class="d-block fw-bold display-6 text-accent">5+</span>
+                        <span class="text-muted small fw-medium">Năm kinh nghiệm trong lĩnh vực ẩm thực cao cấp.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .recruitment-hero {
+        background-image: url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        background-size: cover;
+        background-position: center;
+    }
+    .hero-bg-overlay {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(135deg, rgba(26,26,26,0.9) 0%, rgba(26,26,26,0.6) 100%);
+    }
+    .z-index-1 { z-index: 1; }
+    .text-accent { color: #8B0000; }
+    .btn-accent { background: #8B0000; color: white; border: none; }
+    .btn-accent:hover { background: #a00000; color: white; }
+    .job-card:hover { transform: translateY(-5px); box-shadow: 0 1rem 3rem rgba(0,0,0,0.1) !important; }
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>

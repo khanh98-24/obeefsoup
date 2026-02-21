@@ -1,0 +1,96 @@
+@model OBeefSoup.Models.BlogPost
+@{
+    ViewData["Title"] = "Thêm bài viết mới";
+    Layout = "_AdminLayout";
+}
+
+<div class="mb-4 d-flex align-items-center">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm me-3">
+        <i class="bi bi-arrow-left"></i>
+    </a>
+    <h2 class="mb-0">Viết bài mới</h2>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-bold">Tiêu đề bài viết</label>
+                        <input asp-for="Title" class="form-control form-control-lg" placeholder="Nhập tiêu đề hấp dẫn..." />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Slug" class="form-label fw-bold">Đường dẫn thân thiện (Bỏ trống để tự tạo)</label>
+                        <input asp-for="Slug" class="form-control" placeholder="vi-du-bai-viet-moi" />
+                        <span asp-validation-for="Slug" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Summary" class="form-label fw-bold">Mô tả ngắn (Tóm tắt)</label>
+                        <textarea asp-for="Summary" class="form-control" rows="3" placeholder="Tóm tắt ngắn gọn nội dung bài viết..."></textarea>
+                        <span asp-validation-for="Summary" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Content" class="form-label fw-bold">Nội dung bài viết</label>
+                        <textarea asp-for="Content" class="form-control" rows="15" placeholder="Viết nội dung bài viết ở đây..."></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card bg-light border-0">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold d-block">Ảnh bìa bài viết</label>
+                                <div class="image-preview-container mb-2 border rounded d-flex align-items-center justify-content-center bg-white" style="height: 200px;">
+                                    <i class="bi bi-image fs-1 text-muted"></i>
+                                </div>
+                                <input type="file" name="imageFile" class="form-control" accept="image/*" onchange="previewImage(this)" />
+                                <small class="text-muted">Kích thước gợi ý: 1200x600px</small>
+                            </div>
+
+                            <hr>
+
+                            <div class="mb-3">
+                                <label asp-for="DisplayOrder" class="form-label fw-bold">Thứ tự hiển thị</label>
+                                <input asp-for="DisplayOrder" class="form-control" type="number" value="0" />
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" asp-for="IsActive" checked>
+                                    <label class="form-check-label fw-bold" asp-for="IsActive">Công khai bài viết</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-2">
+                                <i class="bi bi-cloud-upload me-2"></i>Lưu và đăng bài
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('.image-preview-container').html('<img src="' + e.target.result + '" class="img-fluid rounded" style="max-height: 100%;" />');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

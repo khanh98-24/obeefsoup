@@ -1,0 +1,81 @@
+@model OBeefSoup.Models.Order
+@{
+    ViewData["Title"] = "Xác nhận đơn hàng";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="confirmation-box text-center">
+                <div class="success-icon mb-4">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                </div>
+
+                <h2 class="mb-3">Đặt hàng thành công!</h2>
+                <p class="lead text-muted mb-4">
+                    Cảm ơn bạn đã đặt hàng tại O' BeefSoup
+                </p>
+
+                <div class="order-code mb-4">
+                    <p class="mb-2">Mã đơn hàng của bạn:</p>
+                    <h3 class="text-primary"><strong>@Model.OrderNumber</strong></h3>
+                </div>
+
+                <div class="order-details-box">
+                    <h5 class="mb-3">Thông tin đơn hàng</h5>
+                    
+                    <div class="detail-row">
+                        <span class="text-muted">Khách hàng:</span>
+                        <strong>@Model.Customer.FullName</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="text-muted">Số điện thoại:</span>
+                        <strong>@Model.PhoneNumber</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="text-muted">Địa chỉ giao hàng:</span>
+                        <strong>@Model.DeliveryAddress</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="text-muted">Ngày đặt:</span>
+                        <strong>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</strong>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <strong>Món đã đặt:</strong>
+                        @foreach (var item in Model.OrderItems)
+                        {
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>@item.ProductName x @item.Quantity</span>
+                                <span>@item.Subtotal.ToString("N0")đ</span>
+                            </div>
+                        }
+                    </div>
+
+                    <hr>
+
+                    <div class="detail-row total">
+                        <strong>Tổng thanh toán:</strong>
+                        <strong class="text-primary fs-4">@Model.TotalAmount.ToString("N0")đ</strong>
+                    </div>
+                </div>
+
+                <div class="alert alert-info mt-4">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất để xác nhận đơn hàng.
+                </div>
+
+                <div class="mt-4 d-flex gap-3 justify-content-center">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+                        <i class="bi bi-house me-2"></i>Về trang chủ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

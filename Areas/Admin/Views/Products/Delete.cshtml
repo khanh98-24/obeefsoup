@@ -1,0 +1,105 @@
+@model OBeefSoup.Models.Product
+@{
+    ViewData["Title"] = "Xóa Sản Phẩm";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0"><i class="bi bi-trash me-2"></i>Xác Nhận Xóa Sản Phẩm</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa sản phẩm này? Hành động này không thể hoàn tác.
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 text-center mb-3">
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <img src="@Model.ImageUrl" alt="@Model.Name" class="img-thumbnail" style="max-width: 200px; max-height: 150px;" />
+                            }
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th style="width: 40%;">ID</th>
+                                <td>@Model.Id</td>
+                            </tr>
+                            <tr>
+                                <th>Tên Sản Phẩm</th>
+                                <td><strong>@Model.Name</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Mô Tả</th>
+                                <td>@Model.Description</td>
+                            </tr>
+                            <tr>
+                                <th>Danh Mục</th>
+                                <td>
+                                    <span class="badge bg-secondary">@Model.Category?.Name</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Giá</th>
+                                <td><strong class="text-primary">@Model.Price.ToString("N0")đ</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Tồn Kho</th>
+                                <td>@Model.Stock</td>
+                            </tr>
+                            <tr>
+                                <th>Trạng Thái</th>
+                                <td>
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Tạm ngừng</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Nổi Bật</th>
+                                <td>
+                                    @if (Model.IsFeatured)
+                                    {
+                                        <span><i class="bi bi-star-fill text-warning"></i> Có</span>
+                                    }
+                                    else
+                                    {
+                                        <span><i class="bi bi-star text-muted"></i> Không</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Ngày Tạo</th>
+                                <td>@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <form asp-action="Delete" method="post" class="mt-4">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Quay Lại
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash me-2"></i>Xác Nhận Xóa
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

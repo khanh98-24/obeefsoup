@@ -1,0 +1,100 @@
+@model OBeefSoup.Models.JobPosting
+@{
+    ViewData["Title"] = "Chỉnh sửa vị trí tuyển dụng";
+}
+
+<div class="container-fluid">
+    <div class="mb-4">
+        <a asp-action="Index" class="text-decoration-none text-muted small d-flex align-items-center gap-1">
+            <i class="bi bi-arrow-left"></i> Quay lại danh sách
+        </a>
+        <h3 class="fw-bold mb-0 mt-2">Chỉnh sửa vị trí: @Model.Title</h3>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="CreatedDate" />
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="Title" class="form-label fw-bold">Vị trí tuyển dụng <span class="text-danger">*</span></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="StoreLocationId" class="form-label fw-bold">Cơ sở tuyển dụng</label>
+                            <select asp-for="StoreLocationId" class="form-select" asp-items="@(new SelectList(ViewBag.StoreLocationId, "Id", "Name"))">
+                                <option value="">Tất cả cơ sở</option>
+                            </select>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="SalaryRange" class="form-label fw-bold">Mức lương</label>
+                                <input asp-for="SalaryRange" class="form-control" />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Deadline" class="form-label fw-bold">Hạn nộp hồ sơ</label>
+                                <input asp-for="Deadline" class="form-control" type="date" value="@(Model.Deadline?.ToString("yyyy-MM-dd"))" />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Description" class="form-label fw-bold">Mô tả công việc <span class="text-danger">*</span></label>
+                            <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Requirements" class="form-label fw-bold">Yêu cầu công việc</label>
+                            <textarea asp-for="Requirements" class="form-control" rows="5"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Benefits" class="form-label fw-bold">Quyền lợi</label>
+                            <textarea asp-for="Benefits" class="form-control" rows="5"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check form-switch p-0 ps-5">
+                                <input class="form-check-input ms-n5" type="checkbox" asp-for="IsActive">
+                                <label class="form-check-label fw-bold" asp-for="IsActive">Công khai trên website</label>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a asp-action="Index" class="btn btn-light border px-4">Hủy</a>
+                            <button type="submit" class="btn btn-primary px-4">Cập nhật vị trí</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Thông tin bổ sung</h6>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Ngày đăng tin:</small>
+                        <span class="fw-medium">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Số lượng đơn ứng tuyển:</small>
+                        <a asp-controller="CandidateApplications" asp-action="Index" asp-route-jobPostingId="@Model.Id" class="fw-bold text-primary">
+                            @(Model.Applications?.Count ?? 0) đơn
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

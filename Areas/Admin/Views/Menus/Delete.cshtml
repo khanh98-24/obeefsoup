@@ -1,0 +1,50 @@
+@model OBeefSoup.Models.MenuItem
+@{
+    ViewData["Title"] = "Xóa Menu";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-danger text-white py-3">
+                    <h5 class="mb-0 text-center text-uppercase fw-bold">⚠ Xác Nhận Xóa Menu</h5>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-exclamation-octagon text-danger display-1"></i>
+                    </div>
+                    
+                    <p class="fs-5 mb-4">Bạn có chắc chắn muốn xóa mục menu <strong>"@Model.Title"</strong> không?</p>
+                    
+                    <div class="bg-light p-3 rounded mb-4 text-start">
+                        <ul class="list-unstyled mb-0">
+                            <li><strong>URL:</strong> <code>@Model.Url</code></li>
+                            <li><strong>Vị trí:</strong> @(Model.Parent != null ? "Menu con của " + Model.Parent.Title : "Menu Gốc")</li>
+                        </ul>
+                    </div>
+
+                    @if (Model.SubMenus != null && Model.SubMenus.Any())
+                    {
+                        <div class="alert alert-warning text-start">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            <strong>Lưu ý:</strong> Mục này có <strong>@Model.SubMenus.Count</strong> menu con. Sau khi xóa, các menu này sẽ chuyển thành menu gốc.
+                        </div>
+                    }
+
+                    <div class="d-grid gap-2">
+                        <form asp-action="Delete" method="post" onsubmit="return confirm('Hành động này không thể hoàn tác. Tiếp tục?');">
+                            <input type="hidden" asp-for="Id" />
+                            <button type="submit" class="btn btn-danger btn-lg w-100 mb-2 fw-bold">
+                                <i class="bi bi-trash me-2"></i>Xác Nhận Xóa Ngay
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary w-100 px-4">
+                                <i class="bi bi-x-circle me-1"></i>Hủy Bỏ
+                            </a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

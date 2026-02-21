@@ -1,0 +1,133 @@
+@model IEnumerable<OBeefSoup.Models.StoreLocation>
+@{
+    ViewData["Title"] = "Quản lý cơ sở";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-0">Quản lý cơ sở</h3>
+            <p class="text-muted small mb-0">Danh sách các chi nhánh nhà hàng hiển thị trên website.</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+                <i class="bi bi-geo-alt"></i> Thêm cơ sở mới
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-4">
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <div class="card border-0 shadow-sm py-5">
+                    <i class="bi bi-geo display-1 text-muted opacity-25"></i>
+                    <h5 class="mt-3 text-muted">Chưa có cơ sở nào được tạo</h5>
+                    <div class="mt-3">
+                        <a asp-action="Create" class="btn btn-primary px-4">Thêm cơ sở đầu tiên</a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var store in Model)
+            {
+                <div class="col-md-6 col-xl-4">
+                    <div class="card border-0 shadow-sm h-100 store-card @(!store.IsActive ? "inactive" : "")">
+                        <div class="card-header border-0 bg-transparent pt-4 px-4 pb-0">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="p-2 bg-danger bg-opacity-10 text-danger rounded-3 mb-3">
+                                    <i class="bi bi-geo-alt-fill fs-4"></i>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-light border no-caret px-2" data-bs-toggle="dropdown">
+                                        <i class="bi bi-three-dots"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm small">
+                                        <li><a class="dropdown-item py-2" asp-action="Edit" asp-route-id="@store.Id"><i class="bi bi-pencil me-2"></i> Chỉnh sửa</a></li>
+                                        <li>
+                                            <form asp-action="ToggleActive" asp-route-id="@store.Id" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="dropdown-item py-2 @(store.IsActive ? "text-warning" : "text-success")">
+                                                    <i class="bi @(store.IsActive ? "bi-eye-slash" : "bi-eye") me-2"></i>
+                                                    @(store.IsActive ? "Tạm ẩn cơ sở" : "Hiển thị cơ sở")
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form asp-action="Delete" asp-route-id="@store.Id" method="post" onsubmit="return confirm('Xóa cơ sở này?')">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="dropdown-item py-2 text-danger">
+                                                    <i class="bi bi-trash me-2"></i> Xóa vĩnh viễn
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-1">@store.Name</h5>
+                            <div class="mb-3">
+                                @if (store.IsActive)
+                                {
+                                    <span class="badge bg-success-subtle text-success py-1 px-2 rounded-pill x-small">Đang hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-muted py-1 px-2 rounded-pill x-small">Tạm đóng</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="card-body px-4">
+                            <ul class="list-unstyled mb-0 small">
+                                <li class="d-flex gap-2 mb-2">
+                                    <i class="bi bi-map text-muted"></i>
+                                    <span class="text-muted">@store.Address, @store.City</span>
+                                </li>
+                                @if (!string.IsNullOrEmpty(store.Phone))
+                                {
+                                    <li class="d-flex gap-2 mb-2">
+                                        <i class="bi bi-telephone text-muted"></i>
+                                        <span class="text-dark">@store.Phone</span>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrEmpty(store.OpeningHours))
+                                {
+                                    <li class="d-flex gap-2 mb-3">
+                                        <i class="bi bi-clock text-muted"></i>
+                                        <span class="text-dark">@store.OpeningHours</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="card-footer border-0 bg-transparent px-4 pb-4">
+                            @if (!string.IsNullOrEmpty(store.MapUrl))
+                            {
+                                <a href="@store.MapUrl" target="_blank" class="btn btn-sm btn-outline-primary w-100 rounded-pill shadow-sm">
+                                    <i class="bi bi-pin-map me-1"></i> Xem trên bản đồ
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<style>
+    .store-card { transition: transform 0.2s; }
+    .store-card:hover { transform: translateY(-5px); }
+    .store-card.inactive { opacity: 0.7; grayscale: 50%; }
+    .x-small { font-size: 0.7rem; }
+    .no-caret::after { display: none; }
+</style>

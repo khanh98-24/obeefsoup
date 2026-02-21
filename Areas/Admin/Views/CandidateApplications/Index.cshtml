@@ -1,0 +1,131 @@
+@model IEnumerable<OBeefSoup.Models.CandidateApplication>
+@{
+    ViewData["Title"] = "Đơn ứng tuyển";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-0">Đơn ứng tuyển</h3>
+            <p class="text-muted small mb-0">
+                @if (ViewBag.JobTitle != null)
+                {
+                    <span>Ứng viên cho vị trí: <strong>@ViewBag.JobTitle</strong></span>
+                }
+                else
+                {
+                    <span>Danh sách tất cả các ứng viên đã nộp hồ sơ.</span>
+                }
+            </p>
+        </div>
+        @if (ViewBag.JobTitle != null)
+        {
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-pill px-3">Xem tất cả đơn</a>
+        }
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light bg-opacity-50">
+                        <tr class="text-muted small">
+                            <th class="ps-4 border-0">Ứng viên / Liên hệ</th>
+                            <th class="border-0">Vị trí ứng tuyển</th>
+                            <th class="border-0">Ngày nộp</th>
+                            <th class="border-0">Trạng thái</th>
+                            <th class="text-end pe-4 border-0">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox display-4 d-block mb-3 opacity-25"></i>
+                                    Chưa có đơn ứng tuyển nào.
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold text-dark">@item.FullName</div>
+                                    <div class="small text-muted">
+                                        <i class="bi bi-envelope me-1"></i> @item.Email | 
+                                        <i class="bi bi-telephone me-1"></i> @item.PhoneNumber
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-dark">@item.JobPosting?.Title</span>
+                                </td>
+                                <td>
+                                    @item.AppliedDate.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+                                <td>
+                                    @switch (item.Status)
+                                    {
+                                        case OBeefSoup.Models.ApplicationStatus.Pending:
+                                            <span class="badge bg-warning-subtle text-warning py-1 px-2 rounded-pill small border border-warning-subtle">Chờ duyệt</span>
+                                            break;
+                                        case OBeefSoup.Models.ApplicationStatus.Reviewed:
+                                            <span class="badge bg-info-subtle text-info py-1 px-2 rounded-pill small border border-info-subtle">Đã xem</span>
+                                            break;
+                                        case OBeefSoup.Models.ApplicationStatus.Interviewing:
+                                            <span class="badge bg-primary-subtle text-primary py-1 px-2 rounded-pill small border border-primary-subtle">Phỏng vấn</span>
+                                            break;
+                                        case OBeefSoup.Models.ApplicationStatus.Hired:
+                                            <span class="badge bg-success-subtle text-success py-1 px-2 rounded-pill small border border-success-subtle">Đã tuyển</span>
+                                            break;
+                                        case OBeefSoup.Models.ApplicationStatus.Rejected:
+                                            <span class="badge bg-danger-subtle text-danger py-1 px-2 rounded-pill small border border-danger-subtle">Từ chối</span>
+                                            break;
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-light border rounded-pill px-3">
+                                            Chi tiết
+                                        </a>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-light border dropdown-toggle no-caret px-2" data-bs-toggle="dropdown">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm small">
+                                                <li>
+                                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn ứng tuyển này?')">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="dropdown-item py-2 text-danger"><i class="bi bi-trash me-2"></i> Xóa đơn</button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .no-caret::after { display: none; }
+    .table > :not(caption) > * > * { padding: 1rem 0.75rem; }
+    .bg-primary-subtle { background-color: #e7f1ff; color: #0d6efd; }
+    .bg-warning-subtle { background-color: #fff3cd; color: #856404; }
+    .bg-success-subtle { background-color: #d1e7dd; color: #0f5132; }
+    .bg-danger-subtle { background-color: #f8d7da; color: #842029; }
+    .bg-info-subtle { background-color: #cff4fc; color: #055160; }
+</style>

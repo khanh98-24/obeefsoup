@@ -1,0 +1,118 @@
+@model OBeefSoup.Controllers.CheckoutViewModel
+@{
+    ViewData["Title"] = "Thanh toán";
+    var cartTotal = ViewBag.CartTotal ?? 0m;
+    var cart = ViewBag.Cart as List<OBeefSoup.Models.CartItem> ?? new List<OBeefSoup.Models.CartItem>();
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-7">
+            <h2 class="mb-4">
+                <i class="bi bi-credit-card me-2"></i>Thông tin thanh toán
+            </h2>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    @TempData["Error"]
+                </div>
+            }
+
+            <form asp-action="PlaceOrder" method="post">
+                <div class="checkout-form">
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" placeholder="example@email.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Phone" class="form-label"></label>
+                            <input asp-for="Phone" class="form-control" placeholder="0901234567" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DeliveryAddress" class="form-label"></label>
+                        <textarea asp-for="DeliveryAddress" class="form-control" rows="3" 
+                                  placeholder="123 Nguyễn Huệ, Quận 1, TP. HCM"></textarea>
+                        <span asp-validation-for="DeliveryAddress" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Notes" class="form-label"></label>
+                        <textarea asp-for="Notes" class="form-control" rows="2" 
+                                  placeholder="Ghi chú giao hàng (không bắt buộc)"></textarea>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Quay lại giỏ hàng
+                        </a>
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            <i class="bi bi-check-circle me-2"></i>Đặt hàng
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="order-review">
+                <h4 class="mb-4">Đơn hàng của bạn</h4>
+
+                <div class="order-items">
+                    @foreach (var item in cart)
+                    {
+                        <div class="order-item">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>@item.ProductName</strong>
+                                    <div class="text-muted small">x @item.Quantity</div>
+                                </div>
+                                <div class="text-end">
+                                    <strong>@item.Subtotal.ToString("N0")đ</strong>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <hr>
+
+                <div class="summary-row">
+                    <span>Tạm tính:</span>
+                    <strong>@cartTotal.ToString("N0")đ</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Phí giao hàng:</span>
+                    <small class="text-success">Miễn phí</small>
+                </div>
+
+                <hr>
+
+                <div class="summary-row total">
+                    <strong>Tổng cộng:</strong>
+                    <strong class="text-primary fs-4">@cartTotal.ToString("N0")đ</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Scripts section temporarily disabled for testing
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+*@

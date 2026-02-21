@@ -1,0 +1,268 @@
+@model OBeefSoup.Models.ViewModels.BannerViewModel
+@{
+    ViewData["Title"] = "Sửa Banner";
+}
+
+<!-- Cropper.js CSS & JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
+
+<style>
+    .crop-container { max-height: 450px; overflow: hidden; background: #1a1a2e; border-radius: 8px; }
+    .crop-container img { display: block; max-width: 100%; }
+    .ratio-btn { border: 1px solid #dee2e6; background: #fff; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+    .ratio-btn:hover, .ratio-btn.active { background: #8B0000; color: #fff; border-color: #8B0000; }
+    .crop-preview-wrap { border: 2px dashed #8B0000; border-radius: 8px; padding: 8px; background: #f8f9fa; }
+    .crop-preview-wrap img { max-width: 100%; border-radius: 4px; }
+    .crop-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1050; justify-content: center; align-items: center; }
+    .crop-modal-overlay.show { display: flex; }
+    .crop-modal { background: #fff; border-radius: 12px; max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 60px rgba(0,0,0,0.5); }
+    .crop-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #eee; }
+    .crop-modal-body { padding: 20px; }
+    .crop-modal-footer { padding: 16px 20px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 8px; }
+</style>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Sửa Banner: @Model.Title</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data" id="bannerForm">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ImageUrl" />
+                        <input type="hidden" asp-for="CreatedDate" />
+                        <input type="hidden" asp-for="CroppedImageData" id="croppedImageData" />
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="row">
+                            <!-- Tiêu Đề -->
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Title" class="form-label"></label>
+                                <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề banner" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+                            <!-- Mô Tả -->
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Description" class="form-label"></label>
+                                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Nhập mô tả banner"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <!-- Link URL -->
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Link" class="form-label"></label>
+                                <input asp-for="Link" class="form-control" placeholder="/Menu hoặc https://..." />
+                                <span asp-validation-for="Link" class="text-danger"></span>
+                                <small class="form-text text-muted">URL khi click vào banner (có thể để trống)</small>
+                            </div>
+
+                            <!-- Thứ Tự -->
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DisplayOrder" class="form-label"></label>
+                                <input asp-for="DisplayOrder" class="form-control" type="number" min="0" max="100" />
+                                <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                                <small class="form-text text-muted">Banner với số nhỏ hơn sẽ hiển thị trước</small>
+                            </div>
+
+                            <!-- Trạng Thái -->
+                            <div class="col-md-6 mb-3 d-flex align-items-end">
+                                <div class="form-check">
+                                    <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                                    <label asp-for="IsActive" class="form-check-label"></label>
+                                </div>
+                            </div>
+
+                            <!-- Current Image -->
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Ảnh Hiện Tại</label>
+                                    <div>
+                                        <img src="@Model.ImageUrl" alt="@Model.Title" class="img-thumbnail" style="max-width: 100%; max-height: 300px;" />
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- Upload New Image -->
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Upload Ảnh Mới (Tùy chọn)</label>
+                                <input type="file" class="form-control" accept="image/*" id="imageUpload" />
+                                <small class="form-text text-muted">Chấp nhận JPG, PNG, GIF (tối đa 5MB). Chọn ảnh để mở công cụ cắt.</small>
+                            </div>
+
+                            <!-- Cropped Preview -->
+                            <div class="col-md-12 mb-3" id="croppedPreviewWrap" style="display: none;">
+                                <label class="form-label"><i class="bi bi-check-circle text-success me-1"></i>Ảnh Đã Cắt (sẽ upload)</label>
+                                <div class="crop-preview-wrap">
+                                    <img id="croppedPreview" src="" alt="Cropped Preview" />
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="removeCrop()">
+                                    <i class="bi bi-x-circle me-1"></i>Bỏ ảnh đã cắt
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-2"></i>Hủy
+                            </a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-check-circle me-2"></i>Cập Nhật
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Crop Modal -->
+<div class="crop-modal-overlay" id="cropModal">
+    <div class="crop-modal">
+        <div class="crop-modal-header">
+            <h5 class="mb-0"><i class="bi bi-crop me-2"></i>Cắt & Căn Chỉnh Ảnh</h5>
+            <button type="button" class="btn-close" onclick="closeCropModal()"></button>
+        </div>
+        <div class="crop-modal-body">
+            <!-- Aspect Ratio Buttons -->
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="text-muted me-2 d-flex align-items-center"><i class="bi bi-aspect-ratio me-1"></i>Tỉ lệ:</span>
+                <button type="button" class="ratio-btn active" data-ratio="NaN" onclick="setRatio(this, NaN)">Tự do</button>
+                <button type="button" class="ratio-btn" data-ratio="16/9" onclick="setRatio(this, 16/9)">16:9</button>
+                <button type="button" class="ratio-btn" data-ratio="4/3" onclick="setRatio(this, 4/3)">4:3</button>
+                <button type="button" class="ratio-btn" data-ratio="3/2" onclick="setRatio(this, 3/2)">3:2</button>
+                <button type="button" class="ratio-btn" data-ratio="1/1" onclick="setRatio(this, 1)">1:1</button>
+                <button type="button" class="ratio-btn" data-ratio="21/9" onclick="setRatio(this, 21/9)">21:9</button>
+                <button type="button" class="ratio-btn" data-ratio="9/16" onclick="setRatio(this, 9/16)">9:16 (Dọc)</button>
+            </div>
+
+            <!-- Crop Area -->
+            <div class="crop-container">
+                <img id="cropImage" src="" alt="Crop" />
+            </div>
+
+            <!-- Rotation & Flip -->
+            <div class="d-flex gap-2 mt-3">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="cropper.rotate(-90)" title="Xoay trái">
+                    <i class="bi bi-arrow-counterclockwise"></i> Xoay trái
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="cropper.rotate(90)" title="Xoay phải">
+                    <i class="bi bi-arrow-clockwise"></i> Xoay phải
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="cropper.scaleX(-cropper.getData().scaleX || -1)" title="Lật ngang">
+                    <i class="bi bi-symmetry-horizontal"></i> Lật ngang
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="cropper.scaleY(-cropper.getData().scaleY || -1)" title="Lật dọc">
+                    <i class="bi bi-symmetry-vertical"></i> Lật dọc
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="cropper.reset()" title="Reset">
+                    <i class="bi bi-arrow-repeat"></i> Reset
+                </button>
+            </div>
+        </div>
+        <div class="crop-modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeCropModal()">
+                <i class="bi bi-x me-1"></i>Hủy
+            </button>
+            <button type="button" class="btn btn-success" onclick="applyCrop()">
+                <i class="bi bi-check2 me-1"></i>Áp Dụng
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
+    <script>
+        let cropper = null;
+
+        document.getElementById('imageUpload').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function () {
+                const img = document.getElementById('cropImage');
+                img.src = reader.result;
+
+                // Open modal
+                document.getElementById('cropModal').classList.add('show');
+
+                // Destroy old cropper
+                if (cropper) cropper.destroy();
+
+                // Init cropper after image loads
+                img.onload = function () {
+                    cropper = new Cropper(img, {
+                        viewMode: 1,
+                        dragMode: 'move',
+                        autoCropArea: 0.9,
+                        responsive: true,
+                        restore: true,
+                        guides: true,
+                        center: true,
+                        highlight: true,
+                        cropBoxMovable: true,
+                        cropBoxResizable: true,
+                        toggleDragModeOnDblclick: true
+                    });
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function setRatio(btn, ratio) {
+            document.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (cropper) cropper.setAspectRatio(ratio);
+        }
+
+        function applyCrop() {
+            if (!cropper) return;
+
+            const canvas = cropper.getCroppedCanvas({
+                maxWidth: 1920,
+                maxHeight: 1080,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            });
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
+            // Set hidden field
+            document.getElementById('croppedImageData').value = dataUrl;
+
+            // Show preview
+            document.getElementById('croppedPreview').src = dataUrl;
+            document.getElementById('croppedPreviewWrap').style.display = 'block';
+
+            closeCropModal();
+        }
+
+        function closeCropModal() {
+            document.getElementById('cropModal').classList.remove('show');
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        }
+
+        function removeCrop() {
+            document.getElementById('croppedImageData').value = '';
+            document.getElementById('croppedPreviewWrap').style.display = 'none';
+            document.getElementById('imageUpload').value = '';
+        }
+
+        // Close modal on Escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeCropModal();
+        });
+    </script>
+}
