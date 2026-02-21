@@ -7,15 +7,6 @@ C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.
 C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.RazorAssemblyInfo.cache
 C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.RazorAssemblyInfo.cs
-D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.csproj.AssemblyReference.cache
-D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\rpswa.dswa.cache.json
-D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.GeneratedMSBuildEditorConfig.editorconfig
-D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.AssemblyInfoInputs.cache
-D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.AssemblyInfo.cs
-D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.csproj.CoreCompileInputs.cache
-D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.MvcApplicationPartsAssemblyInfo.cache
-D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.RazorAssemblyInfo.cache
-D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.RazorAssemblyInfo.cs
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\appsettings.Development.json
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\appsettings.json
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\OBeefSoup.staticwebassets.runtime.json
@@ -51,6 +42,8 @@ D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\Mono.TextTemplating.dll
+D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\Npgsql.dll
+D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\System.CodeDom.dll
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\System.Composition.AttributedModel.dll
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\System.Composition.Convention.dll
@@ -129,6 +122,16 @@ D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.C
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.csproj.AssemblyReference.cache
+D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\rpswa.dswa.cache.json
+D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.GeneratedMSBuildEditorConfig.editorconfig
+D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.AssemblyInfoInputs.cache
+D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.AssemblyInfo.cs
+D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.csproj.CoreCompileInputs.cache
+D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.MvcApplicationPartsAssemblyInfo.cache
+D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.RazorAssemblyInfo.cache
+D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.RazorAssemblyInfo.cs
+D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.sourcelink.json
 D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\rjimswa.dswa.cache.json
 D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
@@ -145,7 +148,3 @@ D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\refint\OBeefSoup.dll
 D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.pdb
 D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.genruntimeconfig.cache
 D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\ref\OBeefSoup.dll
-D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\NuGet.Config
-D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.sourcelink.json
-D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\Npgsql.dll
-D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
