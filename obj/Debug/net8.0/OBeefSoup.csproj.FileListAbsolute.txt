@@ -1,9 +1,0 @@
-C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.csproj.AssemblyReference.cache
-C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\rpswa.dswa.cache.json
-C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.AssemblyInfoInputs.cache
-C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.AssemblyInfo.cs
-C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.csproj.CoreCompileInputs.cache
-C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.RazorAssemblyInfo.cache
-C:\Users\nguye\.gemini\antigravity\scratch\OBeefSoup\obj\Debug\net8.0\OBeefSoup.RazorAssemblyInfo.cs
