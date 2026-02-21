@@ -1,17 +1,21 @@
-using OBeefSoup.Services;
+﻿using OBeefSoup.Services;
 using OBeefSoup.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// =======================
+// ADD SERVICES
+// =======================
+
+// MVC
 builder.Services.AddControllersWithViews();
 
-// Add DbContext
+// Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add Session support for shopping cart
+// Session (shopping cart)
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -20,43 +24,54 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Register services
-builder.Services.AddHttpContextAccessor(); // For CartService to access Session
+// HttpContext access
+builder.Services.AddHttpContextAccessor();
+
+// Custom services
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<MenuService>(); // Keep for backward compatibility
-builder.Services.AddScoped<IImageService, ImageService>(); // For product image uploads
-builder.Services.AddScoped<AuthService>(); // For admin authentication
+builder.Services.AddScoped<MenuService>();
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// =======================
+// MIDDLEWARE PIPELINE
+// =======================
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseSession(); // Enable session for shopping cart
-
 app.UseRouting();
 
+app.UseSession();       // session phải trước endpoints
 app.UseAuthorization();
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Run($"http://0.0.0.0:{port}");
-// Areas routing
+// =======================
+// ROUTING
+// =======================
+
+// Areas route (Admin dashboard etc.)
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
-// Default routing
+// Default route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+
+// =======================
+// RUN APP (Railway PORT)
+// =======================
+
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Run($"http://0.0.0.0:{port}");
