@@ -1,7 +1,7 @@
 ﻿using OBeefSoup.Services;
 using OBeefSoup.Data;
 using Microsoft.EntityFrameworkCore;
-
+  
 var builder = WebApplication.CreateBuilder(args);
 
 // =======================
@@ -11,12 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 // MVC
 builder.Services.AddControllersWithViews();
 
-// Database
+// Database (PostgreSQL Railway)
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
 
 // Session (shopping cart)
 builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(2);
@@ -40,25 +43,28 @@ var app = builder.Build();
 // MIDDLEWARE PIPELINE
 // =======================
 
+// Production error handling
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// ⚠ Railway đã có HTTPS → tránh lỗi redirect loop
+// app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseSession();       // session phải trước endpoints
+app.UseSession();     // phải trước MapControllerRoute
 app.UseAuthorization();
 
 // =======================
 // ROUTING
 // =======================
 
-// Areas route (Admin dashboard etc.)
+// Areas (Admin)
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
@@ -68,10 +74,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-
 // =======================
 // RUN APP (Railway PORT)
 // =======================
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+
 app.Run($"http://0.0.0.0:{port}");
