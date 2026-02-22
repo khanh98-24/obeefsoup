@@ -11,10 +11,15 @@ var builder = WebApplication.CreateBuilder(args);
 // MVC
 builder.Services.AddControllersWithViews();
 
+// 🔥 Read connection string (ưu tiên Azure → fallback local)
 var connectionString =
-    builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? Environment.GetEnvironmentVariable("SQLCONNSTR_DefaultConnection");
+    Environment.GetEnvironmentVariable("SQLCONNSTR_DefaultConnection")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new Exception("❌ Connection string is NULL. Check Azure Configuration.");
+}
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -29,13 +34,13 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-
+// Logging
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 builder.Services.AddHttpContextAccessor();
 
-// Services
+// Services DI
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<MenuService>();
@@ -48,18 +53,14 @@ var app = builder.Build();
 // MIDDLEWARE
 // =======================
 
-// Production error handling
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-// Azure dùng HTTPS sẵn → luôn bật
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-
 app.UseRouting();
 
 app.UseSession();
@@ -78,7 +79,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 // =======================
-// RUN
+// AUTO MIGRATION (SAFE)
 // =======================
 
 using (var scope = app.Services.CreateScope())
@@ -86,11 +87,16 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        Console.WriteLine("Applying migrations...");
         db.Database.Migrate();
+        Console.WriteLine("Database ready.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine("Migration failed: " + ex.Message);
+        Console.WriteLine("❌ Migration failed:");
+        Console.WriteLine(ex);
     }
 }
+
 app.Run();
