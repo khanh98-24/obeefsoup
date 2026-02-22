@@ -17,7 +17,7 @@ namespace OBeefSoup.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -63,7 +63,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9858),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(910),
                             DisplayOrder = 1,
                             IconClass = "bi-clock-history",
                             IsActive = true,
@@ -72,7 +72,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9860),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(912),
                             DisplayOrder = 2,
                             IconClass = "bi-gem",
                             IsActive = true,
@@ -81,7 +81,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9862),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(955),
                             DisplayOrder = 3,
                             IconClass = "bi-stars",
                             IsActive = true,
@@ -90,7 +90,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9863),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(957),
                             DisplayOrder = 4,
                             IconClass = "bi-heart-fill",
                             IsActive = true,
@@ -212,7 +212,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9792),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(850),
                             Description = "Phở Bò Ngon Nhất Hà Nội - Hương Vị Truyền Thống",
                             DisplayOrder = 1,
                             ImageUrl = "https://placehold.co/1200x400/8B0000/FFF?text=O'+BeefSoup+Banner",
@@ -223,7 +223,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9795),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(852),
                             Description = "Giảm 20% Cho Đơn Hàng Đầu Tiên",
                             DisplayOrder = 2,
                             ImageUrl = "https://placehold.co/1200x400/FFB347/000?text=Khuyen+Mai",
@@ -285,7 +285,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 1,
                             Content = "Nội dung chi tiết về cách ninh xương, chọn gừng, hành tím nướng và các nguyên liệu thảo mộc quý hiếm...",
-                            CreatedDate = new DateTime(2026, 2, 16, 18, 9, 49, 965, DateTimeKind.Local).AddTicks(269),
+                            CreatedDate = new DateTime(2026, 2, 17, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(1326),
                             DisplayOrder = 1,
                             ImageUrl = "/images/486842042_1200614522067957_8652198815515987194_n.jpg",
                             IsActive = true,
@@ -297,7 +297,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 2,
                             Content = "Chào đón sự kiện khai trương tưng bừng với nhiều phần quà hấp dẫn và chương trình âm nhạc đặc sắc...",
-                            CreatedDate = new DateTime(2026, 2, 19, 18, 9, 49, 965, DateTimeKind.Local).AddTicks(276),
+                            CreatedDate = new DateTime(2026, 2, 20, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(1332),
                             DisplayOrder = 2,
                             ImageUrl = "/images/486748406_1200441442085265_4112327303630339444_n.jpg",
                             IsActive = true,
@@ -309,7 +309,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 3,
                             Content = "Từ những gánh hàng rong xưa đến các cửa hàng sang trọng ngày nay, phở luôn giữ vững vị trí độc tôn...",
-                            CreatedDate = new DateTime(2026, 2, 20, 18, 9, 49, 965, DateTimeKind.Local).AddTicks(278),
+                            CreatedDate = new DateTime(2026, 2, 21, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(1334),
                             DisplayOrder = 3,
                             ImageUrl = "/images/484090098_1184094750386601_4967145700946842561_n.jpg",
                             IsActive = true,
@@ -763,7 +763,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9697),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(772),
                             Description = "Thịt bò tái mềm, nước dùng thanh ngọt",
                             ImageUrl = "/images/pho-bo-tai-nam.jpg",
                             IsActive = true,
@@ -776,7 +776,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 2,
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9701),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(775),
                             Description = "Gầu bò béo ngậy, đậm đà truyền thống",
                             ImageUrl = "/images/pho-bo-chin.jpg",
                             IsActive = true,
@@ -789,7 +789,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 3,
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9703),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(777),
                             Description = "Đầy đủ topping - Signature O' BeefSoup",
                             ImageUrl = "https://placehold.co/400x300/8B0000/FFF?text=Pho+Dac+Biet",
                             IsActive = true,
@@ -802,7 +802,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 4,
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9705),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(779),
                             Description = "Nạm bò thơm ngon, mềm tan",
                             ImageUrl = "https://placehold.co/400x300/8B0000/FFF?text=Pho+Nam",
                             IsActive = true,
@@ -815,7 +815,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 5,
                             CategoryId = 1,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9707),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(781),
                             Description = "Bò viên giòn sần sật",
                             ImageUrl = "https://placehold.co/400x300/8B0000/FFF?text=Pho+Bo+Vien",
                             IsActive = true,
@@ -828,7 +828,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 6,
                             CategoryId = 2,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9709),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(783),
                             Description = "Gà ta thơm ngon, nước dùng thanh ngọt",
                             ImageUrl = "https://placehold.co/400x300/FFB347/000?text=Pho+Ga",
                             IsActive = true,
@@ -841,7 +841,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 7,
                             CategoryId = 2,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9712),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(785),
                             Description = "Gà ta nguyên con, đầy đủ topping",
                             ImageUrl = "https://placehold.co/400x300/FFB347/000?text=Pho+Ga+Dac+Biet",
                             IsActive = true,
@@ -854,7 +854,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 8,
                             CategoryId = 3,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9714),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(787),
                             Description = "Trà đá miễn phí",
                             ImageUrl = "https://placehold.co/400x300/5E8B7E/FFF?text=Tra+Da",
                             IsActive = true,
@@ -867,7 +867,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 9,
                             CategoryId = 3,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9716),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(789),
                             Description = "Coca, Pepsi, 7Up",
                             ImageUrl = "https://placehold.co/400x300/FF6347/FFF?text=Nuoc+Ngot",
                             IsActive = true,
@@ -880,7 +880,7 @@ namespace OBeefSoup.Migrations
                         {
                             Id = 10,
                             CategoryId = 3,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9718),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(791),
                             Description = "Chanh tươi vắt",
                             ImageUrl = "https://placehold.co/400x300/FFE135/000?text=Nuoc+Chanh",
                             IsActive = true,
@@ -927,7 +927,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9820),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(875),
                             Description = "Ảnh nền cho phần thực đơn trang chủ",
                             IsActive = true,
                             Key = "MenuBackgroundImage",
@@ -936,7 +936,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9822),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(876),
                             Description = "Độ mờ ảnh nền thực đơn (0.0 = trong suốt, 1.0 = rõ nét).",
                             IsActive = true,
                             Key = "MenuBackgroundOpacity",
@@ -945,7 +945,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9824),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(878),
                             Description = "Tiêu đề nằm trên ảnh phần Giới thiệu",
                             IsActive = true,
                             Key = "AboutTitle1",
@@ -954,7 +954,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9825),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(880),
                             Description = "Tên thương hiệu phần Giới thiệu",
                             IsActive = true,
                             Key = "AboutTitle2",
@@ -963,7 +963,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9827),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(881),
                             Description = "Tiêu đề phụ phần Giới thiệu",
                             IsActive = true,
                             Key = "AboutSubtitle",
@@ -972,7 +972,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9828),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(883),
                             Description = "Mô tả chi tiết phần Giới thiệu",
                             IsActive = true,
                             Key = "AboutDescription",
@@ -981,7 +981,7 @@ namespace OBeefSoup.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedDate = new DateTime(2026, 2, 21, 18, 9, 49, 964, DateTimeKind.Local).AddTicks(9830),
+                            CreatedDate = new DateTime(2026, 2, 22, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(884),
                             Description = "Ảnh đại diện phần Giới thiệu",
                             IsActive = true,
                             Key = "AboutImageUrl",
@@ -1093,7 +1093,7 @@ namespace OBeefSoup.Migrations
                             Comment = "Nước dùng đậm đà, thịt bò tươi ngon. Đây là quán phở ngon nhất tôi từng ăn!",
                             CustomerId = 1,
                             CustomerName = "Nguyễn Văn A",
-                            Date = new DateTime(2026, 2, 6, 18, 9, 49, 965, DateTimeKind.Local).AddTicks(344),
+                            Date = new DateTime(2026, 2, 7, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(1385),
                             IsApproved = true,
                             Rating = 5
                         },
@@ -1103,7 +1103,7 @@ namespace OBeefSoup.Migrations
                             Comment = "Không gian sang trọng, phục vụ chu đáo. Phở đặc biệt rất xứng đáng!",
                             CustomerId = 1,
                             CustomerName = "Trần Thị B",
-                            Date = new DateTime(2026, 2, 13, 18, 9, 49, 965, DateTimeKind.Local).AddTicks(346),
+                            Date = new DateTime(2026, 2, 14, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(1388),
                             IsApproved = true,
                             Rating = 5
                         },
@@ -1113,7 +1113,7 @@ namespace OBeefSoup.Migrations
                             Comment = "Giá hơi cao nhưng chất lượng tuyệt vời. Sẽ quay lại!",
                             CustomerId = 1,
                             CustomerName = "Lê Minh C",
-                            Date = new DateTime(2026, 2, 18, 18, 9, 49, 965, DateTimeKind.Local).AddTicks(349),
+                            Date = new DateTime(2026, 2, 19, 12, 11, 56, 924, DateTimeKind.Local).AddTicks(1390),
                             IsApproved = true,
                             Rating = 4
                         });
