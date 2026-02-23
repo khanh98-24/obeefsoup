@@ -35,7 +35,7 @@ namespace OBeefSoup.Models
         public string PhoneNumber { get; set; } = string.Empty;
 
         [StringLength(500)]
-        public string Notes { get; set; } = string.Empty;
+        public string? Notes { get; set; } = string.Empty;
 
         public DateTime? CompletedDate { get; set; }
 

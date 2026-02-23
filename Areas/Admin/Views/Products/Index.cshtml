@@ -19,20 +19,20 @@
     <!-- Filter & Search Card -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body py-3">
-            <form method="get" asp-action="Index" class="row g-3">
-                <div class="col-md-9">
+            <form method="get" asp-action="Index" class="row g-2">
+                <div class="col-8 col-md-9">
                     <div class="input-group">
                         <span class="input-group-text bg-light border-0"><i class="bi bi-search text-muted"></i></span>
                         <input type="text" name="searchTerm" class="form-control bg-light border-0" 
-                               placeholder="Tìm sản phẩm theo tên hoặc mô tả..." 
+                               placeholder="Tìm tên sản phẩm..." 
                                value="@ViewBag.SearchTerm">
                     </div>
                 </div>
-                <div class="col-md-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-dark w-100">Tìm kiếm</button>
+                <div class="col-4 col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-dark w-100 px-1">Tìm</button>
                     @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
                     {
-                        <a asp-action="Index" class="btn btn-outline-secondary" title="Xóa tìm kiếm">
+                        <a asp-action="Index" class="btn btn-outline-secondary px-2" title="Xóa tìm kiếm">
                             <i class="bi bi-x-lg"></i>
                         </a>
                     }
@@ -41,14 +41,14 @@
         </div>
     </div>
 
-    <!-- Products Table Card -->
-    <div class="card border-0 shadow-sm">
+    <!-- Products Table Card (Desktop) -->
+    <div class="card border-0 shadow-sm overflow-hidden d-none d-lg-block">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="bg-light bg-opacity-50">
                         <tr class="text-muted small">
-                            <th class="ps-4 border-0">Thông tin sản phẩm</th>
+                            <th class="ps-4 border-0">Sản phẩm</th>
                             <th class="border-0">Danh mục</th>
                             <th class="border-0">Đơn giá</th>
                             <th class="border-0">Tồn kho</th>
@@ -67,9 +67,8 @@
                                              class="rounded-3 shadow-sm"
                                              style="width: 50px; height: 50px; object-fit: cover; border: 1px solid #eee;" 
                                              onerror="this.src='https://placehold.co/50x50/8B0000/FFF?text=N/A'" />
-                                        <div>
-                                            <div class="fw-bold text-dark">@product.Name</div>
-                                            <span class="text-muted x-small">ID: #@product.Id</span>
+                                        <div style="min-width: 0;">
+                                            <div class="fw-bold text-dark text-truncate" style="max-width: 250px;">@product.Name</div>
                                         </div>
                                     </div>
                                 </td>
@@ -84,7 +83,7 @@
                                 <td>
                                     @if (product.Stock > 20)
                                     {
-                                        <span class="text-success small"><i class="bi bi-check2-circle me-1"></i>Con hàng (@product.Stock)</span>
+                                        <span class="text-success small"><i class="bi bi-check2-circle me-1"></i>Còn hàng (@product.Stock)</span>
                                     }
                                     else if (product.Stock > 0)
                                     {
@@ -98,11 +97,11 @@
                                 <td>
                                     @if (product.IsActive)
                                     {
-                                        <span class="badge bg-success-subtle text-success py-1 px-2 rounded-pill small">Đang bán</span>
+                                        <span class="badge bg-success-subtle text-success py-1 px-2 rounded-pill small">Bán</span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-light text-muted py-1 px-2 rounded-pill small">Tạm ngừng</span>
+                                        <span class="badge bg-light text-muted py-1 px-2 rounded-pill small">Ngừng</span>
                                     }
                                 </td>
                                 <td class="text-center">
@@ -121,8 +120,8 @@
                                             <i class="bi bi-three-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm small">
-                                            <li><a class="dropdown-item py-2" asp-action="Edit" asp-route-id="@product.Id"><i class="bi bi-pencil me-2"></i> Chỉnh sửa</a></li>
-                                            <li><a class="dropdown-item py-2 text-danger" asp-action="Delete" asp-route-id="@product.Id"><i class="bi bi-trash me-2"></i> Xóa sản phẩm</a></li>
+                                            <li><a class="dropdown-item py-2" asp-action="Edit" asp-route-id="@product.Id"><i class="bi bi-pencil me-2"></i> Sửa</a></li>
+                                            <li><a class="dropdown-item py-2 text-danger" asp-action="Delete" asp-route-id="@product.Id"><i class="bi bi-trash me-2"></i> Xóa</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -132,6 +131,36 @@
                 </table>
             </div>
         </div>
+    </div>
+
+    <!-- Mobile Product Grid -->
+    <div class="row g-3 d-lg-none">
+        @foreach (var product in Model)
+        {
+            <div class="col-6">
+                <div class="card border-0 shadow-sm h-100 product-card-mobile p-2">
+                    <img src="@product.ImageUrl" alt="@product.Name" 
+                         class="card-img-top rounded-4 mb-2"
+                         style="height: 120px; object-fit: cover;"
+                         onerror="this.src='https://placehold.co/200x120/8B0000/FFF?text=N/A'" />
+                    <div class="card-body p-1">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <div class="fw-bold text-dark text-truncate small" style="max-width: 80%;">@product.Name</div>
+                            @if (product.IsFeatured) { <i class="bi bi-star-fill text-warning x-small"></i> }
+                        </div>
+                        <div class="fw-bold text-accent small mb-2">@product.Price.ToString("N0")đ</div>
+                        <div class="d-flex gap-1 mb-2">
+                            <span class="badge bg-light text-muted x-small border rounded-pill">@product.Category?.Name</span>
+                        </div>
+                        <div class="d-grid">
+                            <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-white border shadow-sm py-2">
+                                <i class="bi bi-pencil me-1"></i> Quản lý
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
     
     <div class="d-flex justify-content-between align-items-center mt-4 text-muted small px-2">

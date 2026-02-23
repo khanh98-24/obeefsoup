@@ -1,3 +1,5 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model List<OBeefSoup.Models.MenuItem>
 
 @foreach (var item in Model)
@@ -6,12 +8,12 @@
     {
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="@item.Url" id="navbarDropdown@item.Id" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                @if (!string.IsNullOrEmpty(item.Icon)) { <i class="bi @item.Icon me-1"></i> } @item.Title
+                @if (!string.IsNullOrEmpty(item.Icon)) { <i class="bi @item.Icon me-1"></i> } @Localizer[item.Title]
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown@item.Id">
                 @foreach (var sub in item.SubMenus.Where(sm => sm.IsActive).OrderBy(sm => sm.DisplayOrder))
                 {
-                    <li><a class="dropdown-item" href="@sub.Url">@sub.Title</a></li>
+                    <li><a class="dropdown-item" href="@sub.Url">@Localizer[sub.Title]</a></li>
                 }
             </ul>
         </li>
@@ -20,7 +22,7 @@
     {
         <li class="nav-item">
             <a class="nav-link" href="@item.Url">
-                @if (!string.IsNullOrEmpty(item.Icon)) { <i class="bi @item.Icon me-1"></i> } @item.Title
+                @if (!string.IsNullOrEmpty(item.Icon)) { <i class="bi @item.Icon me-1"></i> } @Localizer[item.Title]
             </a>
         </li>
     }

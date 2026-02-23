@@ -22,6 +22,7 @@ namespace OBeefSoup.Areas.Admin.Controllers
         // GET: Admin/Menus
         public async Task<IActionResult> Index()
         {
+            await EnsureDefaultMenus();
             var menuItems = await _context.MenuItems
                 .Include(m => m.Parent)
                 .OrderBy(m => m.ParentId)
@@ -29,6 +30,32 @@ namespace OBeefSoup.Areas.Admin.Controllers
                 .ToListAsync();
 
             return View(menuItems);
+        }
+
+        private async Task EnsureDefaultMenus()
+        {
+            var defaultMenus = new List<MenuItem>
+            {
+                new MenuItem { Title = "Tin tức", Url = "/Blog", DisplayOrder = 6, IsActive = true },
+                new MenuItem { Title = "Tuyển dụng", Url = "/Recruitment", DisplayOrder = 7, IsActive = true }
+            };
+
+            var existingUrls = await _context.MenuItems.Select(m => m.Url).ToListAsync();
+            bool changed = false;
+
+            foreach (var dm in defaultMenus)
+            {
+                if (!existingUrls.Contains(dm.Url))
+                {
+                    _context.MenuItems.Add(dm);
+                    changed = true;
+                }
+            }
+
+            if (changed)
+            {
+                await _context.SaveChangesAsync();
+            }
         }
 
         // GET: Admin/Menus/Create

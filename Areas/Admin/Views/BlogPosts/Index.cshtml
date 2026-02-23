@@ -4,13 +4,13 @@
 }
 
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <div>
             <h3 class="fw-bold mb-0">Quản lý bài viết</h3>
             <p class="text-muted small mb-0">Viết và quản lý các bài blog, tin tức khuyến mãi.</p>
         </div>
-        <div>
-            <a asp-action="Create" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+        <div class="w-100 w-md-auto">
+            <a asp-action="Create" class="btn btn-primary d-flex align-items-center justify-content-center gap-2 shadow-sm w-100 w-md-auto">
                 <i class="bi bi-pencil-square"></i> Viết bài mới
             </a>
         </div>
@@ -24,7 +24,7 @@
         </div>
     }
 
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm overflow-hidden">
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -32,7 +32,7 @@
                         <tr class="text-muted small">
                             <th class="ps-4 border-0">Thông tin bài viết</th>
                             <th class="border-0">Trạng thái</th>
-                            <th class="border-0">Ngày đăng</th>
+                            <th class="border-0 d-none d-md-table-cell">Ngày đăng</th>
                             <th class="text-end pe-4 border-0">Thao tác</th>
                         </tr>
                     </thead>
@@ -56,29 +56,24 @@
                                             @if (!string.IsNullOrEmpty(item.ImageUrl))
                                             {
                                                 <img src="@item.ImageUrl" alt="@item.Title" 
-                                                     class="rounded-3 shadow-sm" 
-                                                     style="width: 80px; height: 50px; object-fit: cover; border: 1px solid #eee;" />
-                                            }
-                                            else
-                                            {
-                                                <div class="rounded-3 bg-light d-flex align-items-center justify-content-center border" style="width: 80px; height: 50px;">
-                                                    <i class="bi bi-image text-muted opacity-25"></i>
-                                                </div>
+                                                     class="rounded-3 shadow-sm d-none d-sm-block" 
+                                                     style="width: 70px; height: 45px; object-fit: cover; border: 1px solid #eee;" />
                                             }
                                             <div>
-                                                <div class="fw-bold text-dark">@item.Title</div>
-                                                <div class="text-muted small">@item.Slug</div>
+                                                <div class="fw-bold text-dark text-truncate" style="max-width: 200px;">@item.Title</div>
+                                                <div class="d-md-none x-small text-muted">@item.CreatedDate.ToString("dd/MM/yyyy")</div>
+                                                <div class="d-none d-md-block text-muted small">@item.Slug</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
                                         @if (item.IsActive)
                                         {
-                                            <span class="badge bg-success-subtle text-success py-1 px-2 rounded-pill small">Hoạt động</span>
+                                            <span class="badge bg-success-subtle text-success py-1 px-2 rounded-pill x-small">Hiện</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-light text-muted py-1 px-2 rounded-pill small">Tạm ẩn</span>
+                                            <span class="badge bg-light text-muted py-1 px-2 rounded-pill x-small">Ẩn</span>
                                         }
                                     </td>
                                     <td>

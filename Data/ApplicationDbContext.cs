@@ -365,6 +365,87 @@ namespace OBeefSoup.Data
                     Description = "Ảnh đại diện phần Giới thiệu",
                     IsActive = true,
                     CreatedDate = DateTime.Now
+                },
+                new SiteSetting
+                {
+                    Id = 8,
+                    Key = "FooterDescription",
+                    Value = "Tinh hoa phở Việt – Đậm vị từ tâm. Mang đến trải nghiệm ẩm thực phở bò thượng hạng trong không gian đẳng cấp.",
+                    Description = "Mô tả thương hiệu ở phần chân trang (Footer)",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now
+                },
+                new SiteSetting
+                {
+                    Id = 9,
+                    Key = "FooterAddress",
+                    Value = "Tòa CT2B, khu ĐTM Nghĩa Đô, đường Xuân Tảo, Hanoi, Vietnam",
+                    Description = "Địa chỉ liên hệ ở Footer",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now
+                },
+                new SiteSetting
+                {
+                    Id = 10,
+                    Key = "FooterPhone",
+                    Value = "0901 234 567",
+                    Description = "Số điện thoại liên hệ ở Footer",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now
+                },
+                new SiteSetting
+                {
+                    Id = 11,
+                    Key = "FooterEmail",
+                    Value = "contact@obeefsoup.vn",
+                    Description = "Email liên hệ ở Footer",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now
+                },
+                new SiteSetting
+                {
+                    Id = 12,
+                    Key = "FooterWorkingHours",
+                    Value = "Thứ 2 - Chủ nhật: 07:00 - 22:00",
+                    Description = "Giờ mở cửa ở Footer",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now
+                },
+                new SiteSetting
+                {
+                    Id = 13,
+                    Key = "SocialFacebook",
+                    Value = "https://facebook.com/obeefsoup",
+                    Description = "Link Fanpage Facebook",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now
+                },
+                new SiteSetting
+                {
+                    Id = 14,
+                    Key = "SocialInstagram",
+                    Value = "https://instagram.com/obeefsoup",
+                    Description = "Link Instagram",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now
+                },
+                new SiteSetting
+                {
+                    Id = 15,
+                    Key = "SocialYoutube",
+                    Value = "https://youtube.com/c/obeefsoup",
+                    Description = "Link Youtube",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now
+                },
+                new SiteSetting
+                {
+                    Id = 16,
+                    Key = "SocialTiktok",
+                    Value = "https://tiktok.com/@@obeefsoup",
+                    Description = "Link Tiktok",
+                    IsActive = true,
+                    CreatedDate = DateTime.Now
                 }
             );
 
@@ -409,6 +490,8 @@ namespace OBeefSoup.Data
                 new MenuItem { Id = 3, Title = "Thực Đơn", Url = "/Menu", DisplayOrder = 3, IsActive = true },
                 new MenuItem { Id = 4, Title = "Ưu Điểm", Url = "/#why-us", DisplayOrder = 4, IsActive = true },
                 new MenuItem { Id = 5, Title = "Đánh Giá", Url = "/#testimonials", DisplayOrder = 5, IsActive = true },
+                new MenuItem { Id = 9, Title = "Tin tức", Url = "/Blog", DisplayOrder = 6, IsActive = true },
+                new MenuItem { Id = 10, Title = "Tuyển dụng", Url = "/Recruitment", DisplayOrder = 7, IsActive = true },
                 new MenuItem { Id = 6, Title = "Phở Bò", Url = "/Menu#category-1", ParentId = 3, DisplayOrder = 1, IsActive = true },
                 new MenuItem { Id = 7, Title = "Phở Gà", Url = "/Menu#category-2", ParentId = 3, DisplayOrder = 2, IsActive = true },
                 new MenuItem { Id = 8, Title = "Đồ Uống", Url = "/Menu#category-3", ParentId = 3, DisplayOrder = 3, IsActive = true }

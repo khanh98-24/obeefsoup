@@ -4,29 +4,19 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// =======================
-// ADD SERVICES
-// =======================
+// Add services to the container.
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
+    .AddDataAnnotationsLocalization();
 
-// MVC
-builder.Services.AddControllersWithViews();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-// 🔥 Read connection string (ưu tiên Azure → fallback local)
-var connectionString =
-    Environment.GetEnvironmentVariable("SQLCONNSTR_DefaultConnection")
-    ?? builder.Configuration.GetConnectionString("DefaultConnection");
-
-if (string.IsNullOrEmpty(connectionString))
-{
-    throw new Exception("❌ Connection string is NULL. Check Azure Configuration.");
-}
-
+// Add DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Session
+// Add Session support for shopping cart
 builder.Services.AddDistributedMemoryCache();
-
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(2);
@@ -34,69 +24,49 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Logging
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-
-builder.Services.AddHttpContextAccessor();
-
-// Services DI
+// Register services
+builder.Services.AddHttpContextAccessor(); // For CartService to access Session
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<MenuService>();
-builder.Services.AddScoped<IImageService, ImageService>();
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<MenuService>(); // Keep for backward compatibility
+builder.Services.AddScoped<IImageService, ImageService>(); // For product image uploads
+builder.Services.AddScoped<AuthService>(); // For admin authentication
 
 var app = builder.Build();
 
-// =======================
-// MIDDLEWARE
-// =======================
-
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseSession(); // Enable session for shopping cart
+
+app.UseRequestLocalization(options =>
+{
+    var supportedCultures = new[] { "vi-VN", "en-US" };
+    options.SetDefaultCulture(supportedCultures[0])
+        .AddSupportedCultures(supportedCultures)
+        .AddSupportedUICultures(supportedCultures);
+});
+
 app.UseRouting();
 
-app.UseSession();
 app.UseAuthorization();
 
-// =======================
-// ROUTES
-// =======================
-
+// Areas routing
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
+// Default routing
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-// =======================
-// AUTO MIGRATION (SAFE)
-// =======================
-
-using (var scope = app.Services.CreateScope())
-{
-    try
-    {
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        Console.WriteLine("Applying migrations...");
-        db.Database.Migrate();
-        Console.WriteLine("Database ready.");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine("❌ Migration failed:");
-        Console.WriteLine(ex);
-    }
-}
 
 app.Run();

@@ -23,8 +23,42 @@ namespace OBeefSoup.Areas.Admin.Controllers
         // GET: Admin/Settings
         public async Task<IActionResult> Index()
         {
+            await EnsureDefaultSettings();
             var settings = await _context.SiteSettings.ToListAsync();
             return View(settings);
+        }
+
+        private async Task EnsureDefaultSettings()
+        {
+            var defaultSettings = new List<SiteSetting>
+            {
+                new SiteSetting { Key = "FooterDescription", Value = "Tinh hoa phở Việt – Đậm vị từ tâm. Mang đến trải nghiệm ẩm thực phở bò thượng hạng trong không gian đẳng cấp.", Description = "Mô tả thương hiệu ở phần chân trang (Footer)", IsActive = true, CreatedDate = DateTime.Now },
+                new SiteSetting { Key = "FooterAddress", Value = "Tòa CT2B, khu ĐTM Nghĩa Đô, đường Xuân Tảo, Hanoi, Vietnam", Description = "Địa chỉ liên hệ ở Footer", IsActive = true, CreatedDate = DateTime.Now },
+                new SiteSetting { Key = "FooterPhone", Value = "0901 234 567", Description = "Số điện thoại liên hệ ở Footer", IsActive = true, CreatedDate = DateTime.Now },
+                new SiteSetting { Key = "FooterEmail", Value = "contact@obeefsoup.vn", Description = "Email liên hệ ở Footer", IsActive = true, CreatedDate = DateTime.Now },
+                new SiteSetting { Key = "FooterWorkingHours", Value = "Thứ 2 - Chủ nhật: 07:00 - 22:00", Description = "Giờ mở cửa ở Footer", IsActive = true, CreatedDate = DateTime.Now },
+                new SiteSetting { Key = "SocialFacebook", Value = "https://facebook.com/obeefsoup", Description = "Link Fanpage Facebook", IsActive = true, CreatedDate = DateTime.Now },
+                new SiteSetting { Key = "SocialInstagram", Value = "https://instagram.com/obeefsoup", Description = "Link Instagram", IsActive = true, CreatedDate = DateTime.Now },
+                new SiteSetting { Key = "SocialYoutube", Value = "https://youtube.com/c/obeefsoup", Description = "Link Youtube", IsActive = true, CreatedDate = DateTime.Now },
+                new SiteSetting { Key = "SocialTiktok", Value = "https://tiktok.com/@obeefsoup", Description = "Link Tiktok", IsActive = true, CreatedDate = DateTime.Now }
+            };
+
+            var existingKeys = await _context.SiteSettings.Select(s => s.Key).ToListAsync();
+            bool changed = false;
+
+            foreach (var ds in defaultSettings)
+            {
+                if (!existingKeys.Contains(ds.Key))
+                {
+                    _context.SiteSettings.Add(ds);
+                    changed = true;
+                }
+            }
+
+            if (changed)
+            {
+                await _context.SaveChangesAsync();
+            }
         }
 
         // GET: Admin/Settings/Edit/5

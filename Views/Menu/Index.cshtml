@@ -2,47 +2,8 @@
 @{
     ViewData["Title"] = "Thực Đơn";
     var categories = ViewBag.Categories as List<OBeefSoup.Models.Category>;
-    var bgImage = ViewBag.BgImage as string ?? "";
-    var bgOpacity = ViewBag.BgOpacity as string ?? "0.05";
 }
 
-@if (!string.IsNullOrEmpty(bgImage))
-{
-    <style>
-        .menu-page-wrapper {
-            position: relative;
-        }
-        .menu-page-wrapper::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('@bgImage');
-            background-attachment: fixed;
-            background-size: cover;
-            background-position: center;
-            opacity: @bgOpacity;
-            z-index: 0;
-            pointer-events: none;
-        }
-        @@media (max-width: 768px) {
-            .menu-page-wrapper::before {
-                background-attachment: scroll !important;
-                background-position: center center !important;
-            }
-        }
-        .menu-page-wrapper > section {
-            position: relative;
-            z-index: 1;
-        }
-        /* Chỉ các section bên dưới hero mới transparent để thấy nền wrapper */
-        .menu-page-wrapper .menu-section,
-        .menu-page-wrapper .cta-section {
-            background: transparent !important;
-        }
-    </style>
-}
-
-<div class="menu-page-wrapper">
 
 <!-- Hero Section -->
 <section class="hero-section" style="
@@ -59,61 +20,73 @@
 </section>
 
 <!-- Menu Section -->
-<section class="menu-section py-5">
+<section class="menu-section py-4">
     <div class="container">
-        @foreach (var category in categories)
-        {
-            var categoryProducts = Model.Where(p => p.CategoryId == category.Id).ToList();
-            
-            if (categoryProducts.Any())
-            {
-                <div class="menu-category mb-5">
-                    <div class="category-header text-center mb-4">
-                        <h2 class="category-title">@category.Name</h2>
-                        @if (!string.IsNullOrEmpty(category.Description))
-                        {
-                            <p class="text-muted">@category.Description</p>
-                        }
-                        <hr class="category-divider" style="width: 100px; height: 3px; background: var(--color-primary); margin: 1rem auto;">
-                    </div>
+        <!-- Category Filter Bar -->
+        <div class="category-filter-wrapper mb-5 sticky-top bg-white py-3 shadow-sm border-bottom" style="top: 70px; z-index: 1000; margin-top: -1px;">
+            <div class="d-flex overflow-auto no-scrollbar gap-2 px-2 py-1 justify-content-md-center container-fluid">
+                <button class="filter-btn active" data-filter="all">Tất cả</button>
+                @foreach (var category in categories)
+                {
+                    <button class="filter-btn" data-filter="cat-@category.Id">@category.Name</button>
+                }
+            </div>
+        </div>
 
-                    <div class="row g-4">
-                        @foreach (var product in categoryProducts)
-                        {
-                            <div class="col-6 col-md-6 col-lg-4">
-                                <div class="menu-card h-100">
-                                    <div class="menu-card-image">
-                                        <a asp-action="Details" asp-route-id="@product.Id">
-                                            <img src="@product.ImageUrl" alt="@product.Name" class="img-fluid">
-                                        </a>
-                                        @if (product.IsFeatured)
-                                        {
-                                            <span class="badge-featured">Nổi bật</span>
-                                        }
-                                    </div>
-                                    <div class="menu-card-body">
-                                        <a asp-action="Details" asp-route-id="@product.Id" class="text-decoration-none">
+        <div id="menu-items-container">
+            @foreach (var category in categories)
+            {
+                var categoryProducts = Model.Where(p => p.CategoryId == category.Id).ToList();
+                
+                if (categoryProducts.Any())
+                {
+                    <div class="menu-category-group mb-5" id="cat-@category.Id">
+                        <div class="category-header text-center mb-4">
+                            <h2 class="category-title">@category.Name</h2>
+                            @if (!string.IsNullOrEmpty(category.Description))
+                            {
+                                <p class="text-muted">@category.Description</p>
+                            }
+                            <div class="category-divider"></div>
+                        </div>
+
+                        <div class="row g-4">
+                            @foreach (var product in categoryProducts)
+                            {
+                                <div class="col-6 col-md-6 col-lg-4">
+                                    <div class="menu-card h-100" 
+                                         style="cursor: pointer;" 
+                                         onclick="if(!event.target.closest('.add-to-cart-btn')) window.location.href='@Url.Action("Details", "Menu", new { id = product.Id })'">
+                                        <div class="menu-card-image">
+                                            <img src="@product.ImageUrl" alt="@product.Name" class="img-fluid" loading="lazy">
+                                            @if (product.IsFeatured)
+                                            {
+                                                <span class="badge-featured">Nổi bật</span>
+                                            }
+                                        </div>
+                                        <div class="menu-card-body">
                                             <h5 class="menu-card-title">@product.Name</h5>
-                                        </a>
-                                        <p class="menu-card-description">@product.Description</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span class="menu-card-price">@product.Price.ToString("N0")đ</span>
-                                            <button class="btn btn-primary add-to-cart-btn" 
-                                                    data-product-id="@product.Id"
-                                                    data-product-name="@product.Name"
-                                                    data-product-price="@product.Price"
-                                                    data-product-image="@product.ImageUrl">
-                                                <i class="bi bi-cart-plus me-2"></i>Thêm vào giỏ
-                                            </button>
+                                            <p class="menu-card-description">@product.Description</p>
+                                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                                <span class="menu-card-price">@product.Price.ToString("N0")đ</span>
+                                                <button class="btn btn-primary add-to-cart-btn" 
+                                                        onclick="event.stopPropagation();"
+                                                        data-product-id="@product.Id"
+                                                        data-product-name="@product.Name"
+                                                        data-product-price="@product.Price"
+                                                        data-product-image="@product.ImageUrl">
+                                                    <i class="bi bi-cart-plus me-1"></i><span class="d-none d-sm-inline">Thêm</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
+                            }
+                        </div>
                     </div>
-                </div>
+                }
             }
-        }
+        </div>
 
         @if (!Model.Any())
         {
@@ -125,21 +98,120 @@
     </div>
 </section>
 
+<style>
+    .category-filter-wrapper {
+        background: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .filter-btn {
+        background: #f8f9fa;
+        border: 1px solid #eee;
+        color: #666;
+        padding: 8px 18px;
+        border-radius: 50px;
+        white-space: nowrap;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+    }
+    .filter-btn:hover {
+        background: #eee;
+        transform: translateY(-2px);
+    }
+    .filter-btn.active {
+        background: var(--color-primary);
+        color: #fff;
+        border-color: var(--color-primary);
+        box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
+    }
+    .category-divider {
+        width: 60px;
+        height: 3px;
+        background: var(--color-primary);
+        margin: 1rem auto;
+        border-radius: 2px;
+    }
+    .menu-category-group {
+        transition: all 0.4s ease;
+    }
+    .menu-card {
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid #eee;
+        background: #fff;
+        transition: all 0.3s ease;
+    }
+    .menu-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+</style>
+
 <!-- CTA Section -->
-<section class="cta-section py-5">
-    <div class="container text-center">
-        <h3 class="mb-3">Sẵn sàng đặt món?</h3>
+<section class="cta-section py-5 position-relative" style="background: transparent !important;">
+    <div class="container text-center position-relative" style="z-index: 100;">
+        <h3 class="mb-3 fw-bold">Sẵn sàng đặt món?</h3>
         <p class="text-muted mb-4">Thêm món yêu thích vào giỏ hàng và đặt ngay hôm nay!</p>
-        <a asp-controller="Cart" asp-action="Index" class="btn btn-primary btn-lg">
+        <button onclick="window.location.href='/Cart'" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm border-0" style="cursor: pointer; position: relative; z-index: 110;">
             <i class="bi bi-cart3 me-2"></i>Xem giỏ hàng
-        </a>
+        </button>
     </div>
 </section>
 
-</div><!-- end menu-page-wrapper -->
 
 @section Scripts {
     <script>
-        // Shopping cart functionality is handled by cart.js
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const categoryGroups = document.querySelectorAll('.menu-category-group');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+
+                    // Update UI active state
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Filter logic
+                    categoryGroups.forEach(group => {
+                        if (filter === 'all' || group.id === filter) {
+                            group.style.display = 'block';
+                            // Trigger animation
+                            group.style.opacity = '0';
+                            setTimeout(() => {
+                                group.style.opacity = '1';
+                                group.style.transform = 'translateY(0)';
+                            }, 50);
+                        } else {
+                            group.style.display = 'none';
+                        }
+                    });
+
+                    // Scroll to top of menu if needed
+                    window.scrollTo({
+                        top: document.querySelector('.menu-section').offsetTop - 120,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Handle URL Hash (e.g. #category-1)
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#category-')) {
+                const catId = hash.replace('#category-', 'cat-');
+                const targetBtn = document.querySelector(`[data-filter="${catId}"]`);
+                if (targetBtn) targetBtn.click();
+            }
+        });
     </script>
 }

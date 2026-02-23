@@ -14,11 +14,12 @@
         :root {
             --sidebar-width: 260px;
             --header-height: 70px;
-            --primary-bg: #f8f9fa;
+            --primary-bg: #f4f7f6;
             --accent-color: #8B0000;
-            --sidebar-bg: #1e1e2d;
-            --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            --glass-bg: rgba(255, 255, 255, 0.8);
+            --sidebar-bg: rgba(30, 30, 45, 0.98);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(0, 0, 0, 0.05);
         }
 
         body {
@@ -26,6 +27,7 @@
             background-color: var(--primary-bg);
             overflow-x: hidden;
             letter-spacing: -0.01em;
+            color: #2c3e50;
         }
 
         /* Sidebar Styles */
@@ -36,119 +38,203 @@
             left: 0;
             top: 0;
             background: var(--sidebar-bg);
+            backdrop-filter: blur(15px);
             color: #a2a3b7;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 1050;
             overflow-y: auto;
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
 
         .sidebar-brand {
-            padding: 20px 25px;
+            padding: 25px;
             display: flex;
             align-items: center;
             color: #fff;
             text-decoration: none;
-            font-size: 1.25rem;
-            font-weight: 700;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        .sidebar-brand:hover { color: #fff; }
-
-        .sidebar-nav {
-            padding: 15px 0;
-            list-style: none;
-        }
+        .sidebar-nav { padding: 10px 0; }
 
         .nav-header {
-            padding: 10px 25px;
-            font-size: 0.75rem;
+            padding: 15px 25px 8px;
+            font-size: 0.65rem;
             text-transform: uppercase;
-            font-weight: 700;
-            color: #4b4b5f;
-            letter-spacing: 1px;
+            font-weight: 800;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 1.5px;
         }
 
-        .sidebar-item {
-            margin: 2px 15px;
-        }
+        .sidebar-item { margin: 4px 15px; }
 
         .sidebar-link {
-            padding: 12px 15px;
+            padding: 14px 18px;
             display: flex;
             align-items: center;
-            color: #a2a3b7;
+            color: rgba(162, 163, 183, 0.7);
             text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.2s;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 500;
+            font-size: 0.92rem;
         }
 
         .sidebar-link i {
-            font-size: 1.25rem;
-            margin-right: 12px;
-            transition: all 0.2s;
+            font-size: 1.3rem;
+            margin-right: 15px;
+            transition: all 0.3s;
+            opacity: 0.6;
         }
 
-        .sidebar-link:hover, .sidebar-link.active {
+        .sidebar-link:hover {
             color: #fff;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
         }
 
-        .sidebar-link.active i {
-            color: var(--accent-color);
+        .sidebar-link.active {
+            color: #fff;
+            background: var(--accent-color);
+            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.3);
         }
+        
+        .sidebar-link.active i { opacity: 1; transform: scale(1.1); }
 
         /* Top Header */
         #header {
             height: var(--header-height);
             position: fixed;
-            top: 0;
-            right: 0;
+            top: 0; right: 0;
             left: var(--sidebar-width);
             background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
-            padding: 0 30px;
+            padding: 0 40px;
             z-index: 999;
-            transition: all 0.3s;
+            transition: all 0.4s;
         }
+
+        /* Sidebar Backdrop */
+        #sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            z-index: 1040;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        #sidebar.show + #sidebar-overlay { display: block; opacity: 1; }
 
         /* Content Wrapper */
         #content-wrapper {
             margin-left: var(--sidebar-width);
             padding-top: var(--header-height);
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             min-height: 100vh;
         }
 
-        .main-content {
-            padding: 30px;
-        }
+        .main-content { padding: 40px; }
 
-        /* Card Optimization */
+        /* Premium Card */
         .card {
             border: none;
             box-shadow: var(--card-shadow);
-            border-radius: 12px;
-            transition: transform 0.2s;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        
+        .card-header {
+            background: transparent;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 20px 25px;
         }
 
-        .card:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Utility */
-        .rounded-12 { border-radius: 12px; }
-        .bg-glass { background: var(--glass-bg); backdrop-filter: blur(10px); }
-
+        /* Mobile Optimizations - App Style */
         @@media (max-width: 992px) {
-            #sidebar { left: calc(-1 * var(--sidebar-width)); }
-            #header { left: 0; }
-            #content-wrapper { margin-left: 0; }
-            #sidebar.active { left: 0; }
+            #sidebar { 
+                left: calc(-1 * var(--sidebar-width)); 
+                box-shadow: none;
+                background: var(--sidebar-bg);
+            }
+            #sidebar.show { 
+                left: 0; 
+                box-shadow: 20px 0 50px rgba(0,0,0,0.2);
+            }
+            #header { 
+                left: 0; padding: 0 20px; 
+                height: 60px;
+            }
+            #content-wrapper { 
+                margin-left: 0; 
+                padding-top: 60px;
+            }
+            .main-content { padding: 20px 15px; }
+            
+            /* Responsive Cards instead of tables */
+            .mobile-card-list {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .mobile-card {
+                background: #fff;
+                border-radius: 18px;
+                padding: 18px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+                border: 1px solid rgba(0,0,0,0.03);
+            }
+            
+            .d-mobile-none { display: none !important; }
+        }
+
+        /* Additional enhancements */
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-sm { padding: 0.4rem 1rem; border-radius: 10px; }
+
+        .btn-white { background: #fff; border: 1px solid rgba(0,0,0,0.1); color: #2c3e50; }
+        .btn-white:hover { background: #f8f9fa; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        .x-small { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        /* Global Form Styles */
+        .form-label { font-weight: 700; color: #1e1e2d; margin-bottom: 0.6rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-control, .form-select { 
+            padding: 0.75rem 1.25rem; 
+            border-radius: 14px; 
+            border: 1.5px solid #edf2f7;
+            background-color: #f8fafc;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        .form-control:focus, .form-select:focus { 
+            background-color: #fff;
+            border-color: var(--accent-color); 
+            box-shadow: 0 0 0 4px rgba(139, 0, 0, 0.08); 
+        }
+
+        @@media (max-width: 768px) {
+            .btn { width: 100%; display: flex; justify-content: center; align-items: center; }
+            .btn-sm { width: auto; }
+            .card { border-radius: 15px; }
         }
     </style>
 </head>
@@ -161,11 +247,19 @@
         var currentCtrl = ViewContext.RouteData.Values["controller"]?.ToString();
     }
 
+    <!-- Sidebar Backdrop -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <!-- Sidebar -->
     <aside id="sidebar">
-        <a href="@Url.Action("Index", "Dashboard")" class="sidebar-brand">
-            <i class="bi bi-soup-hot me-2 text-danger"></i> O'BeefSoup Admin
-        </a>
+        <div class="sidebar-brand d-flex justify-content-between align-items-center">
+            <a href="@Url.Action("Index", "Dashboard")" class="text-decoration-none text-white d-flex align-items-center">
+                <i class="bi bi-soup-hot me-2 text-danger"></i> O'BeefSoup Admin
+            </a>
+            <button class="btn btn-link text-white d-lg-none p-0" onclick="toggleSidebar()">
+                <i class="bi bi-x-lg fs-5"></i>
+            </button>
+        </div>
         
         <ul class="sidebar-nav">
             <li class="nav-header">Tổng quan</li>
@@ -184,6 +278,11 @@
             <li class="sidebar-item">
                 <a class="sidebar-link @(currentCtrl == "Products" ? "active" : "")" asp-controller="Products" asp-action="Index">
                     <i class="bi bi-box-seam-fill"></i> Sản phẩm
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a class="sidebar-link @(currentCtrl == "Categories" ? "active" : "")" asp-controller="Categories" asp-action="Index">
+                    <i class="bi bi-tags-fill"></i> Danh mục sản phẩm
                 </a>
             </li>
 
@@ -255,19 +354,22 @@
 
     <!-- Header -->
     <header id="header">
-        <button class="btn btn-link text-dark d-lg-none me-3" onclick="document.getElementById('sidebar').classList.toggle('active')">
-            <i class="bi bi-list fs-3"></i>
+        <button class="btn btn-link text-dark d-lg-none me-3 btn-icon bg-light" onclick="toggleSidebar()">
+            <i class="bi bi-list fs-4"></i>
         </button>
-        <div class="ms-auto d-flex align-items-center gap-3">
+        <div class="ms-auto d-flex align-items-center gap-2 gap-md-3">
             <a href="/" class="btn btn-sm btn-outline-secondary d-none d-md-block">
                 <i class="bi bi-eye me-1"></i> Xem Website
+            </a>
+            <a href="/" class="btn btn-icon btn-light d-md-none border">
+                <i class="bi bi-eye"></i>
             </a>
             
             @if (!string.IsNullOrEmpty(currentUser))
             {
                 <div class="dropdown">
                     <a class="d-flex align-items-center gap-2 text-decoration-none text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
                              style="width:36px;height:36px;background:var(--accent-color);font-size:0.9rem;">
                             @currentUser.Substring(0, 1).ToUpper()
                         </div>
@@ -302,6 +404,37 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const body = document.body;
+
+            sidebar.classList.toggle('show');
+            
+            if (sidebar.classList.contains('show')) {
+                overlay.style.display = 'block';
+                body.style.overflow = 'hidden';
+            } else {
+                overlay.style.display = 'none';
+                body.style.overflow = 'auto';
+            }
+        }
+
+        // Close sidebar on window resize if getting larger
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 992) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                if (sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                    overlay.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

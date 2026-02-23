@@ -4,40 +4,50 @@
     Layout = "_AdminLayout";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-star-fill me-2 text-warning"></i>Quản lý Đánh giá khách hàng</h2>
-</div>
+<div class="container-fluid">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+        <div>
+            <h3 class="fw-bold mb-0">Quản lý Đánh giá</h3>
+            <p class="text-muted small mb-0">Xem và duyệt các đánh giá từ khách hàng.</p>
+        </div>
+    </div>
 
-<div class="card shadow-sm border-0">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light">
-                    <tr>
-                        <th class="ps-4">Khách hàng</th>
-                        <th>Nội dung</th>
-                        <th>Đánh giá</th>
-                        <th>Trạng thái</th>
-                        <th>Ngày gửi</th>
-                        <th class="text-end pe-4">Thao tác</th>
-                    </tr>
-                </thead>
+    <div class="card shadow-sm border-0 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light bg-opacity-50">
+                        <tr class="text-muted small">
+                            <th class="ps-4 border-0">Khách hàng</th>
+                            <th class="border-0">Nội dung</th>
+                            <th class="border-0 d-none d-md-table-cell">Đánh giá</th>
+                            <th class="border-0">Trạng thái</th>
+                            <th class="border-0 d-none d-lg-table-cell">Ngày gửi</th>
+                            <th class="text-end pe-4 border-0">Thao tác</th>
+                        </tr>
+                    </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
                         <tr id="row-@item.Id">
                             <td class="ps-4">
                                 <div class="d-flex align-items-center">
-                                    <img src="https://ui-avatars.com/api/?name=@item.CustomerName&background=random" class="rounded-circle me-2" style="width: 35px; height: 35px;" />
-                                    <div class="fw-bold">@item.CustomerName</div>
+                                    <img src="https://ui-avatars.com/api/?name=@item.CustomerName&background=random" 
+                                         class="rounded-circle me-2 d-none d-sm-block" style="width: 32px; height: 32px;" />
+                                    <div>
+                                        <div class="fw-bold text-dark">@item.CustomerName</div>
+                                        <div class="d-md-none text-warning small">
+                                            @for (int i = 1; i <= item.Rating; i++) { <i class="bi bi-star-fill"></i> }
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
                             <td>
-                                <div class="text-truncate" style="max-width: 300px;" title="@item.Comment">
+                                <div class="text-truncate" style="max-width: 150px; font-size: 0.85rem;" title="@item.Comment">
                                     @item.Comment
                                 </div>
                             </td>
-                            <td>
+                            <td class="d-none d-md-table-cell">
                                 <div class="text-warning">
                                     @for (int i = 1; i <= 5; i++)
                                     {
@@ -46,17 +56,17 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input approval-toggle" type="checkbox" 
-                                           data-id="@item.Id" @(item.IsApproved ? "checked" : "")>
-                                    <span class="badge @(item.IsApproved ? "bg-success" : "bg-warning") ms-1 status-badge">
-                                        @(item.IsApproved ? "Đã duyệt" : "Chờ duyệt")
+                                <div class="form-check form-switch p-0 m-0 d-flex align-items-center gap-1">
+                                    <input class="form-check-input approval-toggle ms-0" type="checkbox" 
+                                           data-id="@item.Id" @(item.IsApproved ? "checked" : "") style="width: 2.5em;">
+                                    <span class="badge @(item.IsApproved ? "bg-success-subtle text-success" : "bg-warning-subtle text-warning") rounded-pill small d-none d-sm-inline">
+                                        @(item.IsApproved ? "Duyệt" : "Chờ")
                                     </span>
                                 </div>
                             </td>
-                            <td class="small text-muted">@item.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="d-none d-lg-table-cell small text-muted">@item.Date.ToString("dd/MM/yyyy HH:mm")</td>
                             <td class="text-end pe-4">
-                                <button class="btn btn-sm btn-outline-danger delete-btn" data-id="@item.Id">
+                                <button class="btn btn-sm btn-light border text-danger delete-btn" data-id="@item.Id">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </td>

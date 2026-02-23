@@ -27,7 +27,7 @@ namespace OBeefSoup.Models
         public string Address { get; set; } = string.Empty;
 
         [StringLength(500)]
-        public string Notes { get; set; } = string.Empty;
+        public string? Notes { get; set; } = string.Empty;
 
         public string? PasswordHash { get; set; }
 

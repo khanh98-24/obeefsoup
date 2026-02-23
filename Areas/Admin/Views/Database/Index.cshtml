@@ -2,23 +2,24 @@
     ViewData["Title"] = "Thông Tin Database";
 }
 
-<div class="container my-5">
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h2><i class="bi bi-database me-2"></i>Thông Tin Database</h2>
+<div class="container-fluid">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+        <div>
+            <h3 class="fw-bold mb-0">Thông Tin Database</h3>
+            <p class="text-muted small mb-0">Xem cấu trúc và kết nối cơ sở dữ liệu hệ thống.</p>
         </div>
-        <div class="col-md-6 text-end">
-            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Về Dashboard
+        <div class="w-100 w-md-auto">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="btn btn-white border d-flex align-items-center justify-content-center gap-2 shadow-sm w-100 w-md-auto">
+                <i class="bi bi-arrow-left"></i> Quay lại Dashboard
             </a>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Kết Nối Database</h5>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0 fw-bold text-info">Kết Nối Database</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -40,9 +41,9 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Các Bảng Trong Database</h5>
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0 fw-bold text-primary">Các Bảng Trong Database</h5>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">

@@ -134,6 +134,14 @@
 
                             <input type="hidden" asp-for="Value" />
                         }
+                        @if (Model.Key.Contains("Description") || Model.Key.Contains("Address") || Model.Key.Contains("Hours"))
+                        {
+                            <div class="mb-3">
+                                <label asp-for="Value" class="form-label fw-bold">Giá Trị</label>
+                                <textarea asp-for="Value" class="form-control" rows="4"></textarea>
+                                <span asp-validation-for="Value" class="text-danger"></span>
+                            </div>
+                        }
                         else
                         {
                             <div class="mb-3">

@@ -146,6 +146,6 @@ namespace OBeefSoup.Controllers
         public string DeliveryAddress { get; set; } = string.Empty;
 
         [Display(Name = "Ghi chú")]
-        public string Notes { get; set; } = string.Empty;
+        public string? Notes { get; set; } = string.Empty;
     }
 }

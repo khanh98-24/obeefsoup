@@ -34,7 +34,8 @@ namespace OBeefSoup.Services
                     FullName = fullName,
                     Email = email,
                     Phone = phone,
-                    Address = address,
+                    Address = address ?? "",
+                    Notes = notes ?? "",
                     CreatedDate = DateTime.Now
                 };
                 _context.Customers.Add(customer);
@@ -44,7 +45,11 @@ namespace OBeefSoup.Services
             {
                 // Cập nhật thông tin nếu cần
                 customer.FullName = fullName;
-                customer.Address = address;
+                customer.Address = address ?? "";
+                if (!string.IsNullOrEmpty(notes))
+                {
+                    customer.Notes = notes;
+                }
             }
 
             // Tạo đơn hàng
@@ -54,9 +59,9 @@ namespace OBeefSoup.Services
                 OrderNumber = GenerateOrderNumber(),
                 OrderDate = DateTime.Now,
                 Status = OrderStatus.Pending,
-                DeliveryAddress = address,
+                DeliveryAddress = address ?? "",
                 PhoneNumber = phone,
-                Notes = notes,
+                Notes = notes ?? "",
                 TotalAmount = cart.Sum(item => item.Subtotal)
             };
 
@@ -113,13 +118,28 @@ namespace OBeefSoup.Services
         }
 
         /// <summary>
-        /// Lấy tất cả đơn hàng (cho admin)
+        /// Lấy tất cả đơn hàng (cho admin) với bộ lọc ngày
         /// </summary>
-        public async Task<List<Order>> GetAllOrdersAsync()
+        public async Task<List<Order>> GetAllOrdersAsync(DateTime? fromDate = null, DateTime? toDate = null)
         {
-            return await _context.Orders
+            var query = _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderItems)
+                .AsQueryable();
+
+            if (fromDate.HasValue)
+            {
+                var startOfDay = fromDate.Value.Date;
+                query = query.Where(o => o.OrderDate >= startOfDay);
+            }
+
+            if (toDate.HasValue)
+            {
+                var endOfDay = toDate.Value.Date.AddDays(1).AddTicks(-1);
+                query = query.Where(o => o.OrderDate <= endOfDay);
+            }
+
+            return await query
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
         }

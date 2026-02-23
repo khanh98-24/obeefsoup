@@ -4,18 +4,6 @@
     var relatedProducts = ViewBag.RelatedProducts as List<OBeefSoup.Models.Product>;
 }
 
-<!-- Hero Breadcrumb -->
-<section class="details-hero py-4" style="background: #f8f9fa; border-bottom: 1px solid #eee;">
-    <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
-                <li class="breadcrumb-item"><a asp-controller="Menu" asp-action="Index">Thực đơn</a></li>
-                <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
-            </ol>
-        </nav>
-    </div>
-</section>
 
 <!-- Product Details Section -->
 <section class="product-details-section py-5 animate-on-scroll">
@@ -23,8 +11,10 @@
         <div class="row g-5">
             <!-- Product Image -->
             <div class="col-lg-6">
-                <div class="product-image-wrapper p-2 bg-white shadow-sm rounded-4">
-                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded-4 w-100" style="object-fit: cover; min-height: 400px;">
+                <div class="product-image-wrapper p-2 bg-white shadow-sm rounded-4 position-relative" id="img-container">
+                    <img id="main-product-image" src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded-4 w-100" style="object-fit: cover; min-height: 400px; cursor: crosshair;">
+                    <div id="zoom-lens" class="zoom-lens"></div>
+                    <div id="zoom-result" class="zoom-result shadow-lg rounded-4"></div>
                 </div>
             </div>
 
@@ -49,18 +39,18 @@
                     <div class="purchase-actions border-top pt-5">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <button class="btn btn-primary btn-lg w-100 py-3 rounded-pill fw-bold add-to-cart-btn"
+                                <button class="btn btn-primary btn-lg w-100 py-3 rounded-pill fw-bold add-to-cart-btn action-btn-equal"
                                         data-product-id="@Model.Id"
                                         data-product-name="@Model.Name"
                                         data-product-price="@Model.Price"
                                         data-product-image="@Model.ImageUrl">
-                                    <i class="bi bi-cart-plus me-2"></i>Thêm vào giỏ
+                                    <i class="bi bi-cart-plus me-2"></i>THÊM VÀO GIỎ
                                 </button>
                             </div>
                             <div class="col-md-6">
-                                <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-dark btn-lg w-100 py-3 rounded-pill fw-bold">
-                                    Xem giỏ hàng
-                                </a>
+                                <button onclick="window.location.href='/Cart'" class="btn btn-outline-dark btn-lg w-100 py-3 rounded-pill fw-bold action-btn-equal">
+                                    <i class="bi bi-bag-check me-2"></i>XEM GIỎ HÀNG
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -83,15 +73,15 @@
                 @foreach (var p in relatedProducts)
                 {
                     <div class="col-6 col-md-3">
-                        <a asp-action="Details" asp-route-id="@p.Id" class="text-decoration-none">
-                            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden menu-card">
-                                <img src="@p.ImageUrl" class="card-img-top" alt="@p.Name" style="height: 180px; object-fit: cover;">
-                                <div class="card-body p-3">
-                                    <h6 class="text-dark fw-bold mb-1">@p.Name</h6>
-                                    <p class="text-primary fw-bold mb-0Small">@p.Price.ToString("N0")đ</p>
-                                </div>
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden menu-card" 
+                             style="cursor: pointer;"
+                             onclick="window.location.href='@Url.Action("Details", "Menu", new { id = p.Id })'">
+                            <img src="@p.ImageUrl" class="card-img-top" alt="@p.Name" style="height: 180px; object-fit: cover;">
+                            <div class="card-body p-3">
+                                <h6 class="text-dark fw-bold mb-1">@p.Name</h6>
+                                <p class="text-primary fw-bold mb-0Small">@p.Price.ToString("N0")đ</p>
                             </div>
-                        </a>
+                        </div>
                     </div>
                 }
             </div>
@@ -101,7 +91,60 @@
 
 @section Scripts {
     <script>
-        // Copy to here if needed, or it's already in Layout
+        document.addEventListener("DOMContentLoaded", function() {
+            const container = document.getElementById('img-container');
+            const img = document.getElementById('main-product-image');
+            const lens = document.getElementById('zoom-lens');
+            const result = document.getElementById('zoom-result');
+
+            if (!container || !img || !lens || !result) return;
+
+            // Set result background
+            result.style.backgroundImage = `url('${img.src}')`;
+
+            function moveLens(e) {
+                e.preventDefault();
+                
+                const rect = img.getBoundingClientRect();
+                const x = (e.pageX || e.touches[0].pageX) - rect.left - window.pageXOffset;
+                const y = (e.pageY || e.touches[0].pageY) - rect.top - window.pageYOffset;
+
+                let lensX = x - (lens.offsetWidth / 2);
+                let lensY = y - (lens.offsetHeight / 2);
+
+                // Boundary check
+                if (lensX > img.width - lens.offsetWidth) lensX = img.width - lens.offsetWidth;
+                if (lensX < 0) lensX = 0;
+                if (lensY > img.height - lens.offsetHeight) lensY = img.height - lens.offsetHeight;
+                if (lensY < 0) lensY = 0;
+
+                lens.style.left = lensX + "px";
+                lens.style.top = lensY + "px";
+
+                // Magnification calculation
+                // Note: result size is 350x350, lens is 100x100 -> ratio is 3.5
+                const cx = result.offsetWidth / lens.offsetWidth;
+                const cy = result.offsetHeight / lens.offsetHeight;
+
+                result.style.backgroundSize = (img.width * cx) + "px " + (img.height * cy) + "px";
+                result.style.backgroundPosition = "-" + (lensX * cx) + "px -" + (lensY * cy) + "px";
+            }
+
+            container.addEventListener("mousemove", moveLens);
+            container.addEventListener("touchmove", moveLens);
+
+            container.addEventListener("mouseenter", function() {
+                lens.style.display = "block";
+                result.style.display = "block";
+                result.style.opacity = "1";
+            });
+
+            container.addEventListener("mouseleave", function() {
+                lens.style.display = "none";
+                result.style.display = "none";
+                result.style.opacity = "0";
+            });
+        });
     </script>
 }
 
@@ -118,5 +161,59 @@
         padding: 1rem 2rem;
         border-radius: 15px;
         border-left: 5px solid var(--color-primary);
+    }
+    .action-btn-equal {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.95rem !important;
+        transition: all 0.3s ease;
+    }
+    .action-btn-equal:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Zoom Styles */
+    .zoom-lens {
+        position: absolute;
+        border: 1px solid #d4d4d4;
+        width: 120px;
+        height: 120px;
+        background-color: rgba(255, 255, 255, 0.4);
+        cursor: crosshair;
+        display: none;
+        z-index: 10;
+        pointer-events: none;
+        border-radius: 10px;
+    }
+    .zoom-result {
+        position: absolute;
+        border: 1px solid #d4d4d4;
+        width: 400px;
+        height: 400px;
+        top: 0;
+        left: 105%;
+        background-repeat: no-repeat;
+        display: none;
+        z-index: 9999;
+        background-color: white;
+        transition: opacity 0.3s ease;
+        opacity: 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    @@media (max-width: 991px) {
+        .zoom-result {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            margin-left: 0;
+            width: 300px;
+            height: 300px;
+        }
     }
 </style>

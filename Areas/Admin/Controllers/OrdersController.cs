@@ -16,9 +16,11 @@ namespace OBeefSoup.Areas.Admin.Controllers
             _orderService = orderService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? fromDate, DateTime? toDate)
         {
-            var orders = await _orderService.GetAllOrdersAsync();
+            var orders = await _orderService.GetAllOrdersAsync(fromDate, toDate);
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
             return View(orders);
         }
 

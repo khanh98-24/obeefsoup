@@ -3,95 +3,128 @@
     ViewData["Title"] = "Chi Tiết Đơn Hàng";
 }
 
-<div class="container my-5">
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <h2><i class="bi bi-file-text me-2"></i>Chi Tiết Đơn Hàng</h2>
-            <p class="text-muted mb-0">Mã: <strong>@Model.OrderNumber</strong></p>
+<div class="container-fluid px-0 px-md-3">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 px-3 px-md-0">
+        <div>
+            <h3 class="fw-bold mb-0">Chi Tiết Đơn Hàng</h3>
+            <p class="text-muted small mb-0">Mã đơn: <span class="text-dark fw-bold">#@Model.OrderNumber</span> &bull; Ngày đặt: @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
         </div>
-        <div class="col-md-6 text-end">
-            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Quay Lại
+        <div class="w-100 w-md-auto">
+            <a asp-action="Index" class="btn btn-white border d-flex align-items-center justify-content-center gap-2 shadow-sm w-100 w-md-auto">
+                <i class="bi bi-arrow-left"></i> Quay lại
             </a>
         </div>
     </div>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="container-fluid mb-4">
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm">
+                <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
         </div>
     }
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-cart3 me-2"></i>Món Đã Đặt</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Món Ăn</th>
-                                <th class="text-center">Số Lượng</th>
-                                <th class="text-end">Đơn Giá</th>
-                                <th class="text-end">Thành Tiền</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.OrderItems)
-                            {
-                                <tr>
-                                    <td>@item.ProductName</td>
-                                    <td class="text-center">@item.Quantity</td>
-                                    <td class="text-end">@item.UnitPrice.ToString("N0")đ</td>
-                                    <td class="text-end"><strong>@item.Subtotal.ToString("N0")đ</strong></td>
-                                </tr>
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr class="table-active">
-                                <th colspan="3" class="text-end">TỔNG CỘNG:</th>
-                                <th class="text-end text-primary">@Model.TotalAmount.ToString("N0")đ</th>
-                            </tr>
-                        </tfoot>
-                    </table>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <!-- Mobile Status Card (Visible only on mobile) -->
+            <div class="d-lg-none px-3 mb-4">
+                <div class="card border-0 shadow-sm bg-accent text-white overflow-hidden">
+                    <div class="card-body p-4 position-relative">
+                        <div class="position-relative z-1">
+                            <div class="text-white text-opacity-75 x-small mb-1">TRẠNG THÁI HIỆN TẠI</div>
+                            <h4 class="fw-bold mb-0">@{ RenderStatusText(Model.Status); }</h4>
+                        </div>
+                        <i class="bi bi-box-seam position-absolute end-0 bottom-0 opacity-25" style="font-size: 5rem; transform: translate(20%, 20%);"></i>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-person me-2"></i>Thông Tin Khách Hàng</h5>
+            <!-- Items Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-cart3 me-2 text-primary"></i>Danh sách món đặt</h5>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="text-muted small">Họ Tên:</label>
-                            <p class="mb-0"><strong>@Model.Customer.FullName</strong></p>
+                <div class="card-body p-0">
+                    <!-- Desktop Table -->
+                    <div class="table-responsive d-none d-md-block">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr class="text-muted x-small">
+                                    <th class="ps-4">SẢN PHẨM</th>
+                                    <th class="text-center">SỐ LƯỢNG</th>
+                                    <th class="text-end">ĐƠN GIÁ</th>
+                                    <th class="text-end pe-4">THÀNH TIỀN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="fw-bold">@item.ProductName</div>
+                                        </td>
+                                        <td class="text-center">@item.Quantity</td>
+                                        <td class="text-end">@item.UnitPrice.ToString("N0")đ</td>
+                                        <td class="text-end pe-4 fw-bold text-accent">@item.Subtotal.ToString("N0")đ</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Mobile List -->
+                    <div class="d-md-none">
+                        @foreach (var item in Model.OrderItems)
+                        {
+                            <div class="p-3 border-bottom">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <div class="fw-bold text-dark">@item.ProductName</div>
+                                    <div class="fw-bold text-accent">@item.Subtotal.ToString("N0")đ</div>
+                                </div>
+                                <div class="text-muted small">@item.Quantity x @item.UnitPrice.ToString("N0")đ</div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Summary Footer -->
+                    <div class="p-4 bg-light bg-opacity-50">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted fw-bold x-small">TỔNG THÀNH TIỀN:</span>
+                            <span class="fs-4 fw-bold text-accent">@Model.TotalAmount.ToString("N0") VNĐ</span>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="text-muted small">Số Điện Thoại:</label>
-                            <p class="mb-0"><strong>@Model.PhoneNumber</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Info -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-person me-2 text-info"></i>Thông tin nhận hàng</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="info-group">
+                                <label class="text-muted x-small d-block mb-1">KHÁCH HÀNG</label>
+                                <div class="fw-bold text-dark fs-5">@Model.Customer.FullName</div>
+                                <div class="text-muted small"><i class="bi bi-envelope me-1"></i>@Model.Customer.Email</div>
+                                <div class="text-muted small"><i class="bi bi-telephone me-1"></i>@Model.PhoneNumber</div>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="text-muted small">Email:</label>
-                            <p class="mb-0">@Model.Customer.Email</p>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="text-muted small">Ngày Đặt:</label>
-                            <p class="mb-0">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
-                        </div>
-                        <div class="col-12 mb-3">
-                            <label class="text-muted small">Địa Chỉ Giao Hàng:</label>
-                            <p class="mb-0">@Model.DeliveryAddress</p>
+                        <div class="col-md-6 border-start-md">
+                            <div class="info-group">
+                                <label class="text-muted x-small d-block mb-1">ĐỊA CHỈ GIAO HÀNG</label>
+                                <div class="text-dark small lh-base">@Model.DeliveryAddress</div>
+                            </div>
                         </div>
                         @if (!string.IsNullOrEmpty(Model.Notes))
                         {
-                            <div class="col-12">
-                                <label class="text-muted small">Ghi Chú:</label>
-                                <p class="mb-0 fst-italic">@Model.Notes</p>
+                            <div class="col-12 mt-4 pt-3 border-top">
+                                <label class="text-muted x-small d-block mb-1">GHI CHÚ ĐƠN HÀNG</label>
+                                <div class="p-3 bg-light rounded-12 fst-italic small">"@Model.Notes"</div>
                             </div>
                         }
                     </div>
@@ -99,56 +132,38 @@
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header bg-warning">
-                    <h5 class="mb-0"><i class="bi bi-arrow-repeat me-2"></i>Cập Nhật Trạng Thái</h5>
+        <div class="col-lg-4">
+            <!-- Update Status Card -->
+            <div class="card border-0 shadow-sm mb-4 sticky-lg-top" style="top: 100px;">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-arrow-repeat me-2 text-warning"></i>Cập nhật đơn hàng</h5>
                 </div>
-                <div class="card-body">
-                    <form asp-area="Admin" asp-action="UpdateStatus" method="post">
+                <div class="card-body p-4">
+                    <form asp-area="Admin" asp-action="UpdateStatus" method="post" id="updateStatusForm">
                         <input type="hidden" name="orderId" value="@Model.OrderId" />
                         
-                        <div class="mb-3">
-                            <label class="form-label">Trạng thái hiện tại:</label>
-                            <div>
-                                @switch (Model.Status)
-                                {
-                                    case OBeefSoup.Models.OrderStatus.Pending:
-                                        <span class="badge bg-warning fs-6">Chờ xác nhận</span>
-                                        break;
-                                    case OBeefSoup.Models.OrderStatus.Confirmed:
-                                        <span class="badge bg-info fs-6">Đã xác nhận</span>
-                                        break;
-                                    case OBeefSoup.Models.OrderStatus.Preparing:
-                                        <span class="badge bg-primary fs-6">Đang chuẩn bị</span>
-                                        break;
-                                    case OBeefSoup.Models.OrderStatus.Delivering:
-                                        <span class="badge bg-secondary fs-6">Đang giao</span>
-                                        break;
-                                    case OBeefSoup.Models.OrderStatus.Completed:
-                                        <span class="badge bg-success fs-6">Hoàn thành</span>
-                                        break;
-                                    case OBeefSoup.Models.OrderStatus.Cancelled:
-                                        <span class="badge bg-danger fs-6">Đã hủy</span>
-                                        break;
-                                }
+                        <div class="mb-4 d-none d-lg-block">
+                            <label class="form-label">TRẠNG THÁI HIỆN TẠI</label>
+                            <div class="p-3 rounded-14 border bg-light d-flex align-items-center gap-3">
+                                <div class="status-dot @Model.Status.ToString().ToLower()"></div>
+                                <span class="fw-bold text-dark">@{ RenderStatusText(Model.Status); }</span>
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Đổi thành:</label>
-                            <select name="status" class="form-select">
-                                <option value="0">Chờ xác nhận</option>
-                                <option value="1">Đã xác nhận</option>
-                                <option value="2">Đang chuẩn bị</option>
-                                <option value="3">Đang giao hàng</option>
-                                <option value="4">Hoàn thành</option>
-                                <option value="5">Đã hủy</option>
+                        <div class="mb-4">
+                            <label class="form-label">THAY ĐỔI TRẠNG THÁI</label>
+                            <select name="status" class="form-select shadow-sm" style="padding: 1rem;">
+                                <option value="0" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Pending)">Chờ xác nhận</option>
+                                <option value="1" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Confirmed)">Đã xác nhận</option>
+                                <option value="2" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Preparing)">Đang chuẩn bị</option>
+                                <option value="3" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Delivering)">Đang giao hàng</option>
+                                <option value="4" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Completed)">Hoàn thành</option>
+                                <option value="5" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Cancelled)">Đã hủy</option>
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-check-circle me-2"></i>Cập Nhật
+                        <button type="submit" class="btn btn-warning w-100 py-3 fw-bold shadow-sm d-none d-lg-block">
+                            <i class="bi bi-check-circle me-2"></i>Lưu thay đổi
                         </button>
                     </form>
                 </div>
@@ -156,3 +171,42 @@
         </div>
     </div>
 </div>
+
+<!-- Mobile Sticky Footer -->
+<div class="d-lg-none fixed-bottom bg-white border-top p-3 shadow-lg z-1050">
+    <button type="button" onclick="document.getElementById('updateStatusForm').submit()" class="btn btn-warning w-100 py-3 fw-bold fs-5 shadow-sm">
+        <i class="bi bi-check-circle me-2"></i>CẬP NHẬT ĐƠN HÀNG
+    </button>
+</div>
+
+<div class="mb-5 pb-5 d-lg-none"></div>
+
+@section Scripts {
+    <style>
+        .bg-accent { background-color: var(--accent-color); }
+        .border-start-md { border-left: 1px solid #edf2f7; }
+        @@media (max-width: 768px) { .border-start-md { border-left: none; } }
+        .rounded-14 { border-radius: 14px; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .status-dot.pending { background-color: #ffc107; box-shadow: 0 0 0 4px rgba(255,193,7,0.2); }
+        .status-dot.confirmed { background-color: #0dcaf0; box-shadow: 0 0 0 4px rgba(13,202,240,0.2); }
+        .status-dot.completed { background-color: #198754; box-shadow: 0 0 0 4px rgba(25,135,84,0.2); }
+        /* Add more as needed */
+    </style>
+}
+
+@{
+    void RenderStatusText(OBeefSoup.Models.OrderStatus status)
+    {
+        @switch (status)
+        {
+            case OBeefSoup.Models.OrderStatus.Pending: <span>Chờ xác nhận</span> break;
+            case OBeefSoup.Models.OrderStatus.Confirmed: <span>Đã xác nhận</span> break;
+            case OBeefSoup.Models.OrderStatus.Preparing: <span>Đang chuẩn bị</span> break;
+            case OBeefSoup.Models.OrderStatus.Delivering: <span>Đang giao hàng</span> break;
+            case OBeefSoup.Models.OrderStatus.Completed: <span>Hoàn thành</span> break;
+            case OBeefSoup.Models.OrderStatus.Cancelled: <span>Đã hủy bỏ</span> break;
+            default: @status.ToString() break;
+        }
+    }
+}

@@ -47,8 +47,9 @@ body {
     color: #333;
     line-height: 1.7;
     overflow-x: hidden;
-    background-color: var(--color-light);
+    background-color: transparent;
 }
+
 
 h1,
 h2,
@@ -77,7 +78,7 @@ h6 {
 
 .brand-logo {
     font-family: var(--font-heading);
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: 700;
     background: var(--gradient-gold);
     -webkit-background-clip: text;
@@ -90,7 +91,8 @@ h6 {
 .nav-link {
     color: rgba(255, 255, 255, 0.9) !important;
     font-weight: 500;
-    padding: 0.5rem 0.8rem !important;
+    padding: 0.5rem 0.6rem !important;
+    font-size: 0.95rem;
     transition: var(--transition-smooth);
     position: relative;
 }
@@ -125,6 +127,17 @@ h6 {
     padding: 0.8rem 0;
 }
 
+@media (min-width: 992px) and (max-width: 1200px) {
+    .nav-link {
+        padding: 0.5rem 0.4rem !important;
+        font-size: 0.85rem;
+    }
+
+    .brand-logo {
+        font-size: 1.4rem;
+    }
+}
+
 @media (max-width: 991px) {
     .navbar-collapse {
         background: rgba(26, 15, 10, 0.98);
@@ -139,6 +152,36 @@ h6 {
         padding: 12px 20px !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
+}
+
+/* Dropdown Menu Premium Styling */
+.dropdown-menu {
+    background: rgba(26, 15, 10, 0.95) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    border-radius: 15px !important;
+    padding: 10px !important;
+    margin-top: 10px !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dropdown-item {
+    color: rgba(255, 255, 255, 0.8) !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    transition: var(--transition-smooth);
+}
+
+.dropdown-item:hover {
+    background: rgba(212, 175, 55, 0.1) !important;
+    color: var(--color-secondary) !important;
+    transform: translateX(5px);
+}
+
+.dropdown-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 /* === BANNER CAROUSEL === */
