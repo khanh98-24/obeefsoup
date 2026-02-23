@@ -165,4 +165,4 @@ For questions about ASP.NET Core MVC:
 
 ---
 
-**Built with ❤️ for O' BeefSoup - Tinh hoa phở Việt, đậm vị từ tâm**
+**Built with ❤️ for O' BeefSoup - Tinh hoa phở Việt, đậm vị từ tâm** NgocKhanh
