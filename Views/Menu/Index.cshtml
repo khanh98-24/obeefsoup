@@ -6,11 +6,10 @@
 
 
 <!-- Hero Section -->
-<section class="hero-section" style="
+<section class="hero-section menu-hero" style="
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
                 url('/images/486748406_1200441442085265_4112327303630339444_n.jpg') center/cover no-repeat,
                 linear-gradient(135deg, var(--color-primary) 0%, #8B0000 100%); 
-    padding: 6rem 0;
     position: relative;
     overflow: hidden;">
     <div class="container text-center text-white" style="position: relative; z-index: 2;">
@@ -23,7 +22,7 @@
 <section class="menu-section py-4">
     <div class="container">
         <!-- Category Filter Bar -->
-        <div class="category-filter-wrapper mb-5 sticky-top bg-white py-3 shadow-sm border-bottom" style="top: 70px; z-index: 1000; margin-top: -1px;">
+        <div class="category-filter-wrapper sticky-top">
             <div class="d-flex overflow-auto no-scrollbar gap-2 px-2 py-1 justify-content-md-center container-fluid">
                 <button class="filter-btn active" data-filter="all">Tất cả</button>
                 @foreach (var category in categories)
@@ -50,7 +49,7 @@
                             <div class="category-divider"></div>
                         </div>
 
-                        <div class="row g-4">
+                        <div class="row g-3 g-md-4">
                             @foreach (var product in categoryProducts)
                             {
                                 <div class="col-6 col-md-6 col-lg-4">
@@ -197,11 +196,18 @@
                         }
                     });
 
-                    // Scroll to top of menu if needed
-                    window.scrollTo({
-                        top: document.querySelector('.menu-section').offsetTop - 120,
-                        behavior: 'smooth'
-                    });
+                    // Wait for display changes to settle then scroll
+                    setTimeout(() => {
+                        const targetGroup = document.getElementById(filter);
+                        if (targetGroup) {
+                            targetGroup.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        } else {
+                            window.scrollTo({
+                                top: document.querySelector('.menu-section').offsetTop - 60,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 50);
                 });
             });
 

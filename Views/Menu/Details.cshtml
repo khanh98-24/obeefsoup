@@ -6,12 +6,12 @@
 
 
 <!-- Product Details Section -->
-<section class="product-details-section py-5 animate-on-scroll">
+<section class="product-details-section py-4 animate-on-scroll">
     <div class="container">
         <div class="row g-5">
             <!-- Product Image -->
             <div class="col-lg-6">
-                <div class="product-image-wrapper p-2 bg-white shadow-sm rounded-4 position-relative" id="img-container">
+                <div class="product-image-wrapper p-0 rounded-4 position-relative" id="img-container">
                     <img id="main-product-image" src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded-4 w-100" style="object-fit: cover; min-height: 400px; cursor: crosshair;">
                     <div id="zoom-lens" class="zoom-lens"></div>
                     <div id="zoom-result" class="zoom-result shadow-lg rounded-4"></div>
@@ -63,7 +63,7 @@
 <!-- Related Products -->
 @if (relatedProducts != null && relatedProducts.Any())
 {
-    <section class="related-products-section py-5 bg-light">
+    <section class="related-products-section py-4">
         <div class="container">
             <div class="section-header mb-5">
                 <h3 class="fw-bold">Món ngon liên quan</h3>
