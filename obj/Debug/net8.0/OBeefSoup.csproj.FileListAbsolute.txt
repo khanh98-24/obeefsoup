@@ -144,7 +144,6 @@ D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.MvcApplicationPartsAssemblyInfo.cs
-D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\en-US\OBeefSoup.resources.dll
 D:\WEB Phở\OBeefSoup\bin\Debug\net8.0\vi-VN\OBeefSoup.resources.dll
 D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.Resources.Views.Shared._Layout.en-US.resources
@@ -154,3 +153,4 @@ D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\en-US\OBeefSoup.resources.dll
 D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\vi-VN\OBeefSoup.resources.dll
 D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.Resources.Views.Shared.Components.Menu.Default.en-US.resources
 D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\OBeefSoup.Resources.Views.Shared.Components.Menu.Default.vi-VN.resources
+D:\WEB Phở\OBeefSoup\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

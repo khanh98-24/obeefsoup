@@ -4,6 +4,20 @@
     Layout = "_AdminLayout";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+    <style>
+        .crop-container {
+            max-height: 500px;
+            width: 100%;
+        }
+        #image-to-crop {
+            max-width: 100%;
+            display: block;
+        }
+    </style>
+}
+
 <div class="p-4">
     <div class="d-flex align-items-center mb-4">
         <a asp-action="Index" class="btn btn-outline-secondary me-3">
@@ -19,7 +33,7 @@
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4">
-                    <form asp-action="Edit" method="post">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
                         @Html.AntiForgeryToken()
                         <input asp-for="Id" type="hidden" />
 
@@ -60,21 +74,153 @@
                             <span asp-validation-for="IconClass" class="text-danger small"></span>
                         </div>
 
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label asp-for="Size" class="form-label fw-semibold"></label>
-                                <select asp-for="Size" class="form-select">
-                                    <option value="large">Lớn (2 cột × 2 hàng)</option>
-                                    <option value="medium">Vừa (2 cột × 1 hàng)</option>
-                                    <option value="small">Nhỏ (1 cột × 1 hàng)</option>
-                                    <option value="accent">Nhấn (1 cột × 1 hàng)</option>
-                                </select>
+                        <div class="mb-4">
+                            <label asp-for="Size" class="form-label fw-semibold d-block">1. Chọn kích thước ô trước (Grid Size)</label>
+                            <div class="text-muted small mb-2"><i class="bi bi-info-circle me-1"></i>Tỉ lệ cắt ảnh sẽ tự động thay đổi theo kích thước này.</div>
+                            <input asp-for="Size" type="hidden" id="SizeInput" />
+                            <div class="row g-2">
+                                <div class="col-6 col-md-3">
+                                    <div class="size-option @(Model.Size == "large" ? "active" : "")" data-size="large">
+                                        <div class="size-preview">
+                                            <div class="size-box box-2x2"></div>
+                                        </div>
+                                        <div class="size-label">Lớn (1:1)</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="size-option @(Model.Size == "medium" ? "active" : "")" data-size="medium">
+                                        <div class="size-preview">
+                                            <div class="size-box box-2x1"></div>
+                                        </div>
+                                        <div class="size-label">Vừa (2:1)</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="size-option @(Model.Size == "small" ? "active" : "")" data-size="small">
+                                        <div class="size-preview">
+                                            <div class="size-box box-1x1"></div>
+                                        </div>
+                                        <div class="size-label">Nhỏ (1:1)</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="size-option @(Model.Size == "accent" ? "active" : "")" data-size="accent">
+                                        <div class="size-preview">
+                                            <div class="size-box box-1x1 accent"></div>
+                                        </div>
+                                        <div class="size-label">Nhấn (1:1)</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label asp-for="DisplayOrder" class="form-label fw-semibold"></label>
-                                <input asp-for="DisplayOrder" class="form-control" type="number" min="0" />
+                            <span asp-validation-for="Size" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">2. Tải ảnh nền (Tùy chọn)</label>
+                            <input type="file" class="form-control" accept="image/*" id="backgroundInput" />
+                            <input type="hidden" name="CroppedImage" id="CroppedImage" />
+                            <div class="form-text">Mẹo: Hệ thống sẽ tự căn tỷ lệ chuẩn cho bạn cắt ảnh.</div>
+                            
+                            <div id="cropActions" class="mt-2 d-none">
+                                <button type="button" class="btn btn-sm btn-success" id="btnCrop">
+                                    <i class="bi bi-scissors me-1"></i>Cắt ảnh này
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnResetCrop">Hủy</button>
+                            </div>
+
+                            <div id="imagePreview" class="mt-3 @(string.IsNullOrEmpty(Model.BackgroundImageUrl) ? "d-none" : "")">
+                                <div class="position-relative d-inline-block">
+                                    <img src="@(Model.BackgroundImageUrl ?? "")" class="img-thumbnail" id="previewImg" style="max-height: 200px;" />
+                                    <span class="badge bg-primary position-absolute top-0 start-0 m-1">Xem trước</span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.BackgroundImageUrl))
+                                {
+                                    <div class="small text-muted mt-1">Ảnh hiện tại trên hệ thống</div>
+                                }
                             </div>
                         </div>
+
+                        <!-- Modal Cắt ảnh -->
+                        <div class="modal fade" id="cropModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Căn chỉnh tỷ lệ ảnh</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="crop-container text-center bg-light p-3 rounded">
+                                            <img id="image-to-crop" src="" />
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer d-flex justify-content-between">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button type="button" class="btn btn-outline-dark active" onclick="setCropRatio(1, this)">Vuông (1:1)</button>
+                                            <button type="button" class="btn btn-outline-dark" onclick="setCropRatio(2, this)">Ngang (2:1)</button>
+                                            <button type="button" class="btn btn-outline-dark" onclick="setCropRatio(0, this)">Tự do</button>
+                                        </div>
+                                        <div>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                            <button type="button" class="btn btn-primary" id="saveCrop">Áp dụng</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="DisplayOrder" class="form-label fw-semibold"></label>
+                            <input asp-for="DisplayOrder" class="form-control" type="number" min="0" />
+                        </div>
+
+                        <style>
+                            .size-option {
+                                border: 2px solid #eee;
+                                border-radius: 12px;
+                                padding: 10px;
+                                text-align: center;
+                                cursor: pointer;
+                                transition: all 0.2s ease;
+                                background: #fdfdfd;
+                                height: 100%;
+                            }
+                            .size-option:hover {
+                                border-color: #D4AF37;
+                                background: #fff;
+                            }
+                            .size-option.active {
+                                border-color: #8B0000;
+                                background: #fff5f5;
+                                box-shadow: 0 4px 12px rgba(139, 0, 0, 0.1);
+                            }
+                            .size-preview {
+                                height: 50px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                margin-bottom: 8px;
+                            }
+                            .size-box {
+                                background: #dee2e6;
+                                border: 1px solid #ced4da;
+                                border-radius: 4px;
+                            }
+                            .box-2x2 { width: 40px; height: 40px; }
+                            .box-2x1 { width: 40px; height: 20px; }
+                            .box-1x1 { width: 25px; height: 25px; }
+                            .size-option.active .size-box {
+                                background: #8B0000;
+                                border-color: #6a0000;
+                            }
+                            .size-box.accent {
+                                border: 2px dashed #D4AF37;
+                                background: rgba(212,175,55,0.1);
+                            }
+                            .size-label {
+                                font-size: 0.8rem;
+                                font-weight: 600;
+                                color: #495057;
+                            }
+                        </style>
 
                         <div class="mb-4">
                             <div class="form-check form-switch">
@@ -124,17 +270,111 @@
 </div>
 
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script>
+        let cropper;
+        const backgroundInput = document.getElementById('backgroundInput');
+        const imageToCrop = document.getElementById('image-to-crop');
+        const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
+        const croppedImageInput = document.getElementById('CroppedImage');
+        const previewImg = document.getElementById('previewImg');
+        const imagePreview = document.getElementById('imagePreview');
+
+        // Hàm lấy Aspect Ratio dựa trên kích thước ô
+        function getAspectRatio() {
+            const size = document.getElementById('SizeInput').value;
+            switch(size) {
+                case 'large': return 1; 
+                case 'medium': return 2; 
+                case 'small': 
+                case 'accent': return 1; 
+                default: return 1;
+            }
+        }
+
+        // Hàm đổi tỉ lệ từ nút bấm trong modal
+        window.setCropRatio = function(ratio, btn) {
+            if (!cropper) return;
+            
+            // Update active button
+            btn.parentElement.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (ratio === 0) {
+                cropper.setAspectRatio(NaN); // Free form
+            } else {
+                cropper.setAspectRatio(ratio);
+            }
+        };
+
+        backgroundInput.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageToCrop.src = e.target.result;
+                    cropModal.show();
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        document.getElementById('cropModal').addEventListener('shown.bs.modal', function() {
+            if (cropper) cropper.destroy();
+            
+            // Set initial ratio based on size selection
+            const initialRatio = getAspectRatio();
+            
+            // Highlight the correct button in modal
+            const modalButtons = document.querySelectorAll('#cropModal .btn-group .btn');
+            modalButtons.forEach(b => b.classList.remove('active'));
+            if (initialRatio === 1) modalButtons[0].classList.add('active');
+            else if (initialRatio === 2) modalButtons[1].classList.add('active');
+
+            cropper = new Cropper(imageToCrop, {
+                aspectRatio: initialRatio,
+                viewMode: 2,
+                autoCropArea: 1,
+                responsive: true
+            });
+        });
+
+        document.getElementById('saveCrop').addEventListener('click', function() {
+            const ratio = cropper.options.aspectRatio || 1;
+            const canvas = cropper.getCroppedCanvas({
+                width: 1000,
+                // If free form, ratio is NaN, so we calculate from selection
+                height: 1000 / (cropper.getData().width / cropper.getData().height)
+            });
+            
+            const base64 = canvas.toDataURL('image/jpeg', 0.92);
+            croppedImageInput.value = base64;
+            previewImg.src = base64;
+            imagePreview.classList.remove('d-none');
+            cropModal.hide();
+        });
+
+        // Icon Picker logic
         document.querySelectorAll('.icon-pick').forEach(btn => {
             btn.addEventListener('click', function() {
                 const icon = this.dataset.icon;
                 document.getElementById('IconClass').value = icon;
                 document.getElementById('icon-preview-i').className = 'bi ' + icon;
-                document.getElementById('preview-icon-big').className = 'bi ' + icon + ' fs-3';
             });
         });
+
         document.getElementById('Title')?.addEventListener('input', function() {
             document.getElementById('preview-title').textContent = this.value;
+        });
+
+        document.querySelectorAll('.size-option').forEach(opt => {
+            opt.addEventListener('click', function() {
+                document.querySelectorAll('.size-option').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('SizeInput').value = this.dataset.size;
+                
+                // If a crop already exists, we might want to warn or re-crop, 
+                // but for now just update the future cropper ratio
+            });
         });
     </script>
 }

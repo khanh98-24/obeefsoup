@@ -149,14 +149,43 @@ namespace OBeefSoup.Services
         /// </summary>
         public async Task<bool> UpdateOrderStatusAsync(int orderId, OrderStatus status)
         {
-            var order = await _context.Orders.FindAsync(orderId);
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
             if (order == null) return false;
 
+            var oldStatus = order.Status;
             order.Status = status;
             
+            // Logic xử lý tồn kho
             if (status == OrderStatus.Completed)
             {
                 order.CompletedDate = DateTime.Now;
+                
+                // Nếu chuyển từ trạng thái khác sang Hoàn thành -> Trừ kho
+                if (oldStatus != OrderStatus.Completed)
+                {
+                    foreach (var item in order.OrderItems)
+                    {
+                        if (item.Product != null)
+                        {
+                            item.Product.Stock -= item.Quantity;
+                        }
+                    }
+                }
+            }
+            else if (oldStatus == OrderStatus.Completed && status != OrderStatus.Completed)
+            {
+                // Nếu chuyển từ Hoàn thành sang trạng thái khác (ví dụ: Hủy) -> Cộng lại kho
+                foreach (var item in order.OrderItems)
+                {
+                    if (item.Product != null)
+                    {
+                        item.Product.Stock += item.Quantity;
+                    }
+                }
             }
 
             await _context.SaveChangesAsync();

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OBeefSoup.Data;
 using OBeefSoup.Models;
 using OBeefSoup.Filters;
+using OBeefSoup.Services;
 
 namespace OBeefSoup.Areas.Admin.Controllers
 {
@@ -11,10 +12,12 @@ namespace OBeefSoup.Areas.Admin.Controllers
     public class WhyUsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
 
-        public WhyUsController(ApplicationDbContext context)
+        public WhyUsController(ApplicationDbContext context, IImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
         }
 
         // GET: Admin/WhyUs
@@ -35,12 +38,17 @@ namespace OBeefSoup.Areas.Admin.Controllers
         // POST: Admin/WhyUs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(WhyUsItem model)
+        public async Task<IActionResult> Create(WhyUsItem model, string? CroppedImage)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (!string.IsNullOrEmpty(CroppedImage))
+                    {
+                        model.BackgroundImageUrl = await _imageService.SaveImageFromBase64Async(CroppedImage, "whyus");
+                    }
+
                     model.CreatedDate = DateTime.Now;
                     _context.WhyUsItems.Add(model);
                     await _context.SaveChangesAsync();
@@ -67,7 +75,7 @@ namespace OBeefSoup.Areas.Admin.Controllers
         // POST: Admin/WhyUs/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, WhyUsItem model)
+        public async Task<IActionResult> Edit(int id, WhyUsItem model, string? CroppedImage)
         {
             if (id != model.Id) return NotFound();
 
@@ -77,6 +85,11 @@ namespace OBeefSoup.Areas.Admin.Controllers
                 {
                     var item = await _context.WhyUsItems.FindAsync(id);
                     if (item == null) return NotFound();
+
+                    if (!string.IsNullOrEmpty(CroppedImage))
+                    {
+                        item.BackgroundImageUrl = await _imageService.SaveImageFromBase64Async(CroppedImage, "whyus");
+                    }
 
                     item.Title = model.Title;
                     item.Description = model.Description;
@@ -115,6 +128,10 @@ namespace OBeefSoup.Areas.Admin.Controllers
                 var item = await _context.WhyUsItems.FindAsync(id);
                 if (item != null)
                 {
+                    if (!string.IsNullOrEmpty(item.BackgroundImageUrl))
+                    {
+                        _imageService.DeleteImage(item.BackgroundImageUrl);
+                    }
                     _context.WhyUsItems.Remove(item);
                     await _context.SaveChangesAsync();
                     TempData["SuccessMessage"] = "Xóa mục thành công!";

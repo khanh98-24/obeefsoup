@@ -417,22 +417,31 @@ section {
 /* === ABOUT SECTION === */
 .about-section {
     position: relative;
-    background: linear-gradient(to bottom, #fff 0%, #f8f9fa 100%);
 }
 
-.about-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url('/images/menu-background.jpg');
+/* === SEAMLESS BACKGROUND CONTAINER === */
+.seamless-bg-container {
+    position: relative;
+    background: linear-gradient(rgba(255, 252, 240, 0.9), rgba(255, 252, 240, 0.9)),
+        url('/images/menu-background.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    opacity: 0.12;
-    z-index: 0;
+    background-repeat: no-repeat;
+}
+
+.seamless-bg-container section,
+.seamless-bg-container .about-section,
+.seamless-bg-container .menu-section,
+.seamless-bg-container .why-section {
+    background: none !important;
+    background-color: transparent !important;
+}
+
+.seamless-bg-container section::before,
+.seamless-bg-container section::after {
+    content: none !important;
+    display: none !important;
 }
 
 .about-section .container {
@@ -465,7 +474,6 @@ section {
 .menu-section {
     padding: 100px 0;
     position: relative;
-    background: var(--color-light);
 }
 
 .menu-card {
@@ -574,56 +582,209 @@ section {
 
 /* === WHY US SECTION === */
 .why-section {
-    background: linear-gradient(135deg, #2C1810 0%, #4A2C1A 100%);
-    color: white;
+    position: relative;
 }
 
-.why-section .section-subtitle {
-    color: var(--color-secondary);
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 200px;
+    gap: 20px;
 }
 
-.why-section .section-title {
-    color: white;
+.bento-item.item-large {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.bento-item.item-medium {
+    grid-column: span 2;
+    grid-row: span 1;
+}
+
+.bento-item.item-small {
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+.bento-item.item-accent {
+    grid-column: span 1;
+    grid-row: span 1;
 }
 
 .why-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    padding: 2rem;
-    transition: var(--transition-smooth);
+    position: relative;
     height: 100%;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: all 0.4s ease;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.why-card:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+.why-card.has-bg {
+    background-size: cover;
+    background-position: center;
+    border: none;
+    color: #ffffff;
+}
+
+.why-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Lớp phủ sáng mỏng toàn thẻ để đẩy ảnh lùi lại một chút, chữ tiến lên trước */
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 1;
+    transition: all 0.4s ease;
+}
+
+.why-card.has-bg:hover .why-card-overlay {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+.why-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+/* Gỡ bỏ hộp kính mờ gây chia cắt ảnh, thay bằng lớp phủ toàn bộ thẻ mượt mà hơn */
+.why-card.has-bg .why-content {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
 }
 
 .why-icon {
-    width: 80px;
-    height: 80px;
-    background: var(--gradient-gold);
+    width: 70px;
+    height: 70px;
+    background: #FFD700;
+    /* Vàng mặc định */
     border-radius: 50%;
+    /* Luôn là hình tròn */
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 1.5rem;
-    font-size: 2rem;
-    color: var(--color-dark);
+    color: #8B0000;
+    font-size: 1.8rem;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Icon màu trắng khi có ảnh nền */
+.why-card.has-bg .why-icon {
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.why-card:hover .why-icon {
+    /* Loại bỏ xoay hay scale để ảnh luôn ổn định */
+    transform: translateY(-5px);
 }
 
 .why-title {
-    color: var(--color-secondary);
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    color: #8B0000 !important;
+    /* Luôn là màu đỏ phở */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .why-description {
-    color: rgba(255, 255, 255, 0.8);
     font-size: 0.95rem;
+    color: #444 !important;
+    margin-bottom: 0;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* Bóng đổ chữ cực mạnh nhưng mềm mại để chữ nổi bật trên mọi chi tiết ảnh */
+.why-card.has-bg .why-title {
+    color: #8B0000 !important;
+    text-shadow:
+        1px 1px 0 #fff,
+        -1px -1px 0 #fff,
+        1px -1px 0 #fff,
+        -1px 1px 0 #fff,
+        0 0 15px #fff,
+        0 0 20px rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.8px;
+}
+
+.why-card.has-bg .why-description {
+    color: #000 !important;
+    font-weight: 700;
+    /* Đậm hơn để chống lẫn ảnh */
+    text-shadow:
+        0 0 8px #fff,
+        0 0 15px rgba(255, 255, 255, 0.8);
+}
+
+/* Responsive Bento Grid */
+@media (max-width: 992px) {
+    .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        grid-auto-rows: 180px;
+    }
+}
+
+@media (max-width: 576px) {
+    .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 150px;
+        gap: 10px;
+    }
+
+    .item-large {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+
+    .item-medium {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+
+    .why-card {
+        padding: 1.25rem !important;
+    }
+
+    .why-icon {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 1.4rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .why-title {
+        font-size: 1rem !important;
+    }
+
+    .why-description {
+        font-size: 0.8rem !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 }
 
 /* === TESTIMONIALS SECTION === */

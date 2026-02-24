@@ -32,6 +32,11 @@ wwwroot\images\products\ca95914e-cf90-4001-af2d-92fb55ad8466_nuoc-ngot_15e7ae143
 wwwroot\images\products\f11adac9-6878-43c6-a98f-0a19ee104053_app_NV_phoduiga-1.jpg
 wwwroot\images\products\fd1091d3-e8a7-4bfb-959d-d1797d1eea7d_5_202502201401100162.jpg
 wwwroot\images\settings\787c3333-c913-4ae7-917b-2f7fdd47e03f.jpg
+wwwroot\images\whyus\01912ea6-800b-41cc-8fca-53ea52f8d472.jpg
+wwwroot\images\whyus\3cc5083e-afb6-47ce-879e-df1b73591dd7.jpg
+wwwroot\images\whyus\95fd0041-27ba-453c-abb2-588ec2a30f2d_482322550_1182509417211801_8404495393306761638_n.jpg
+wwwroot\images\whyus\ba3979a5-5114-4e67-b2b3-34974e3bb8bb.jpg
+wwwroot\images\whyus\c2ae1a85-3af4-400b-9add-b1fa248ca44c.jpg
 wwwroot\js\cart.js
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css

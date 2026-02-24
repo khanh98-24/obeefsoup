@@ -57,6 +57,7 @@
                     <thead class="bg-light bg-opacity-50">
                         <tr class="text-muted small">
                             <th class="ps-4 border-0" style="width:70px">Thứ tự</th>
+                            <th class="border-0" style="width:100px">Ảnh nền</th>
                             <th class="border-0" style="width:80px">Icon</th>
                             <th class="border-0">Nội dung</th>
                             <th class="border-0 d-none d-lg-table-cell">Mô tả</th>
@@ -71,6 +72,16 @@
                             <tr class="@(item.IsActive ? "" : "opacity-50")">
                                 <td class="ps-4 text-center">
                                     <span class="badge bg-secondary rounded-pill">@item.DisplayOrder</span>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.BackgroundImageUrl))
+                                    {
+                                        <img src="@item.BackgroundImageUrl" class="rounded shadow-sm" style="width:60px; height:40px; object-fit:cover;" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small fst-italic">Không có</span>
+                                    }
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center justify-content-center"

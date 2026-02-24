@@ -40,6 +40,10 @@ namespace OBeefSoup.Models
         [Display(Name = "Hiển thị")]
         public bool IsActive { get; set; } = true;
 
+        [Display(Name = "Ảnh nền (không bắt buộc)")]
+        [StringLength(500)]
+        public string? BackgroundImageUrl { get; set; }
+
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime? UpdatedDate { get; set; }
     }

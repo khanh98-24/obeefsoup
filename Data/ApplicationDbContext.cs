@@ -136,7 +136,7 @@ namespace OBeefSoup.Data
                     IsActive = true,
                     IsFeatured = true,
                     Stock = 100,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new Product
                 {
@@ -149,7 +149,7 @@ namespace OBeefSoup.Data
                     IsActive = true,
                     IsFeatured = true,
                     Stock = 100,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new Product
                 {
@@ -162,7 +162,7 @@ namespace OBeefSoup.Data
                     IsActive = true,
                     IsFeatured = true,
                     Stock = 100,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new Product
                 {
@@ -175,7 +175,7 @@ namespace OBeefSoup.Data
                     IsActive = true,
                     IsFeatured = false,
                     Stock = 100,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new Product
                 {
@@ -188,7 +188,7 @@ namespace OBeefSoup.Data
                     IsActive = true,
                     IsFeatured = false,
                     Stock = 100,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 // Phở Gà
                 new Product
@@ -202,7 +202,7 @@ namespace OBeefSoup.Data
                     IsActive = true,
                     IsFeatured = false,
                     Stock = 100,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new Product
                 {
@@ -215,7 +215,7 @@ namespace OBeefSoup.Data
                     IsActive = true,
                     IsFeatured = false,
                     Stock = 100,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 // Đồ Uống
                 new Product
@@ -229,7 +229,7 @@ namespace OBeefSoup.Data
                     IsActive = true,
                     IsFeatured = false,
                     Stock = 1000,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new Product
                 {
@@ -242,7 +242,7 @@ namespace OBeefSoup.Data
                     IsActive = true,
                     IsFeatured = false,
                     Stock = 200,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new Product
                 {
@@ -255,7 +255,7 @@ namespace OBeefSoup.Data
                     IsActive = true,
                     IsFeatured = false,
                     Stock = 100,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 }
             );
 
@@ -286,7 +286,7 @@ namespace OBeefSoup.Data
                     Link = "/Menu",
                     DisplayOrder = 1,
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new Banner
                 {
@@ -310,7 +310,7 @@ namespace OBeefSoup.Data
                     Value = "/images/menu-background.jpg",
                     Description = "Ảnh nền cho phần thực đơn trang chủ",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -319,7 +319,7 @@ namespace OBeefSoup.Data
                     Value = "0.15",
                     Description = "Độ mờ ảnh nền thực đơn (0.0 = trong suốt, 1.0 = rõ nét).",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -328,7 +328,7 @@ namespace OBeefSoup.Data
                     Value = "Tinh hoa TRUYỀN THỐNG & HIỆN ĐẠI hòa quyện",
                     Description = "Tiêu đề nằm trên ảnh phần Giới thiệu",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -337,7 +337,7 @@ namespace OBeefSoup.Data
                     Value = "O' BeefSoup",
                     Description = "Tên thương hiệu phần Giới thiệu",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -346,7 +346,7 @@ namespace OBeefSoup.Data
                     Value = "CÂU CHUYỆN THƯƠNG HIỆU",
                     Description = "Tiêu đề phụ phần Giới thiệu",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -355,7 +355,7 @@ namespace OBeefSoup.Data
                     Value = "Nơi hội tụ tinh hoa ẩm thực truyền thống Việt Nam với không gian hiện đại, sang trọng bậc nhất.",
                     Description = "Mô tả chi tiết phần Giới thiệu",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -364,7 +364,7 @@ namespace OBeefSoup.Data
                     Value = "/images/gioithieu.jpg",
                     Description = "Ảnh đại diện phần Giới thiệu",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -373,7 +373,7 @@ namespace OBeefSoup.Data
                     Value = "Tinh hoa phở Việt – Đậm vị từ tâm. Mang đến trải nghiệm ẩm thực phở bò thượng hạng trong không gian đẳng cấp.",
                     Description = "Mô tả thương hiệu ở phần chân trang (Footer)",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -382,7 +382,7 @@ namespace OBeefSoup.Data
                     Value = "Tòa CT2B, khu ĐTM Nghĩa Đô, đường Xuân Tảo, Hanoi, Vietnam",
                     Description = "Địa chỉ liên hệ ở Footer",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -391,7 +391,7 @@ namespace OBeefSoup.Data
                     Value = "0901 234 567",
                     Description = "Số điện thoại liên hệ ở Footer",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -400,7 +400,7 @@ namespace OBeefSoup.Data
                     Value = "contact@obeefsoup.vn",
                     Description = "Email liên hệ ở Footer",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -409,7 +409,7 @@ namespace OBeefSoup.Data
                     Value = "Thứ 2 - Chủ nhật: 07:00 - 22:00",
                     Description = "Giờ mở cửa ở Footer",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -418,7 +418,7 @@ namespace OBeefSoup.Data
                     Value = "https://facebook.com/obeefsoup",
                     Description = "Link Fanpage Facebook",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -427,7 +427,7 @@ namespace OBeefSoup.Data
                     Value = "https://instagram.com/obeefsoup",
                     Description = "Link Instagram",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -436,7 +436,7 @@ namespace OBeefSoup.Data
                     Value = "https://youtube.com/c/obeefsoup",
                     Description = "Link Youtube",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = new DateTime(2026, 2, 20)
                 },
                 new SiteSetting
                 {
@@ -451,10 +451,10 @@ namespace OBeefSoup.Data
 
             // Seed AboutFeatures
             modelBuilder.Entity<AboutFeature>().HasData(
-                new AboutFeature { Id = 1, Title = "Ninh 12 Tiếng", IconClass = "bi-clock-history", DisplayOrder = 1, IsActive = true, CreatedDate = DateTime.Now },
-                new AboutFeature { Id = 2, Title = "Nguyên Liệu", IconClass = "bi-gem", DisplayOrder = 2, IsActive = true, CreatedDate = DateTime.Now },
-                new AboutFeature { Id = 3, Title = "Đẳng Cấp", IconClass = "bi-stars", DisplayOrder = 3, IsActive = true, CreatedDate = DateTime.Now },
-                new AboutFeature { Id = 4, Title = "Phục Vụ", IconClass = "bi-heart-fill", DisplayOrder = 4, IsActive = true, CreatedDate = DateTime.Now }
+                new AboutFeature { Id = 1, Title = "Ninh 12 Tiếng", IconClass = "bi-clock-history", DisplayOrder = 1, IsActive = true, CreatedDate = new DateTime(2026, 2, 20) },
+                new AboutFeature { Id = 2, Title = "Nguyên Liệu", IconClass = "bi-gem", DisplayOrder = 2, IsActive = true, CreatedDate = new DateTime(2026, 2, 20) },
+                new AboutFeature { Id = 3, Title = "Đẳng Cấp", IconClass = "bi-stars", DisplayOrder = 3, IsActive = true, CreatedDate = new DateTime(2026, 2, 20) },
+                new AboutFeature { Id = 4, Title = "Phục Vụ", IconClass = "bi-heart-fill", DisplayOrder = 4, IsActive = true, CreatedDate = new DateTime(2026, 2, 20) }
             );
 
             // Seed Admin Users
@@ -509,7 +509,7 @@ namespace OBeefSoup.Data
                     ImageUrl = "/images/486842042_1200614522067957_8652198815515987194_n.jpg",
                     DisplayOrder = 1,
                     IsActive = true,
-                    CreatedDate = DateTime.Now.AddDays(-5)
+                    CreatedDate = new DateTime(2026, 2, 19)
                 },
                 new BlogPost
                 {
@@ -521,7 +521,7 @@ namespace OBeefSoup.Data
                     ImageUrl = "/images/486748406_1200441442085265_4112327303630339444_n.jpg",
                     DisplayOrder = 2,
                     IsActive = true,
-                    CreatedDate = DateTime.Now.AddDays(-2)
+                    CreatedDate = new DateTime(2026, 2, 22)
                 },
                 new BlogPost
                 {
@@ -533,7 +533,7 @@ namespace OBeefSoup.Data
                     ImageUrl = "/images/484090098_1184094750386601_4967145700946842561_n.jpg",
                     DisplayOrder = 3,
                     IsActive = true,
-                    CreatedDate = DateTime.Now.AddDays(-1)
+                    CreatedDate = new DateTime(2026, 2, 23)
                 }
             );
 
@@ -594,7 +594,7 @@ namespace OBeefSoup.Data
                     CustomerName = "Nguyễn Văn A",
                     Comment = "Nước dùng đậm đà, thịt bò tươi ngon. Đây là quán phở ngon nhất tôi từng ăn!",
                     Rating = 5,
-                    Date = DateTime.Now.AddDays(-15),
+                    Date = new DateTime(2026, 2, 9),
                     IsApproved = true
                 },
                 new Testimonial
@@ -604,7 +604,7 @@ namespace OBeefSoup.Data
                     CustomerName = "Trần Thị B",
                     Comment = "Không gian sang trọng, phục vụ chu đáo. Phở đặc biệt rất xứng đáng!",
                     Rating = 5,
-                    Date = DateTime.Now.AddDays(-8),
+                    Date = new DateTime(2026, 2, 14),
                     IsApproved = true
                 },
                 new Testimonial
@@ -614,7 +614,7 @@ namespace OBeefSoup.Data
                     CustomerName = "Lê Minh C",
                     Comment = "Giá hơi cao nhưng chất lượng tuyệt vời. Sẽ quay lại!",
                     Rating = 4,
-                    Date = DateTime.Now.AddDays(-3),
+                    Date = new DateTime(2026, 2, 19),
                     IsApproved = true
                 }
             );
