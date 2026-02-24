@@ -4514,11 +4514,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\WEB Phở\\OBeefSoup\\OBeefSoup.csproj",
+      "projectUniqueName": "D:\\WEB Pho\\OBeefSoup\\OBeefSoup.csproj",
       "projectName": "OBeefSoup",
-      "projectPath": "D:\\WEB Phở\\OBeefSoup\\OBeefSoup.csproj",
+      "projectPath": "D:\\WEB Pho\\OBeefSoup\\OBeefSoup.csproj",
       "packagesPath": "C:\\Users\\nguye\\.nuget\\packages\\",
-      "outputPath": "D:\\WEB Phở\\OBeefSoup\\obj\\",
+      "outputPath": "D:\\WEB Pho\\OBeefSoup\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

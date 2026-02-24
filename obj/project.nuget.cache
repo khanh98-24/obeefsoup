@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fiVIltuoLJo=",
+  "dgSpecHash": "bpxVFaGkFvE=",
   "success": true,
-  "projectFilePath": "D:\\WEB Phở\\OBeefSoup\\OBeefSoup.csproj",
+  "projectFilePath": "D:\\WEB Pho\\OBeefSoup\\OBeefSoup.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nguye\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\nguye\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",

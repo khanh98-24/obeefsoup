@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OBeefSoup")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d148d9ff980058675ef75a196f68832baa629698")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+90c603047aaa652ceac490782ae51566704eb17d")]
 [assembly: System.Reflection.AssemblyProductAttribute("OBeefSoup")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OBeefSoup")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -16,6 +16,14 @@
         },
         "runtime": {
           "OBeefSoup.dll": {}
+        },
+        "resources": {
+          "en-US/OBeefSoup.resources.dll": {
+            "locale": "en-US"
+          },
+          "vi-VN/OBeefSoup.resources.dll": {
+            "locale": "vi-VN"
+          }
         }
       },
       "Azure.Core/1.25.0": {
