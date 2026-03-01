@@ -64,6 +64,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmFubmVyc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Banners/_BannersTablePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmFubmVyc1xfQmFubmVyc1RhYmxlUGFydGlhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/BlogPosts/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmxvZ1Bvc3RzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -80,12 +84,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmxvZ1Bvc3RzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/WEB Pho/OBeefSoup/Areas/Admin/Views/BlogPosts/_BlogPostsTablePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQmxvZ1Bvc3RzXF9CbG9nUG9zdHNUYWJsZVBhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/CandidateApplications/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2FuZGlkYXRlQXBwbGljYXRpb25zXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/CandidateApplications/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2FuZGlkYXRlQXBwbGljYXRpb25zXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/WEB Pho/OBeefSoup/Areas/Admin/Views/CandidateApplications/_CandidateApplicationsTablePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2FuZGlkYXRlQXBwbGljYXRpb25zXF9DYW5kaWRhdGVBcHBsaWNhdGlvbnNUYWJsZVBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Categories/Create.cshtml]
@@ -102,6 +114,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Categories/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2F0ZWdvcmllc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Categories/_CategoriesTablePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2F0ZWdvcmllc1xfQ2F0ZWdvcmllc1RhYmxlUGFydGlhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Dashboard/Index.cshtml]
@@ -124,6 +140,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcSm9iUG9zdGluZ3NcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/WEB Pho/OBeefSoup/Areas/Admin/Views/JobPostings/_JobPostingsTablePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcSm9iUG9zdGluZ3NcX0pvYlBvc3RpbmdzVGFibGVQYXJ0aWFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Menus/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcTWVudXNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -140,12 +160,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcTWVudXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Menus/_MenusTablePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcTWVudXNcX01lbnVzVGFibGVQYXJ0aWFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Orders/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3JkZXJzXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Orders/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3JkZXJzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Orders/_OrdersTablePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3JkZXJzXF9PcmRlcnNUYWJsZVBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Products/Create.cshtml]
@@ -162,6 +190,18 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Products/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUHJvZHVjdHNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Products/_ProductsTablePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUHJvZHVjdHNcX1Byb2R1Y3RzVGFibGVQYXJ0aWFsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Revenue/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmV2ZW51ZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Revenue/_RevenueContent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmV2ZW51ZVxfUmV2ZW51ZUNvbnRlbnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Settings/Edit.cshtml]
@@ -186,6 +226,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/StoreLocations/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3RvcmVMb2NhdGlvbnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/WEB Pho/OBeefSoup/Areas/Admin/Views/StoreLocations/_StoreLocationsTablePartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU3RvcmVMb2NhdGlvbnNcX1N0b3JlTG9jYXRpb25zVGFibGVQYXJ0aWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/WEB Pho/OBeefSoup/Areas/Admin/Views/Testimonials/Index.cshtml]

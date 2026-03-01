@@ -13,7 +13,14 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 
 // Add DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlServerOptionsAction: sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null);
+        }));
 
 // Add Session support for shopping cart
 builder.Services.AddDistributedMemoryCache();
@@ -31,6 +38,8 @@ builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<MenuService>(); // Keep for backward compatibility
 builder.Services.AddScoped<IImageService, ImageService>(); // For product image uploads
 builder.Services.AddScoped<AuthService>(); // For admin authentication
+builder.Services.AddScoped<VnPayService>();
+builder.Services.AddScoped<MoMoService>();
 
 var app = builder.Build();
 

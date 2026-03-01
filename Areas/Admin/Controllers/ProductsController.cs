@@ -288,5 +288,44 @@ namespace OBeefSoup.Areas.Admin.Controllers
         {
             return _context.Products.Any(e => e.Id == id);
         }
+
+        // AJAX: Delete product and return JSON
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAjax(int id)
+        {
+            try
+            {
+                var product = await _context.Products.FindAsync(id);
+                if (product == null) return Json(new { success = false, message = "Không tìm thấy sản phẩm!" });
+
+                if (!string.IsNullOrEmpty(product.ImageUrl))
+                    _imageService.DeleteImage(product.ImageUrl);
+
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Xóa sản phẩm thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+            }
+        }
+
+        // AJAX: Get partial view for products table
+        [HttpGet]
+        public async Task<IActionResult> IndexPartial(string? searchTerm)
+        {
+            var query = _context.Products.Include(p => p.Category).AsQueryable();
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+                query = query.Where(p => p.Name.Contains(searchTerm) ||
+                                         (p.Description != null && p.Description.Contains(searchTerm)));
+                ViewBag.SearchTerm = searchTerm;
+            }
+            var products = await query.OrderBy(p => p.CategoryId).ThenBy(p => p.Name).ToListAsync();
+            return PartialView("_ProductsTablePartial", products);
+        }
     }
 }

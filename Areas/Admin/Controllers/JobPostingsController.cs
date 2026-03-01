@@ -95,20 +95,29 @@ namespace OBeefSoup.Areas.Admin.Controllers
             return View(jobPosting);
         }
 
-        // POST: Admin/JobPostings/Delete/5
+        // AJAX: Delete job posting and return JSON
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteAjax(int id)
         {
             var jobPosting = await _context.JobPostings.FindAsync(id);
-            if (jobPosting != null)
-            {
-                // Optionally check if there are applications before deleting, or use cascade/set null
-                _context.JobPostings.Remove(jobPosting);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Xóa vị trí tuyển dụng thành công!";
-            }
-            return RedirectToAction(nameof(Index));
+            if (jobPosting == null) return Json(new { success = false, message = "Không tìm thấy vị trí tuyển dụng!" });
+
+            _context.JobPostings.Remove(jobPosting);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Xóa vị trí tuyển dụng thành công!" });
+        }
+
+        // AJAX: Get partial view for job postings table
+        [HttpGet]
+        public async Task<IActionResult> IndexPartial()
+        {
+            var jobPostings = await _context.JobPostings
+                .Include(j => j.StoreLocation)
+                .Include(j => j.Applications)
+                .OrderByDescending(j => j.CreatedDate)
+                .ToListAsync();
+            return PartialView("_JobPostingsTablePartial", jobPostings);
         }
 
         private bool JobPostingExists(int id)

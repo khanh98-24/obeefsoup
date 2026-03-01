@@ -37,6 +37,7 @@ wwwroot\images\whyus\3cc5083e-afb6-47ce-879e-df1b73591dd7.jpg
 wwwroot\images\whyus\95fd0041-27ba-453c-abb2-588ec2a30f2d_482322550_1182509417211801_8404495393306761638_n.jpg
 wwwroot\images\whyus\ba3979a5-5114-4e67-b2b3-34974e3bb8bb.jpg
 wwwroot\images\whyus\c2ae1a85-3af4-400b-9add-b1fa248ca44c.jpg
+wwwroot\js\admin-ajax.js
 wwwroot\js\cart.js
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css

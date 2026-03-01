@@ -7,6 +7,21 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="confirmation-box text-center">
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger mb-4 text-start">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        @TempData["Error"]
+                    </div>
+                }
+                @if (TempData["Message"] != null)
+                {
+                    <div class="alert alert-success mb-4 text-start">
+                        <i class="bi bi-check-circle me-2"></i>
+                        @TempData["Message"]
+                    </div>
+                }
+
                 <div class="success-icon mb-4">
                     <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
                 </div>
@@ -42,6 +57,27 @@
                     <div class="detail-row">
                         <span class="text-muted">Ngày đặt:</span>
                         <strong>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</strong>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="text-muted">Thanh toán:</span>
+                        <strong>
+                            @switch (Model.PaymentMethod)
+                            {
+                                case "COD":
+                                    <text>Tiền mặt khi nhận hàng</text>
+                                    break;
+                                case "VNPAY":
+                                    <text>VN Pay</text>
+                                    break;
+                                case "MOMO":
+                                    <text>Ví MoMo</text>
+                                    break;
+                                default:
+                                    @Model.PaymentMethod
+                                    break;
+                            }
+                        </strong>
                     </div>
 
                     <hr>

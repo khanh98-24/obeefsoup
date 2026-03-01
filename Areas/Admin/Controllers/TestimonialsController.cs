@@ -59,9 +59,27 @@ namespace OBeefSoup.Areas.Admin.Controllers
             {
                 _context.Testimonials.Remove(testimonial);
                 await _context.SaveChangesAsync();
-                return Json(new { success = true });
+                return Json(new { success = true, message = "Xóa đánh giá thành công!" });
             }
-            return Json(new { success = false });
+            return Json(new { success = false, message = "Không tìm thấy đánh giá!" });
+        }
+
+        // AJAX alias for delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAjax(int id)
+        {
+            if (!IsAdmin()) return Unauthorized();
+            return await Delete(id);
+        }
+
+        // AJAX: Get partial view for testimonials table
+        [HttpGet]
+        public async Task<IActionResult> IndexPartial()
+        {
+            if (!IsAdmin()) return Unauthorized();
+            var testimonials = await _context.Testimonials.OrderByDescending(t => t.Date).ToListAsync();
+            return PartialView("_TestimonialsTablePartial", testimonials);
         }
     }
 }

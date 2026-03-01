@@ -21,7 +21,7 @@ namespace OBeefSoup.Services
         /// Tạo đơn hàng từ giỏ hàng
         /// </summary>
         public async Task<Order> CreateOrderFromCartAsync(List<CartItem> cart, string fullName, string email, 
-            string phone, string address, string notes = "")
+            string phone, string address, string paymentMethod, string notes = "")
         {
             // Tạo hoặc lấy thông tin khách hàng
             var customer = await _context.Customers
@@ -61,6 +61,7 @@ namespace OBeefSoup.Services
                 Status = OrderStatus.Pending,
                 DeliveryAddress = address ?? "",
                 PhoneNumber = phone,
+                PaymentMethod = paymentMethod,
                 Notes = notes ?? "",
                 TotalAmount = cart.Sum(item => item.Subtotal)
             };
@@ -164,6 +165,12 @@ namespace OBeefSoup.Services
             {
                 order.CompletedDate = DateTime.Now;
                 
+                // Tự động chuyển trạng thái thanh toán thành Paid nếu là COD
+                if (order.PaymentMethod == "COD")
+                {
+                    order.PaymentStatus = OrderPaymentStatus.Paid;
+                }
+
                 // Nếu chuyển từ trạng thái khác sang Hoàn thành -> Trừ kho
                 if (oldStatus != OrderStatus.Completed)
                 {
@@ -176,20 +183,53 @@ namespace OBeefSoup.Services
                     }
                 }
             }
-            else if (oldStatus == OrderStatus.Completed && status != OrderStatus.Completed)
+            else 
             {
-                // Nếu chuyển từ Hoàn thành sang trạng thái khác (ví dụ: Hủy) -> Cộng lại kho
-                foreach (var item in order.OrderItems)
+                // Nếu không phải Hoàn thành và là đơn COD -> Đảm bảo trạng thái thanh toán là Pending
+                if (order.PaymentMethod == "COD")
                 {
-                    if (item.Product != null)
+                    order.PaymentStatus = OrderPaymentStatus.Pending;
+                }
+
+                if (oldStatus == OrderStatus.Completed && status != OrderStatus.Completed)
+                {
+                    // Nếu chuyển từ Hoàn thành sang trạng thái khác (ví dụ: Hủy) -> Cộng lại kho
+                    foreach (var item in order.OrderItems)
                     {
-                        item.Product.Stock += item.Quantity;
+                        if (item.Product != null)
+                        {
+                            item.Product.Stock += item.Quantity;
+                        }
                     }
                 }
             }
 
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        /// <summary>
+        /// Cập nhật trạng thái thanh toán
+        /// </summary>
+        public async Task UpdatePaymentStatusAsync(int orderId, OrderPaymentStatus paymentStatus, string transactionId = "")
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order != null)
+            {
+                order.PaymentStatus = paymentStatus;
+                if (!string.IsNullOrEmpty(transactionId))
+                {
+                    order.PaymentTransactionId = transactionId;
+                }
+                
+                // Nếu đã thanh toán, có thể tự động chuyển trạng thái đơn hàng sang Confirmed
+                if (paymentStatus == OrderPaymentStatus.Paid)
+                {
+                    order.Status = OrderStatus.Confirmed;
+                }
+
+                await _context.SaveChangesAsync();
+            }
         }
 
         /// <summary>

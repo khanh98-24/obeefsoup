@@ -36,13 +36,43 @@ namespace OBeefSoup.Areas.Admin.Controllers
         public async Task<IActionResult> UpdateStatus(int orderId, OrderStatus status)
         {
             var success = await _orderService.UpdateOrderStatusAsync(orderId, status);
-            
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                if (success)
+                {
+                    var statusText = status switch
+                    {
+                        OrderStatus.Pending    => "Chờ xác nhận",
+                        OrderStatus.Confirmed  => "Đã xác nhận",
+                        OrderStatus.Preparing  => "Đang chuẩn bị",
+                        OrderStatus.Delivering => "Đang giao hàng",
+                        OrderStatus.Completed  => "Hoàn thành",
+                        OrderStatus.Cancelled  => "Đã hủy bỏ",
+                        _                      => status.ToString()
+                    };
+                    var statusClass = status.ToString().ToLower();
+                    return Json(new { success = true, message = "Đã cập nhật trạng thái đơn hàng thành công!", statusText, statusClass });
+                }
+                return Json(new { success = false, message = "Không tìm thấy đơn hàng!" });
+            }
+
             if (success)
                 TempData["Success"] = "Đã cập nhật trạng thái đơn hàng thành công!";
             else
                 TempData["Error"] = "Không tìm thấy đơn hàng!";
 
             return RedirectToAction("Details", new { id = orderId });
+        }
+
+        // AJAX: Get partial view for orders table
+        [HttpGet]
+        public async Task<IActionResult> IndexPartial(DateTime? fromDate, DateTime? toDate)
+        {
+            var orders = await _orderService.GetAllOrdersAsync(fromDate, toDate);
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.ToDate   = toDate?.ToString("yyyy-MM-dd");
+            return PartialView("_OrdersTablePartial", orders);
         }
     }
 }

@@ -2264,3 +2264,29 @@ section {
         background-attachment: scroll !important;
     }
 }
+
+/* Payment Methods Styling */
+.payment-label {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-color: #dee2e6 !important;
+}
+
+.payment-label:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd !important;
+}
+
+.payment-option input:checked+.payment-label {
+    background-color: #f0f7ff;
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1);
+}
+
+.payment-option input:checked+.payment-label .check-mark {
+    display: block !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

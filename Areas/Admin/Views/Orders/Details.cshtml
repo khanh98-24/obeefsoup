@@ -130,6 +130,52 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Payment Info Card -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-wallet2 me-2 text-primary"></i>Thông tin thanh toán</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="info-group">
+                                <label class="text-muted x-small d-block mb-1">HÌNH THỨC</label>
+                                <div class="fw-bold text-dark">
+                                    @switch (Model.PaymentMethod)
+                                    {
+                                        case "COD": <span class="badge bg-secondary">Tiền mặt (COD)</span> break;
+                                        case "VNPAY": <span class="badge bg-primary">VN Pay</span> break;
+                                        case "MOMO": <span class="badge bg-danger" style="background-color: #A50064 !important;">Ví MoMo</span> break;
+                                        default: @Model.PaymentMethod break;
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 border-start-md">
+                            <div class="info-group">
+                                <label class="text-muted x-small d-block mb-1">TRẠNG THÁI THANH TOÁN</label>
+                                <div class="fw-bold">
+                                    @switch (Model.PaymentStatus)
+                                    {
+                                        case OBeefSoup.Models.OrderPaymentStatus.Pending: <span class="text-warning"><i class="bi bi-clock me-1"></i>Chưa thanh toán</span> break;
+                                        case OBeefSoup.Models.OrderPaymentStatus.Paid: <span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Đã thanh toán</span> break;
+                                        case OBeefSoup.Models.OrderPaymentStatus.Failed: <span class="text-danger"><i class="bi bi-x-circle-fill me-1"></i>Thanh toán thất bại</span> break;
+                                        case OBeefSoup.Models.OrderPaymentStatus.Refunded: <span class="text-info"><i class="bi bi-arrow-return-left me-1"></i>Đã hoàn tiền</span> break;
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.PaymentTransactionId))
+                        {
+                            <div class="col-12 mt-3 pt-3 border-top">
+                                <label class="text-muted x-small d-block mb-1">MÃ GIAO DỊCH (GATEWAY ID)</label>
+                                <code class="p-2 bg-light rounded text-dark d-inline-block">@Model.PaymentTransactionId</code>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="col-lg-4">
@@ -139,7 +185,7 @@
                     <h5 class="mb-0 fw-bold"><i class="bi bi-arrow-repeat me-2 text-warning"></i>Cập nhật đơn hàng</h5>
                 </div>
                 <div class="card-body p-4">
-                    <form asp-area="Admin" asp-action="UpdateStatus" method="post" id="updateStatusForm">
+                    <form asp-area="Admin" asp-action="UpdateStatus" method="post" id="updateStatusForm" data-ajax-status-form>
                         <input type="hidden" name="orderId" value="@Model.OrderId" />
                         
                         <div class="mb-4 d-none d-lg-block">
@@ -162,7 +208,7 @@
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-warning w-100 py-3 fw-bold shadow-sm d-none d-lg-block">
+                        <button type="submit" class="btn btn-warning w-100 py-3 fw-bold shadow-sm d-none d-lg-block" id="saveStatusBtn">
                             <i class="bi bi-check-circle me-2"></i>Lưu thay đổi
                         </button>
                     </form>
@@ -182,6 +228,16 @@
 <div class="mb-5 pb-5 d-lg-none"></div>
 
 @section Scripts {
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // The form action URL is automatically read from the form's asp-action attribute
+        initOrderStatusUpdate('updateStatusForm', 'currentStatusText', 'currentStatusDot');
+        // Mobile sticky button
+        document.querySelector('.fixed-bottom button')?.addEventListener('click', function() {
+            document.getElementById('updateStatusForm').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        });
+    });
+    </script>
     <style>
         .bg-accent { background-color: var(--accent-color); }
         .border-start-md { border-left: 1px solid #edf2f7; }

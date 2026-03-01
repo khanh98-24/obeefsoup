@@ -218,5 +218,36 @@ namespace OBeefSoup.Areas.Admin.Controllers
         {
             return _context.MenuItems.Any(e => e.Id == id);
         }
+
+        // AJAX: Delete menu item and return JSON
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAjax(int id)
+        {
+            var menuItem = await _context.MenuItems
+                .Include(m => m.SubMenus)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (menuItem == null) return Json(new { success = false, message = "Không tìm thấy menu!" });
+
+            foreach (var sub in menuItem.SubMenus)
+                sub.ParentId = null;
+
+            _context.MenuItems.Remove(menuItem);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Xóa menu thành công!" });
+        }
+
+        // AJAX: Get partial view for menus table
+        [HttpGet]
+        public async Task<IActionResult> IndexPartial()
+        {
+            var menuItems = await _context.MenuItems
+                .Include(m => m.Parent)
+                .OrderBy(m => m.ParentId)
+                .ThenBy(m => m.DisplayOrder)
+                .ToListAsync();
+            return PartialView("_MenusTablePartial", menuItems);
+        }
     }
 }

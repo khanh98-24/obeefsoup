@@ -304,10 +304,11 @@ D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\staticwebassets.build.json
 D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\staticwebassets.build.json.cache
 D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\staticwebassets.development.json
 D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\OBeefSoup.csproj.Up2Date
 D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\OBeefSoup.dll
 D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\refint\OBeefSoup.dll
 D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\OBeefSoup.pdb
 D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\OBeefSoup.genruntimeconfig.cache
 D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\ref\OBeefSoup.dll
+D:\WEB Pho\OBeefSoup\bin\Debug\net8.0\Newtonsoft.Json.dll
+D:\WEB Pho\OBeefSoup\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

@@ -146,5 +146,33 @@ namespace OBeefSoup.Areas.Admin.Controllers
             }
             return input;
         }
+
+        // AJAX: Delete store location and return JSON
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAjax(int id)
+        {
+            try
+            {
+                var store = await _context.StoreLocations.FindAsync(id);
+                if (store == null) return Json(new { success = false, message = "Không tìm thấy cơ sở!" });
+
+                _context.StoreLocations.Remove(store);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Xóa cơ sở thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+            }
+        }
+
+        // AJAX: Get partial view for store locations table
+        [HttpGet]
+        public async Task<IActionResult> IndexPartial()
+        {
+            var stores = await _context.StoreLocations.OrderBy(s => s.Id).ToListAsync();
+            return PartialView("_StoreLocationsTablePartial", stores);
+        }
     }
 }

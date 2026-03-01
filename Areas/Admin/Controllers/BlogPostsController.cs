@@ -164,5 +164,36 @@ namespace OBeefSoup.Areas.Admin.Controllers
             slug = System.Text.RegularExpressions.Regex.Replace(slug, @"\s+", "-").Trim('-');
             return slug + "-" + DateTime.Now.Ticks.ToString().Substring(10);
         }
+
+        // AJAX: Delete blog post and return JSON
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAjax(int id)
+        {
+            var blogPost = await _context.BlogPosts.FindAsync(id);
+            if (blogPost == null) return Json(new { success = false, message = "Không tìm thấy bài viết!" });
+
+            if (!string.IsNullOrEmpty(blogPost.ImageUrl))
+                _imageService.DeleteImage(blogPost.ImageUrl);
+
+            _context.BlogPosts.Remove(blogPost);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Xóa bài viết thành công!" });
+        }
+
+        // AJAX: Get partial view for blog posts table
+        [HttpGet]
+        public async Task<IActionResult> IndexPartial(string? searchTerm)
+        {
+            var query = _context.BlogPosts.AsQueryable();
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                searchTerm = searchTerm.Trim();
+                query = query.Where(b => b.Title.Contains(searchTerm));
+                ViewBag.SearchTerm = searchTerm;
+            }
+            var posts = await query.OrderByDescending(b => b.CreatedDate).ToListAsync();
+            return PartialView("_BlogPostsTablePartial", posts);
+        }
     }
 }

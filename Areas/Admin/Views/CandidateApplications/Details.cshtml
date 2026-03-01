@@ -15,11 +15,12 @@
                     <i class="bi bi-gear me-1"></i> Thay đổi trạng thái
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
-                    <li><form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="Pending" method="post"><button type="submit" class="dropdown-item">Chờ duyệt</button></form></li>
-                    <li><form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="Reviewed" method="post"><button type="submit" class="dropdown-item">Đã xem hồ sơ</button></form></li>
-                    <li><form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="Interviewing" method="post"><button type="submit" class="dropdown-item">Đang phỏng vấn</button></form></li>
-                    <li><form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="Hired" method="post"><button type="submit" class="dropdown-item text-success fw-bold">Đã tuyển</button></form></li>
-                    <li><form asp-action="UpdateStatus" asp-route-id="@Model.Id" asp-route-status="Rejected" method="post"><button type="submit" class="dropdown-item text-danger">Từ chối</button></form></li>
+                    @{ var token = Context.RequestServices.GetService<Microsoft.AspNetCore.Antiforgery.IAntiforgery>()?.GetAndStoreTokens(Context).RequestToken ?? ""; }
+                    <li><button type="button" class="dropdown-item" onclick="updateStatus('@Model.Id', 'Pending',      '@token')">Chờ duyệt</button></li>
+                    <li><button type="button" class="dropdown-item" onclick="updateStatus('@Model.Id', 'Reviewed',     '@token')">Đã xem hồ sơ</button></li>
+                    <li><button type="button" class="dropdown-item" onclick="updateStatus('@Model.Id', 'Interviewing', '@token')">Đang phỏng vấn</button></li>
+                    <li><button type="button" class="dropdown-item text-success fw-bold" onclick="updateStatus('@Model.Id', 'Hired', '@token')">Đã tuyển</button></li>
+                    <li><button type="button" class="dropdown-item text-danger" onclick="updateStatus('@Model.Id', 'Rejected', '@token')">Từ chối</button></li>
                 </ul>
             </div>
         </div>
@@ -50,19 +51,19 @@
                             @switch (Model.Status)
                             {
                                 case OBeefSoup.Models.ApplicationStatus.Pending:
-                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle py-1 px-3 rounded-pill">Chờ duyệt</span>
+                                    <span id="currentStatusBadge" class="badge bg-warning-subtle text-warning border border-warning-subtle py-1 px-3 rounded-pill">Chờ duyệt</span>
                                     break;
                                 case OBeefSoup.Models.ApplicationStatus.Reviewed:
-                                    <span class="badge bg-info-subtle text-info border border-info-subtle py-1 px-3 rounded-pill">Đã xem hồ sơ</span>
+                                    <span id="currentStatusBadge" class="badge bg-info-subtle text-info border border-info-subtle py-1 px-3 rounded-pill">Đã xem hồ sơ</span>
                                     break;
                                 case OBeefSoup.Models.ApplicationStatus.Interviewing:
-                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle py-1 px-3 rounded-pill">Đang phỏng vấn</span>
+                                    <span id="currentStatusBadge" class="badge bg-primary-subtle text-primary border border-primary-subtle py-1 px-3 rounded-pill">Đang phỏng vấn</span>
                                     break;
                                 case OBeefSoup.Models.ApplicationStatus.Hired:
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-3 rounded-pill">Đã tuyển</span>
+                                    <span id="currentStatusBadge" class="badge bg-success-subtle text-success border border-success-subtle py-1 px-3 rounded-pill">Đã tuyển</span>
                                     break;
                                 case OBeefSoup.Models.ApplicationStatus.Rejected:
-                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle py-1 px-3 rounded-pill">Từ chối</span>
+                                    <span id="currentStatusBadge" class="badge bg-danger-subtle text-danger border border-danger-subtle py-1 px-3 rounded-pill">Từ chối</span>
                                     break;
                             }
                         </div>
@@ -145,3 +146,34 @@
     .bg-danger-subtle { background-color: #f8d7da; color: #842029; }
     .bg-info-subtle { background-color: #cff4fc; color: #055160; }
 </style>
+
+@section Scripts {
+<script>
+var updateStatusUrl = '@Url.Action("UpdateStatus", "CandidateApplications", new { area = "Admin" })';
+
+function updateStatus(id, status, token) {
+    fetch(updateStatusUrl + '?id=' + id + '&status=' + status, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: '__RequestVerificationToken=' + encodeURIComponent(token)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.message, 'success');
+            var badge = document.getElementById('currentStatusBadge');
+            if (badge && data.statusText) {
+                badge.textContent = data.statusText;
+                badge.className = 'badge py-1 px-3 rounded-pill border ' + data.badgeClass;
+            }
+        } else {
+            showToast(data.message || 'Cập nhật thất bại!', 'danger');
+        }
+    })
+    .catch(() => showToast('Lỗi kết nối!', 'danger'));
+}
+</script>
+}

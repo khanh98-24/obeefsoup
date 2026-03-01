@@ -124,5 +124,32 @@ namespace OBeefSoup.Areas.Admin.Controllers
         {
             return _context.Categories.Any(e => e.Id == id);
         }
+
+        // AJAX: Delete category and return JSON
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAjax(int id)
+        {
+            var category = await _context.Categories
+                .Include(c => c.Products)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category == null) return Json(new { success = false, message = "Không tìm thấy danh mục!" });
+
+            if (category.Products.Any())
+                return Json(new { success = false, message = "Không thể xóa danh mục đang có sản phẩm!" });
+
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Xóa danh mục thành công!" });
+        }
+
+        // AJAX: Get partial view for categories table
+        [HttpGet]
+        public async Task<IActionResult> IndexPartial()
+        {
+            var categories = await _context.Categories.OrderBy(c => c.DisplayOrder).ToListAsync();
+            return PartialView("_CategoriesTablePartial", categories);
+        }
     }
 }

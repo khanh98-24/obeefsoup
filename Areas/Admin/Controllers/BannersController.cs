@@ -235,5 +235,39 @@ namespace OBeefSoup.Areas.Admin.Controllers
         {
             return _context.Banners.Any(e => e.Id == id);
         }
+
+        // AJAX: Delete banner and return JSON
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAjax(int id)
+        {
+            try
+            {
+                var banner = await _context.Banners.FindAsync(id);
+                if (banner == null) return Json(new { success = false, message = "Không tìm thấy banner!" });
+
+                if (!string.IsNullOrEmpty(banner.ImageUrl))
+                    _imageService.DeleteImage(banner.ImageUrl);
+
+                _context.Banners.Remove(banner);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Xóa banner thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi: " + ex.Message });
+            }
+        }
+
+        // AJAX: Get partial view for banners table
+        [HttpGet]
+        public async Task<IActionResult> IndexPartial()
+        {
+            var banners = await _context.Banners
+                .OrderBy(b => b.DisplayOrder)
+                .ThenByDescending(b => b.CreatedDate)
+                .ToListAsync();
+            return PartialView("_BannersTablePartial", banners);
+        }
     }
 }

@@ -37,6 +37,15 @@ namespace OBeefSoup.Models
         [StringLength(500)]
         public string? Notes { get; set; } = string.Empty;
 
+        [Required]
+        [StringLength(50)]
+        public string PaymentMethod { get; set; } = "COD"; // Default to COD
+
+        public OrderPaymentStatus PaymentStatus { get; set; } = OrderPaymentStatus.Pending;
+
+        [StringLength(100)]
+        public string? PaymentTransactionId { get; set; }
+
         public DateTime? CompletedDate { get; set; }
 
         // Navigation properties
@@ -52,5 +61,13 @@ namespace OBeefSoup.Models
         Delivering = 3,     // Đang giao hàng
         Completed = 4,      // Hoàn thành
         Cancelled = 5       // Đã hủy
+    }
+
+    public enum OrderPaymentStatus
+    {
+        Pending = 0,    // Chưa thanh toán
+        Paid = 1,       // Đã thanh toán
+        Failed = 2,     // Thanh toán thất bại
+        Refunded = 3    // Đã hoàn tiền
     }
 }
