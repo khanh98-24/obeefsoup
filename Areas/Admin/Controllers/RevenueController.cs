@@ -123,8 +123,12 @@ namespace OBeefSoup.Areas.Admin.Controllers
             var to   = (toDate  ?? DateTime.Now.Date).Date.AddDays(1).AddTicks(-1);
             var now  = DateTime.Now;
 
-            var query = _context.Orders.Include(o => o.Customer)
-                .Where(o => o.Status == OrderStatus.Completed && o.OrderDate >= from && o.OrderDate <= to);
+            // ── Query ──────────────────────────────────────────────────
+            var query = _context.Orders
+                .Include(o => o.Customer)
+                .Where(o => o.Status == OrderStatus.Completed
+                         && o.OrderDate >= from && o.OrderDate <= to);
+
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var s = search.Trim().ToLower();
@@ -134,133 +138,208 @@ namespace OBeefSoup.Areas.Admin.Controllers
                     o.PhoneNumber.Contains(s));
             }
 
-            var orders  = await query.OrderByDescending(o => o.OrderDate).ToListAsync();
-            var total   = orders.Sum(o => o.TotalAmount);
-            var avgVal  = orders.Count > 0 ? total / orders.Count : 0;
-            var codRev  = orders.Where(o => o.PaymentMethod == "COD").Sum(o => o.TotalAmount);
-            var vnpRev  = orders.Where(o => o.PaymentMethod == "VNPAY").Sum(o => o.TotalAmount);
-            var momoRev = orders.Where(o => o.PaymentMethod == "MoMo").Sum(o => o.TotalAmount);
+            var orders = await query.OrderByDescending(o => o.OrderDate).ToListAsync();
 
+            // ── Tính toán chính xác ────────────────────────────────────
+            var totalRevenue = orders.Sum(o => o.TotalAmount);
+            var totalOrders  = orders.Count;
+            var avgValue     = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+            var codOrders  = orders.Where(o => o.PaymentMethod == "COD").ToList();
+            var vnpOrders  = orders.Where(o => o.PaymentMethod == "VNPAY").ToList();
+            var momoOrders = orders.Where(o => o.PaymentMethod == "MOMO").ToList();
+
+            var codRev  = codOrders.Sum(o  => o.TotalAmount);
+            var vnpRev  = vnpOrders.Sum(o  => o.TotalAmount);
+            var momoRev = momoOrders.Sum(o => o.TotalAmount);
+
+            var codCount  = codOrders.Count;
+            var vnpCount  = vnpOrders.Count;
+            var momoCount = momoOrders.Count;
+
+            // ── SpreadsheetML (6 cột) ──────────────────────────────────
+            // Cột: [0]STT [1]Mã đơn [2]Khách hàng [3]Ngày đặt [4]Thanh toán [5]Tổng tiền
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             sb.AppendLine("<?mso-application progid=\"Excel.Sheet\"?>");
             sb.AppendLine("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\">");
             sb.AppendLine("<Styles>");
 
-            // ── Style definitions ──
-            void Sty(string id, string inner) => sb.AppendLine($"<Style ss:ID=\"{id}\">{inner}</Style>");
-            Sty("cName",   "<Font ss:Bold=\"1\" ss:Size=\"22\" ss:Color=\"#8B0000\"/><Alignment ss:Vertical=\"Center\"/>");
-            Sty("cSub",    "<Font ss:Size=\"10\" ss:Color=\"#666666\" ss:Italic=\"1\"/><Alignment ss:Vertical=\"Center\"/>");
-            Sty("rTitle",  "<Font ss:Bold=\"1\" ss:Size=\"14\" ss:Color=\"#1a237e\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Interior ss:Color=\"#E8EAF6\" ss:Pattern=\"Solid\"/>");
-            Sty("infoLbl", "<Font ss:Bold=\"1\" ss:Size=\"9\" ss:Color=\"#555555\"/><Alignment ss:Horizontal=\"Right\" ss:Vertical=\"Center\"/>");
-            Sty("infoVal", "<Font ss:Size=\"9\" ss:Color=\"#222222\"/><Alignment ss:Vertical=\"Center\"/>");
-            Sty("secH",    "<Font ss:Bold=\"1\" ss:Size=\"10\" ss:Color=\"#FFFFFF\"/><Interior ss:Color=\"#37474F\" ss:Pattern=\"Solid\"/><Alignment ss:Horizontal=\"Left\" ss:Vertical=\"Center\"/>");
-            string kB = "<Border ss:Position=\"Left\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#DDDDDD\"/><Border ss:Position=\"Right\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#DDDDDD\"/><Border ss:Position=\"Top\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#DDDDDD\"/><Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#CCCCCC\"/>";
-            Sty("kpiL",  $"<Font ss:Bold=\"1\" ss:Size=\"9\" ss:Color=\"#777777\"/><Interior ss:Color=\"#F5F5F5\" ss:Pattern=\"Solid\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders>{kB}</Borders>");
-            Sty("kpiV",  $"<Font ss:Bold=\"1\" ss:Size=\"16\" ss:Color=\"#8B0000\"/><Interior ss:Color=\"#FFFFFF\" ss:Pattern=\"Solid\"/><NumberFormat ss:Format=\"#,##0\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders>{kB}</Borders>");
-            Sty("kpiVN", $"<Font ss:Bold=\"1\" ss:Size=\"16\" ss:Color=\"#1a237e\"/><Interior ss:Color=\"#FFFFFF\" ss:Pattern=\"Solid\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders>{kB}</Borders>");
-            Sty("tH", "<Font ss:Bold=\"1\" ss:Size=\"10\" ss:Color=\"#FFFFFF\"/><Interior ss:Color=\"#8B0000\" ss:Pattern=\"Solid\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders><Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#5D0000\"/><Border ss:Position=\"Top\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#5D0000\"/><Border ss:Position=\"Left\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#5D0000\"/><Border ss:Position=\"Right\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#5D0000\"/></Borders>");
-            string dB = "<Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#E0E0E0\"/><Border ss:Position=\"Left\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#E0E0E0\"/><Border ss:Position=\"Right\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#E0E0E0\"/>";
-            Sty("dE", $"<Font ss:Size=\"10\"/><Alignment ss:Vertical=\"Center\"/><Borders>{dB}</Borders>");
-            Sty("dO", $"<Font ss:Size=\"10\"/><Interior ss:Color=\"#FDF7F7\" ss:Pattern=\"Solid\"/><Alignment ss:Vertical=\"Center\"/><Borders>{dB}</Borders>");
-            Sty("mE", $"<Font ss:Bold=\"1\" ss:Size=\"10\" ss:Color=\"#8B0000\"/><Alignment ss:Horizontal=\"Right\" ss:Vertical=\"Center\"/><NumberFormat ss:Format=\"#,##0\"/><Borders>{dB}</Borders>");
-            Sty("mO", $"<Font ss:Bold=\"1\" ss:Size=\"10\" ss:Color=\"#8B0000\"/><Interior ss:Color=\"#FDF7F7\" ss:Pattern=\"Solid\"/><Alignment ss:Horizontal=\"Right\" ss:Vertical=\"Center\"/><NumberFormat ss:Format=\"#,##0\"/><Borders>{dB}</Borders>");
-            Sty("nE", $"<Font ss:Bold=\"1\" ss:Size=\"10\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders>{dB}</Borders>");
-            Sty("nO", $"<Font ss:Bold=\"1\" ss:Size=\"10\"/><Interior ss:Color=\"#FDF7F7\" ss:Pattern=\"Solid\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders>{dB}</Borders>");
-            Sty("totL", "<Font ss:Bold=\"1\" ss:Size=\"11\" ss:Color=\"#1a237e\"/><Interior ss:Color=\"#E8EAF6\" ss:Pattern=\"Solid\"/><Alignment ss:Vertical=\"Center\"/><Borders><Border ss:Position=\"Top\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#1a237e\"/><Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#1a237e\"/></Borders>");
-            Sty("totV", "<Font ss:Bold=\"1\" ss:Size=\"13\" ss:Color=\"#8B0000\"/><Interior ss:Color=\"#E8EAF6\" ss:Pattern=\"Solid\"/><Alignment ss:Horizontal=\"Right\" ss:Vertical=\"Center\"/><NumberFormat ss:Format=\"#,##0\"/><Borders><Border ss:Position=\"Top\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#1a237e\"/><Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#1a237e\"/></Borders>");
-            Sty("ftr",  "<Font ss:Size=\"9\" ss:Color=\"#AAAAAA\" ss:Italic=\"1\"/><Alignment ss:Vertical=\"Center\"/>");
+            // ── Style definitions ──────────────────────────────────────
+            void S(string id, string body) => sb.AppendLine($"<Style ss:ID=\"{id}\">{body}</Style>");
+
+            S("hdr",  "<Font ss:Bold=\"1\" ss:Size=\"20\" ss:Color=\"#8B0000\"/><Alignment ss:Vertical=\"Center\"/>");
+            S("sub",  "<Font ss:Size=\"9\" ss:Color=\"#888888\" ss:Italic=\"1\"/><Alignment ss:Vertical=\"Center\"/>");
+            S("sec",  "<Font ss:Bold=\"1\" ss:Size=\"10\" ss:Color=\"#FFFFFF\"/><Interior ss:Color=\"#8B0000\" ss:Pattern=\"Solid\"/><Alignment ss:Vertical=\"Center\"/>");
+            S("iL",   "<Font ss:Bold=\"1\" ss:Size=\"9\" ss:Color=\"#555\"/><Alignment ss:Horizontal=\"Right\" ss:Vertical=\"Center\"/>");
+            S("iV",   "<Font ss:Size=\"9\" ss:Color=\"#222\"/><Alignment ss:Vertical=\"Center\"/>");
+
+            // KPI label style
+            S("kL",  "<Font ss:Bold=\"1\" ss:Size=\"9\" ss:Color=\"#666\"/><Interior ss:Color=\"#F5F5F5\" ss:Pattern=\"Solid\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders><Border ss:Position=\"Left\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#DDD\"/><Border ss:Position=\"Right\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#DDD\"/><Border ss:Position=\"Top\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#DDD\"/><Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#DDD\"/></Borders>");
+            // KPI value style (currency - red)
+            S("kV",  "<Font ss:Bold=\"1\" ss:Size=\"15\" ss:Color=\"#8B0000\"/><Interior ss:Color=\"#FFFFFF\" ss:Pattern=\"Solid\"/><NumberFormat ss:Format=\"#,##0\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders><Border ss:Position=\"Left\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#DDD\"/><Border ss:Position=\"Right\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#DDD\"/><Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#CCC\"/></Borders>");
+            // KPI value style (count - blue)
+            S("kN",  "<Font ss:Bold=\"1\" ss:Size=\"15\" ss:Color=\"#1a237e\"/><Interior ss:Color=\"#FFFFFF\" ss:Pattern=\"Solid\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders><Border ss:Position=\"Left\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#DDD\"/><Border ss:Position=\"Right\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#DDD\"/><Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#CCC\"/></Borders>");
+
+            // Table header
+            S("tH",  "<Font ss:Bold=\"1\" ss:Size=\"10\" ss:Color=\"#FFFFFF\"/><Interior ss:Color=\"#1a237e\" ss:Pattern=\"Solid\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders><Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#0d1757\"/></Borders>");
+            // Table data – even & odd rows
+            string bd = "<Border ss:Position=\"Bottom\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#EBEBEB\"/><Border ss:Position=\"Left\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#EBEBEB\"/><Border ss:Position=\"Right\" ss:LineStyle=\"Continuous\" ss:Weight=\"1\" ss:Color=\"#EBEBEB\"/>";
+            S("dE", $"<Font ss:Size=\"10\"/><Alignment ss:Vertical=\"Center\"/><Borders>{bd}</Borders>");
+            S("dO", $"<Font ss:Size=\"10\"/><Interior ss:Color=\"#FBF7F7\" ss:Pattern=\"Solid\"/><Alignment ss:Vertical=\"Center\"/><Borders>{bd}</Borders>");
+            S("mE", $"<Font ss:Bold=\"1\" ss:Size=\"10\" ss:Color=\"#8B0000\"/><NumberFormat ss:Format=\"#,##0\"/><Alignment ss:Horizontal=\"Right\" ss:Vertical=\"Center\"/><Borders>{bd}</Borders>");
+            S("mO", $"<Font ss:Bold=\"1\" ss:Size=\"10\" ss:Color=\"#8B0000\"/><Interior ss:Color=\"#FBF7F7\" ss:Pattern=\"Solid\"/><NumberFormat ss:Format=\"#,##0\"/><Alignment ss:Horizontal=\"Right\" ss:Vertical=\"Center\"/><Borders>{bd}</Borders>");
+            S("nE", $"<Font ss:Bold=\"1\" ss:Size=\"10\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders>{bd}</Borders>");
+            S("nO", $"<Font ss:Bold=\"1\" ss:Size=\"10\"/><Interior ss:Color=\"#FBF7F7\" ss:Pattern=\"Solid\"/><Alignment ss:Horizontal=\"Center\" ss:Vertical=\"Center\"/><Borders>{bd}</Borders>");
+            // Total row
+            S("totL", "<Font ss:Bold=\"1\" ss:Size=\"11\" ss:Color=\"#1a237e\"/><Interior ss:Color=\"#E8EAF6\" ss:Pattern=\"Solid\"/><Alignment ss:Vertical=\"Center\"/><Borders><Border ss:Position=\"Top\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#1a237e\"/></Borders>");
+            S("totV", "<Font ss:Bold=\"1\" ss:Size=\"12\" ss:Color=\"#8B0000\"/><Interior ss:Color=\"#E8EAF6\" ss:Pattern=\"Solid\"/><NumberFormat ss:Format=\"#,##0\"/><Alignment ss:Horizontal=\"Right\" ss:Vertical=\"Center\"/><Borders><Border ss:Position=\"Top\" ss:LineStyle=\"Continuous\" ss:Weight=\"2\" ss:Color=\"#1a237e\"/></Borders>");
+            S("ftr",  "<Font ss:Size=\"8\" ss:Color=\"#AAAAAA\" ss:Italic=\"1\"/><Alignment ss:Vertical=\"Center\"/>");
 
             sb.AppendLine("</Styles>");
+
+            // 6 columns
             sb.AppendLine("<Worksheet ss:Name=\"Báo cáo doanh thu\"><Table ss:DefaultRowHeight=\"20\">");
-            sb.AppendLine("<Column ss:Width=\"35\"/><Column ss:Width=\"130\"/><Column ss:Width=\"150\"/><Column ss:Width=\"105\"/><Column ss:Width=\"115\"/><Column ss:Width=\"90\"/><Column ss:Width=\"115\"/>");
+            sb.AppendLine("<Column ss:Width=\"35\"/>"); // STT
+            sb.AppendLine("<Column ss:Width=\"135\"/>");// Mã đơn
+            sb.AppendLine("<Column ss:Width=\"140\"/>");// Khách hàng
+            sb.AppendLine("<Column ss:Width=\"115\"/>");// Ngày đặt
+            sb.AppendLine("<Column ss:Width=\"90\"/>"); // Thanh toán
+            sb.AppendLine("<Column ss:Width=\"120\"/>");// Tổng tiền
 
-            // Helper: row and cell factories
-            void R(int h, string cells) => sb.AppendLine($"<Row ss:Height=\"{h}\">{cells}</Row>");
-            void Rmt(string cells = "") => sb.AppendLine($"<Row ss:Height=\"8\">{cells}</Row>");
-            string Txt(string style, string val, int merge = 0) =>
-                merge > 0 ? $"<Cell ss:MergeAcross=\"{merge}\" ss:StyleID=\"{style}\"><Data ss:Type=\"String\">{val}</Data></Cell>"
-                           : $"<Cell ss:StyleID=\"{style}\"><Data ss:Type=\"String\">{val}</Data></Cell>";
-            string Num(string style, decimal val, int merge = 0) =>
-                merge > 0 ? $"<Cell ss:MergeAcross=\"{merge}\" ss:StyleID=\"{style}\"><Data ss:Type=\"Number\">{val}</Data></Cell>"
-                           : $"<Cell ss:StyleID=\"{style}\"><Data ss:Type=\"Number\">{val}</Data></Cell>";
-            string Empty(int merge = 0) => merge > 0 ? $"<Cell ss:MergeAcross=\"{merge}\"><Data ss:Type=\"String\"></Data></Cell>"
-                                                      : "<Cell><Data ss:Type=\"String\"></Data></Cell>";
+            // Helper – MergeAcross=5 = toàn bộ 6 cột
+            int FULL = 5; // = 6 cột - 1
 
-            // ══════════════════════════════════════
-            // SECTION 1: COMPANY HEADER
-            // ══════════════════════════════════════
-            Rmt();
-            R(44, Txt("cName", "O&#39;BEEF SOUP", 6));
-            R(18, Txt("cSub",  "Nhà hàng Phở Bò Cao Cấp  |  Hệ thống quản lý bán hàng nội bộ", 6));
-            Rmt();
-            // Divider via thick title bar
-            R(30, Txt("rTitle", $"📊  BÁO CÁO DOANH THU  —  KỲ {from:dd/MM/yyyy} đến {to.Date:dd/MM/yyyy}", 6));
-            Rmt();
-            // Report metadata (2x2 grid across 4 cols, 2 empty cols right)
-            R(18, Txt("infoLbl","Người xuất báo cáo:",1) + Txt("infoVal","Quản trị viên")
-                + Txt("infoLbl","Ngày xuất:",1)         + Txt("infoVal",$"{now:dd/MM/yyyy HH:mm}") + Empty(1));
-            R(18, Txt("infoLbl","Kỳ báo cáo:",1)        + Txt("infoVal",$"{from:dd/MM/yyyy} – {to.Date:dd/MM/yyyy}")
-                + Txt("infoLbl","Số đơn hoàn thành:",1) + Txt("infoVal",$"{orders.Count} đơn") + Empty(1));
+            void Row(int h, string cells) => sb.AppendLine($"<Row ss:Height=\"{h}\">{cells}</Row>");
+            void Gap(int h = 8) => sb.AppendLine($"<Row ss:Height=\"{h}\"/>");
+
+            string T(string sty, string val, int merge = 0) =>
+                merge > 0
+                    ? $"<Cell ss:MergeAcross=\"{merge}\" ss:StyleID=\"{sty}\"><Data ss:Type=\"String\">{System.Security.SecurityElement.Escape(val)}</Data></Cell>"
+                    : $"<Cell ss:StyleID=\"{sty}\"><Data ss:Type=\"String\">{System.Security.SecurityElement.Escape(val)}</Data></Cell>";
+
+            var ic = System.Globalization.CultureInfo.InvariantCulture;
+
+            string N(string sty, decimal val, int merge = 0)
+            {
+                var numStr = val.ToString("0.##", ic); // InvariantCulture: no comma issues
+                return merge > 0
+                    ? $"<Cell ss:MergeAcross=\"{merge}\" ss:StyleID=\"{sty}\"><Data ss:Type=\"Number\">{numStr}</Data></Cell>"
+                    : $"<Cell ss:StyleID=\"{sty}\"><Data ss:Type=\"Number\">{numStr}</Data></Cell>";
+            }
+
+            string NI(string sty, int val, int merge = 0)
+            {
+                return merge > 0
+                    ? $"<Cell ss:MergeAcross=\"{merge}\" ss:StyleID=\"{sty}\"><Data ss:Type=\"Number\">{val}</Data></Cell>"
+                    : $"<Cell ss:StyleID=\"{sty}\"><Data ss:Type=\"Number\">{val}</Data></Cell>";
+            }
+
+
+            string E(int merge = 0) =>
+                merge > 0
+                    ? $"<Cell ss:MergeAcross=\"{merge}\"><Data ss:Type=\"String\"></Data></Cell>"
+                    : "<Cell><Data ss:Type=\"String\"></Data></Cell>";
+
+            // ═══════════════════════════════════════
+            // PHẦN 1: TIÊU ĐỀ
+            // ═══════════════════════════════════════
+            Gap();
+            Row(40, T("hdr", "O'BEEF SOUP", FULL));
+            Row(16, T("sub", "Nhà hàng Phở Bò Cao Cấp  |  Hệ thống quản lý bán hàng nội bộ", FULL));
+            Gap();
+            Row(28, T("sec", $"  BÁO CÁO DOANH THU  —  {from:dd/MM/yyyy} đến {to.Date:dd/MM/yyyy}", FULL));
+            Gap();
+
+            // Thông tin báo cáo (2 cột × 2 hàng): iL=2col, iV=1col → 3col × 2 = 6col
+            Row(16,
+                T("iL", "Người xuất:", 1) + T("iV", "Quản trị viên") +
+                T("iL", "Ngày xuất:", 1)  + T("iV", $"{now:dd/MM/yyyy HH:mm}"));
+            Row(16,
+                T("iL", "Kỳ báo cáo:", 1) + T("iV", $"{from:dd/MM/yyyy} – {to.Date:dd/MM/yyyy}") +
+                T("iL", "Số đơn HT:", 1)   + T("iV", $"{totalOrders} đơn"));
             if (!string.IsNullOrEmpty(search))
-                R(18, Txt("infoLbl","Bộ lọc tìm kiếm:",1) + Txt("infoVal",$"«{search}»") + Empty(4));
-            Rmt();
+                Row(16, T("iL", "Bộ lọc:", 1) + T("iV", $"«{search}»", FULL - 2));
+            Gap();
 
-            // ══════════════════════════════════════
-            // SECTION 2: KPI SUMMARY
-            // ══════════════════════════════════════
-            R(24, Txt("secH", $"  TỔNG QUAN DOANH THU", 6));
-            // Row 1: labels (3 pairs, each spans 2 cols across 7 cols total → MergeAcross=1 each)
-            R(20, Txt("kpiL","TỔNG DOANH THU (đ)",1)     + Txt("kpiL","SỐ ĐƠN HOÀN THÀNH",1) + Txt("kpiL","GIÁ TRỊ TRUNG BÌNH / ĐƠN",1));
-            R(34, Num("kpiV", total, 1)                   + Num("kpiVN", orders.Count, 1)      + Num("kpiV", avgVal, 1));
-            Rmt();
-            R(20, Txt("kpiL","COD — Tiền mặt (đ)",1)     + Txt("kpiL","VN Pay (đ)",1)        + Txt("kpiL","Ví MoMo (đ)",1));
-            R(30, Num("kpiV", codRev, 1)                  + Num("kpiV", vnpRev, 1)             + Num("kpiV", momoRev, 1));
-            Rmt();
+            // ═══════════════════════════════════════
+            // PHẦN 2: KPI — 3 cặp label+value, mỗi cặp chiếm 2 cột (6÷3=2)
+            // ═══════════════════════════════════════
+            Row(22, T("sec", "  TỔNG QUAN DOANH THU", FULL));
 
-            // ══════════════════════════════════════
-            // SECTION 3: ORDER DETAIL TABLE
-            // ══════════════════════════════════════
-            R(24, Txt("secH", $"  CHI TIẾT ĐƠN HÀNG  ({orders.Count} đơn được hiển thị)", 6));
-            R(26,
-                Txt("tH","STT") +
-                Txt("tH","Mã đơn hàng") +
-                Txt("tH","Khách hàng") +
-                Txt("tH","Số điện thoại") +
-                Txt("tH","Ngày đặt hàng") +
-                Txt("tH","Thanh toán") +
-                Txt("tH","Tổng tiền (đ)"));
+            // Labels: 3 × MergeAcross=1 = 3 × 2col = 6col ✓
+            Row(18,
+                T("kL", "TỔNG DOANH THU (đ)", 1) +
+                T("kL", "SỐ ĐƠN HOÀN THÀNH", 1)  +
+                T("kL", "GIÁ TRỊ TRUNG BÌNH / ĐƠN (đ)", 1));
+            // Values
+            Row(32,
+                N("kV",  totalRevenue, 1) +
+                NI("kN", totalOrders,  1) +
+                N("kV",  avgValue,     1));
+
+            Gap();
+
+            // Labels hàng 2: COD / VNPAY / MOMO
+            Row(18,
+                T("kL", $"COD — Tiền mặt ({codCount} đơn)", 1) +
+                T("kL", $"VN Pay ({vnpCount} đơn)", 1)          +
+                T("kL", $"Ví MoMo ({momoCount} đơn)", 1));
+            // Values
+            Row(32,
+                N("kV", codRev,  1) +
+                N("kV", vnpRev,  1) +
+                N("kV", momoRev, 1));
+
+            Gap();
+
+            // ═══════════════════════════════════════
+            // PHẦN 3: BẢNG CHI TIẾT ĐƠN HÀNG
+            // ═══════════════════════════════════════
+            Row(22, T("sec", $"  CHI TIẾT ĐƠN HÀNG  ({totalOrders} đơn)", FULL));
+            Row(24,
+                T("tH", "STT")           +
+                T("tH", "Mã đơn hàng")   +
+                T("tH", "Khách hàng")    +
+                T("tH", "Ngày đặt")      +
+                T("tH", "Thanh toán")    +
+                T("tH", "Tổng tiền (đ)"));
 
             for (int i = 0; i < orders.Count; i++)
             {
-                var o    = orders[i];
+                var o   = orders[i];
                 bool alt = i % 2 == 1;
-                var sD   = alt ? "dO" : "dE";
-                var sM   = alt ? "mO" : "mE";
-                var sN   = alt ? "nO" : "nE";
-                var met  = o.PaymentMethod == "COD" ? "Tiền mặt" : o.PaymentMethod == "VNPAY" ? "VN Pay" : "Ví MoMo";
-                R(18,
-                    Num(sN, i + 1) +
-                    Txt(sD, o.OrderNumber) +
-                    Txt(sD, o.Customer?.FullName ?? "") +
-                    Txt(sD, o.PhoneNumber ?? "") +
-                    Txt(sD, o.OrderDate.ToString("dd/MM/yyyy HH:mm")) +
-                    Txt(sD, met) +
-                    Num(sM, o.TotalAmount));
+                var sD  = alt ? "dO" : "dE";
+                var sM  = alt ? "mO" : "mE";
+                var sN  = alt ? "nO" : "nE";
+                var met = o.PaymentMethod switch
+                {
+                    "COD"   => "Tiền mặt",
+                    "VNPAY" => "VN Pay",
+                    "MOMO"  => "Ví MoMo",
+                    _       => o.PaymentMethod ?? ""
+                };
+                Row(18,
+                    NI(sN, i + 1) +
+                    T(sD, o.OrderNumber ?? "") +
+                    T(sD, o.Customer?.FullName ?? "") +
+                    T(sD, o.OrderDate.ToString("dd/MM/yyyy HH:mm")) +
+                    T(sD, met) +
+                    N(sM, o.TotalAmount));
             }
 
-            // Total
-            R(30,
-                Txt("totL", "", 5) +
-                Txt("totL", $"TỔNG CỘNG  ({orders.Count} đơn)") +
-                Num("totV", total));
-            Rmt();
+            // Tổng cộng: 4 col trống + label + value = 6 col ✓
+            Row(28,
+                E(3) +
+                T("totL", $"TỔNG CỘNG  ({totalOrders} đơn)") +
+                N("totV", totalRevenue));
 
-            // ══════════════════════════════════════
-            // SECTION 4: FOOTER
-            // ══════════════════════════════════════
-            R(14, Txt("ftr", $"Báo cáo được xuất tự động từ hệ thống O'Beef Soup vào lúc {now:dd/MM/yyyy HH:mm:ss}. Tài liệu chỉ dùng cho mục đích nội bộ.", 6));
-            R(14, Txt("ftr", "Chỉ bao gồm các đơn hàng có trạng thái Hoàn thành. Liên hệ quản trị viên nếu phát hiện sai lệch.", 6));
+            Gap();
+
+            // ═══════════════════════════════════════
+            // PHẦN 4: FOOTER
+            // ═══════════════════════════════════════
+            Row(14, T("ftr", $"Xuất tự động từ hệ thống O'Beef Soup lúc {now:dd/MM/yyyy HH:mm:ss}. Chỉ bao gồm đơn Hoàn thành.", FULL));
 
             sb.AppendLine("</Table></Worksheet></Workbook>");
 
@@ -268,7 +347,9 @@ namespace OBeefSoup.Areas.Admin.Controllers
             var filename = $"BaoCaoDoanhthu_{from:yyyyMMdd}_{to.Date:yyyyMMdd}.xls";
             return File(bytes, "application/vnd.ms-excel; charset=utf-8", filename);
         }
+
     }
+
 
     public class RevenueViewModel
     {

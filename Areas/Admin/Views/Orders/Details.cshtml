@@ -30,14 +30,24 @@
     <div class="row g-4">
         <div class="col-lg-8">
             <!-- Mobile Status Card (Visible only on mobile) -->
-            <div class="d-lg-none px-3 mb-4">
-                <div class="card border-0 shadow-sm bg-accent text-white overflow-hidden">
+            <div class="d-lg-none mb-4">
+                <div class="card border-0 shadow-sm overflow-hidden" style="background-color: #8B0000;">
                     <div class="card-body p-4 position-relative">
-                        <div class="position-relative z-1">
-                            <div class="text-white text-opacity-75 x-small mb-1">TRẠNG THÁI HIỆN TẠI</div>
-                            <h4 class="fw-bold mb-0">@{ RenderStatusText(Model.Status); }</h4>
+                        <div class="position-relative" style="z-index:1;">
+                            <div class="text-white text-opacity-75 x-small mb-1" style="font-size:0.7rem;letter-spacing:0.05em;">TRẠNG THÁI HIỆN TẠI</div>
+                            <h4 class="fw-bold mb-0 text-white">
+                                @switch (Model.Status)
+                                {
+                                    case OBeefSoup.Models.OrderStatus.Pending: <text>Chờ xác nhận</text> break;
+                                    case OBeefSoup.Models.OrderStatus.Confirmed: <text>Đã xác nhận</text> break;
+                                    case OBeefSoup.Models.OrderStatus.Preparing: <text>Đang chuẩn bị</text> break;
+                                    case OBeefSoup.Models.OrderStatus.Delivering: <text>Đang giao hàng</text> break;
+                                    case OBeefSoup.Models.OrderStatus.Completed: <text>Hoàn thành</text> break;
+                                    case OBeefSoup.Models.OrderStatus.Cancelled: <text>Đã hủy bỏ</text> break;
+                                }
+                            </h4>
                         </div>
-                        <i class="bi bi-box-seam position-absolute end-0 bottom-0 opacity-25" style="font-size: 5rem; transform: translate(20%, 20%);"></i>
+                        <i class="bi bi-box-seam position-absolute end-0 bottom-0" style="font-size:5rem;opacity:0.15;transform:translate(20%,20%);"></i>
                     </div>
                 </div>
             </div>
@@ -80,9 +90,9 @@
                         @foreach (var item in Model.OrderItems)
                         {
                             <div class="p-3 border-bottom">
-                                <div class="d-flex justify-content-between align-items-start mb-1">
-                                    <div class="fw-bold text-dark">@item.ProductName</div>
-                                    <div class="fw-bold text-accent">@item.Subtotal.ToString("N0")đ</div>
+                                <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+                                    <div class="fw-bold text-dark flex-grow-1">@item.ProductName</div>
+                                    <div class="fw-bold text-accent text-nowrap">@item.Subtotal.ToString("N0")đ</div>
                                 </div>
                                 <div class="text-muted small">@item.Quantity x @item.UnitPrice.ToString("N0")đ</div>
                             </div>
@@ -90,11 +100,31 @@
                     </div>
 
                     <!-- Summary Footer -->
-                    <div class="p-4 bg-light bg-opacity-50">
-                        <div class="d-flex justify-content-between align-items-center">
+                    <div class="p-3 p-md-4 bg-light bg-opacity-50">
+                        <div class="d-flex justify-content-between align-items-center gap-2">
                             <span class="text-muted fw-bold x-small">TỔNG THÀNH TIỀN:</span>
-                            <span class="fs-4 fw-bold text-accent">@Model.TotalAmount.ToString("N0") VNĐ</span>
+                            <span class="fs-5 fs-md-4 fw-bold text-accent text-nowrap">@Model.TotalAmount.ToString("N0") VNĐ</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile: Update Status inline (visible only on mobile, hidden on lg+) -->
+            <div id="mobileUpdateCard" class="d-lg-none mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-arrow-repeat me-2 text-warning"></i>Cập nhật trạng thái</h5>
+                    </div>
+                    <div class="card-body p-3">
+                        <label class="form-label text-muted x-small mb-2">THAY ĐỔI TRẠNG THÁI</label>
+                        <select class="form-select shadow-sm" style="padding: 0.85rem;" onchange="document.querySelector('[name=status]').value = this.value">
+                            <option value="0" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Pending)">Chờ xác nhận</option>
+                            <option value="1" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Confirmed)">Đã xác nhận</option>
+                            <option value="2" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Preparing)">Đang chuẩn bị</option>
+                            <option value="3" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Delivering)">Đang giao hàng</option>
+                            <option value="4" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Completed)">Hoàn thành</option>
+                            <option value="5" selected="@(Model.Status == OBeefSoup.Models.OrderStatus.Cancelled)">Đã hủy</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -104,13 +134,13 @@
                 <div class="card-header bg-white py-3">
                     <h5 class="mb-0 fw-bold"><i class="bi bi-person me-2 text-info"></i>Thông tin nhận hàng</h5>
                 </div>
-                <div class="card-body p-4">
-                    <div class="row g-4">
+                <div class="card-body p-3 p-md-4">
+                    <div class="row g-3 g-md-4">
                         <div class="col-md-6">
                             <div class="info-group">
                                 <label class="text-muted x-small d-block mb-1">KHÁCH HÀNG</label>
-                                <div class="fw-bold text-dark fs-5">@Model.Customer.FullName</div>
-                                <div class="text-muted small"><i class="bi bi-envelope me-1"></i>@Model.Customer.Email</div>
+                                <div class="fw-bold text-dark fs-6 fs-md-5">@Model.Customer.FullName</div>
+                                <div class="text-muted small mt-1"><i class="bi bi-envelope me-1"></i>@Model.Customer.Email</div>
                                 <div class="text-muted small"><i class="bi bi-telephone me-1"></i>@Model.PhoneNumber</div>
                             </div>
                         </div>
@@ -122,7 +152,7 @@
                         </div>
                         @if (!string.IsNullOrEmpty(Model.Notes))
                         {
-                            <div class="col-12 mt-4 pt-3 border-top">
+                            <div class="col-12 mt-3 pt-3 border-top">
                                 <label class="text-muted x-small d-block mb-1">GHI CHÚ ĐƠN HÀNG</label>
                                 <div class="p-3 bg-light rounded-12 fst-italic small">"@Model.Notes"</div>
                             </div>
@@ -136,8 +166,8 @@
                 <div class="card-header bg-white py-3">
                     <h5 class="mb-0 fw-bold"><i class="bi bi-wallet2 me-2 text-primary"></i>Thông tin thanh toán</h5>
                 </div>
-                <div class="card-body p-4">
-                    <div class="row g-4">
+                <div class="card-body p-3 p-md-4">
+                    <div class="row g-3 g-md-4">
                         <div class="col-md-6">
                             <div class="info-group">
                                 <label class="text-muted x-small d-block mb-1">HÌNH THỨC</label>
@@ -170,7 +200,7 @@
                         {
                             <div class="col-12 mt-3 pt-3 border-top">
                                 <label class="text-muted x-small d-block mb-1">MÃ GIAO DỊCH (GATEWAY ID)</label>
-                                <code class="p-2 bg-light rounded text-dark d-inline-block">@Model.PaymentTransactionId</code>
+                                <code class="p-2 bg-light rounded text-dark d-block text-break">@Model.PaymentTransactionId</code>
                             </div>
                         }
                     </div>
@@ -178,8 +208,8 @@
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <!-- Update Status Card -->
+        <div class="col-lg-4 d-none d-lg-block">
+            <!-- Update Status Card (Desktop only sidebar) -->
             <div class="card border-0 shadow-sm mb-4 sticky-lg-top" style="top: 100px;">
                 <div class="card-header bg-white py-3">
                     <h5 class="mb-0 fw-bold"><i class="bi bi-arrow-repeat me-2 text-warning"></i>Cập nhật đơn hàng</h5>
@@ -187,8 +217,8 @@
                 <div class="card-body p-4">
                     <form asp-area="Admin" asp-action="UpdateStatus" method="post" id="updateStatusForm" data-ajax-status-form>
                         <input type="hidden" name="orderId" value="@Model.OrderId" />
-                        
-                        <div class="mb-4 d-none d-lg-block">
+
+                        <div class="mb-4">
                             <label class="form-label">TRẠNG THÁI HIỆN TẠI</label>
                             <div class="p-3 rounded-14 border bg-light d-flex align-items-center gap-3">
                                 <div class="status-dot @Model.Status.ToString().ToLower()"></div>
@@ -208,7 +238,7 @@
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-warning w-100 py-3 fw-bold shadow-sm d-none d-lg-block" id="saveStatusBtn">
+                        <button type="submit" class="btn btn-warning w-100 py-3 fw-bold shadow-sm" id="saveStatusBtn">
                             <i class="bi bi-check-circle me-2"></i>Lưu thay đổi
                         </button>
                     </form>
@@ -219,35 +249,57 @@
 </div>
 
 <!-- Mobile Sticky Footer -->
-<div class="d-lg-none fixed-bottom bg-white border-top p-3 shadow-lg z-1050">
-    <button type="button" onclick="document.getElementById('updateStatusForm').submit()" class="btn btn-warning w-100 py-3 fw-bold fs-5 shadow-sm">
+<div class="d-lg-none fixed-bottom bg-white border-top p-3 shadow-lg" style="z-index: 1050;">
+    <button type="button" id="mobileSaveBtn" class="btn btn-warning w-100 py-3 fw-bold fs-6 shadow-sm">
         <i class="bi bi-check-circle me-2"></i>CẬP NHẬT ĐƠN HÀNG
     </button>
 </div>
 
-<div class="mb-5 pb-5 d-lg-none"></div>
+<!-- Extra spacing to prevent sticky footer overlap on mobile -->
+<div class="d-lg-none" style="height: 90px;"></div>
 
 @section Scripts {
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // The form action URL is automatically read from the form's asp-action attribute
         initOrderStatusUpdate('updateStatusForm', 'currentStatusText', 'currentStatusDot');
-        // Mobile sticky button
-        document.querySelector('.fixed-bottom button')?.addEventListener('click', function() {
-            document.getElementById('updateStatusForm').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-        });
+
+        // Mobile: sync the mobile select with the hidden form select
+        const mobileSelect = document.querySelector('.d-lg-none select');
+        const formSelect = document.querySelector('#updateStatusForm select[name="status"]');
+        if (mobileSelect && formSelect) {
+            mobileSelect.addEventListener('change', function () {
+                formSelect.value = this.value;
+            });
+        }
+
+        // Mobile sticky button fires the AJAX submit event (not native submit)
+        const mobileSaveBtn = document.getElementById('mobileSaveBtn');
+        if (mobileSaveBtn) {
+            mobileSaveBtn.addEventListener('click', function () {
+                const form = document.getElementById('updateStatusForm');
+                if (form) {
+                    form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                }
+            });
+        }
     });
     </script>
     <style>
         .bg-accent { background-color: var(--accent-color); }
         .border-start-md { border-left: 1px solid #edf2f7; }
-        @@media (max-width: 768px) { .border-start-md { border-left: none; } }
+        @@media (max-width: 991.98px) { .border-start-md { border-left: none; } }
         .rounded-14 { border-radius: 14px; }
-        .status-dot { width: 12px; height: 12px; border-radius: 50%; }
-        .status-dot.pending { background-color: #ffc107; box-shadow: 0 0 0 4px rgba(255,193,7,0.2); }
-        .status-dot.confirmed { background-color: #0dcaf0; box-shadow: 0 0 0 4px rgba(13,202,240,0.2); }
-        .status-dot.completed { background-color: #198754; box-shadow: 0 0 0 4px rgba(25,135,84,0.2); }
-        /* Add more as needed */
+        .rounded-12 { border-radius: 12px; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+        .status-dot.pending    { background-color: #ffc107; box-shadow: 0 0 0 4px rgba(255,193,7,0.2); }
+        .status-dot.confirmed  { background-color: #0dcaf0; box-shadow: 0 0 0 4px rgba(13,202,240,0.2); }
+        .status-dot.preparing  { background-color: #fd7e14; box-shadow: 0 0 0 4px rgba(253,126,20,0.2); }
+        .status-dot.delivering { background-color: #0d6efd; box-shadow: 0 0 0 4px rgba(13,110,253,0.2); }
+        .status-dot.completed  { background-color: #198754; box-shadow: 0 0 0 4px rgba(25,135,84,0.2); }
+        .status-dot.cancelled  { background-color: #dc3545; box-shadow: 0 0 0 4px rgba(220,53,69,0.2); }
+        @@media (min-width: 992px) {
+            #mobileUpdateCard { display: none !important; }
+        }
     </style>
 }
 
